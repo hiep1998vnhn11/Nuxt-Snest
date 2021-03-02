@@ -9,11 +9,11 @@
         <v-img class="align-end" width="100%" height="400" :src="background">
           <v-row>
             <v-col cols="4">
-              <change-background
+              <profile-change-background
                 :avatar="user.profile_photo_path"
                 v-if="current"
                 @changed-background="$emit('changed-background')"
-              ></change-background>
+              ></profile-change-background>
             </v-col>
             <v-col cols="4" class="text-center">
               <v-avatar size="150" class="avatar-outlined">
@@ -135,10 +135,10 @@
           {{ $t('profile.Friends') }}
         </v-btn>
 
-        <button-show-more></button-show-more>
+        <profile-more-button></profile-more-button>
 
         <v-spacer></v-spacer>
-        <edit-profile v-if="current" />
+        <profile-edit v-if="current" />
         <v-btn
           :loading="loadingAddFriend"
           :disabled="loadingAddFriend"
@@ -252,7 +252,7 @@
           </template>
           <span>Search on this personal page</span>
         </v-tooltip>
-        <icon-show-more :current="current"></icon-show-more>
+        <profile-more-icon :current="current"></profile-more-icon>
       </v-toolbar>
     </v-container>
     <v-dialog v-model="changeAvatarDialog" width="600" persistent>
@@ -459,14 +459,9 @@
 </template>
 
 <script>
-import MoreIcon from './MoreIcon'
-import MoreButton from './MoreButton'
-import ChangeBackground from './ChangeBackground'
-import Preview from './Preview'
 import { mapGetters } from 'vuex'
 import axios from 'axios'
 import { VueAvatar } from 'vue-avatar-editor-improved'
-import EditProfile from './EditProfile'
 
 export default {
   props: ['user', 'loading'],
@@ -498,12 +493,7 @@ export default {
     }
   },
   components: {
-    'icon-show-more': MoreIcon,
-    'button-show-more': MoreButton,
-    'change-background': ChangeBackground,
-    VueAvatar,
-    'avatar-preview': Preview,
-    EditProfile
+    VueAvatar
   },
   computed: {
     background() {

@@ -44,22 +44,18 @@
         </v-container>
       </v-row>
     </v-dialog>
-    <create-post-dialog
+    <post-create-dialog
       v-if="!loading"
       :dialog="dialog"
       @close-dialog="dialog = false"
-    ></create-post-dialog>
+    ></post-create-dialog>
   </v-card>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
-import CreatePostDialog from './CreatePostDialog'
 export default {
   props: ['loading'],
-  components: {
-    CreatePostDialog
-  },
   computed: mapGetters('user', ['currentUser']),
   data() {
     return {

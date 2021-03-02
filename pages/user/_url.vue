@@ -17,13 +17,8 @@
 
 <script>
 import axios from 'axios'
-import ProfileHeader from '@/components/Profile/Header'
 import { mapGetters } from 'vuex'
-
 export default {
-  components: {
-    'profile-header': ProfileHeader
-  },
   data() {
     return {
       paramUser: null,

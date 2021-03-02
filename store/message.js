@@ -1,5 +1,4 @@
 import axios from 'axios'
-import app from '@/main'
 
 const state = {
   rooms: [],
@@ -122,9 +121,7 @@ const mutations = {
       message:  Object {id, content, thresh_id, user_id}
   */
   RECEIVED_MESSAGE: function(state, message) {
-    if (app.$route.params.room_id === message.thresh_id) {
-      state.messages.unshift(message)
-    }
+    state.messages.unshift(message)
   },
   SET_THRESH_CARD: function(state, thresh) {
     state.thresh = thresh

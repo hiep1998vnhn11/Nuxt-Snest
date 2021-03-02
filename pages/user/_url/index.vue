@@ -1,10 +1,10 @@
 <template>
   <v-row>
     <v-col cols="10" md="8">
-      <create-post
+      <post-create
         v-if="!!user && !!currentUser && user.id === currentUser.id"
         class="mt-3"
-      ></create-post>
+      ></post-create>
       <v-card class="mt-3 rounded-lg" tile outlined>
         <v-card-title class="font-weight-bold">
           {{ $t('Posts') }}
@@ -126,13 +126,7 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
-import PostComponent from '@/components/Post/PostComponent'
-import CreatePost from '@/components/Post/CreatePost'
 export default {
-  components: {
-    PostComponent,
-    CreatePost
-  },
   props: ['user'],
   data() {
     return {

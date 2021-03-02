@@ -15,7 +15,8 @@
     "node-sass": "^5.0.0",
     "nuxt": "^2.14.12",
     "nuxt-i18n": "^6.20.4",
-    "sass-loader": "^10.1.1"
+    "sass-loader": "^10.1.1",
+    "vue-avatar-editor-improved": "^1.0.7"
   },
   "devDependencies": {
     "@nuxtjs/vuetify": "^1.11.3"
