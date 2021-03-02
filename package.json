@@ -1,0 +1,23 @@
+{
+  "name": "vuetify",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "nuxt --port=8080",
+    "build": "nuxt build",
+    "start": "nuxt start",
+    "generate": "nuxt generate"
+  },
+  "dependencies": {
+    "axios": "^0.21.1",
+    "core-js": "^3.8.3",
+    "js-cookie": "^2.2.1",
+    "node-sass": "^5.0.0",
+    "nuxt": "^2.14.12",
+    "nuxt-i18n": "^6.20.4",
+    "sass-loader": "^10.1.1"
+  },
+  "devDependencies": {
+    "@nuxtjs/vuetify": "^1.11.3"
+  }
+}
