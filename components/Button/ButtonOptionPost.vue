@@ -120,10 +120,12 @@
               height="75"
               block
               active-class="blue lighten-3"
-              :to="{
-                name: 'user-url',
-                params: { url: post.user.url }
-              }"
+              :to="
+                localePath({
+                  name: 'user-url',
+                  params: { url: post.user.url }
+                })
+              "
               v-if="!owned"
             >
               <v-avatar class="left-8 avatar-outlined" size="60">
@@ -190,7 +192,7 @@
               block
               exact
               active-class="blue lighten-3"
-              :to="{ name: 'AccountSetting' }"
+              :to="localePath({ name: 'AccountSetting' })"
             >
               <v-avatar
                 outlined

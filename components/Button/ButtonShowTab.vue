@@ -19,7 +19,7 @@
         <v-card
           v-click-outside="{
             handler: onClickOutsideWithConditional,
-            closeConditional,
+            closeConditional
           }"
           v-show="expand"
           width="115"
@@ -31,7 +31,7 @@
                 <v-btn
                   text
                   x-large
-                  :to="{ name: tab.name }"
+                  :to="localePath({ name: tab.name })"
                   v-bind="attrs"
                   v-on="on"
                   active-class="primary--text"

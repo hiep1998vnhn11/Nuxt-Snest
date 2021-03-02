@@ -121,7 +121,12 @@
               height="75"
               block
               active-class="primary--text"
-              :to="{ name: 'user-url', params: { url: currentUser.url } }"
+              :to="
+                localePath({
+                  name: 'user-url',
+                  params: { url: currentUser.url }
+                })
+              "
             >
               <v-avatar class="mr-3 avatar-outlined" size="60">
                 <img :src="currentUser.profile_photo_path" />
@@ -165,7 +170,7 @@
               block
               exact
               active-class="blue lighten-3"
-              :to="{ name: 'AccountSetting' }"
+              :to="localePath({ name: 'AccountSetting' })"
             >
               <v-avatar
                 outlined

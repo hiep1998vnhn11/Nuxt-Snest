@@ -17,27 +17,31 @@
     >
       <v-card height="120">
         <v-row class="pa-6">
-          <router-link
-            :to="{
-              name: 'user-url',
-              params: { url: friend.user_friend.url }
-            }"
+          <nuxt-link
+            :to="
+              localePath({
+                name: 'user-url',
+                params: { url: friend.user_friend.url }
+              })
+            "
           >
             <v-avatar size="80" class="rounded-lg avatar-outlined">
               <v-img :src="friend.user_friend.profile_photo_path" />
             </v-avatar>
-          </router-link>
+          </nuxt-link>
           <div class="my-auto ml-4">
             <div class="font-weight-bold">
-              <router-link
-                :to="{
-                  name: 'user-url',
-                  params: { url: friend.user_friend.url }
-                }"
+              <nuxt-link
+                :to="
+                  localePath({
+                    name: 'user-url',
+                    params: { url: friend.user_friend.url }
+                  })
+                "
                 style="text-decoration: none; color: black;"
               >
                 {{ friend.user_friend.name }}
-              </router-link>
+              </nuxt-link>
             </div>
             <div>11 {{ $t('profile.MutualFriends') }}</div>
           </div>

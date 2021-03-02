@@ -4,7 +4,12 @@
       <v-hover v-slot:default="{ hover }" :key="`room-${room.id}`">
         <v-list-item
           link
-          :to="{ name: 'messages-room_id', params: { room_id: room.id } }"
+          :to="
+            localePath({
+              name: 'messages-room_id',
+              params: { room_id: room.id }
+            })
+          "
           active-class="blue--text"
         >
           <template v-if="room.type === 'private'">

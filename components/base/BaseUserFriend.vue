@@ -16,11 +16,13 @@
           cols="3"
           class="text-center"
         >
-          <router-link
-            :to="{
-              name: 'user-url',
-              params: { url: friend.user_friend.url }
-            }"
+          <nuxt-link
+            :to="
+              localePath({
+                name: 'user-url',
+                params: { url: friend.user_friend.url }
+              })
+            "
           >
             <v-avatar size="93" class="rounded-lg avatar-outlined">
               <v-img
@@ -28,17 +30,19 @@
                 :src="friend.user_friend.profile_photo_path"
               ></v-img>
             </v-avatar>
-          </router-link>
-          <router-link
-            :to="{
-              name: 'user-url',
-              params: { url: friend.user_friend.url }
-            }"
+          </nuxt-link>
+          <nuxt-link
+            :to="
+              localePath({
+                name: 'user-url',
+                params: { url: friend.user_friend.url }
+              })
+            "
             style="text-decoration: none; color: black;"
             class="font-weight-bold"
           >
             {{ friend.user_friend.name }}
-          </router-link>
+          </nuxt-link>
         </v-col>
       </v-row>
     </v-container>

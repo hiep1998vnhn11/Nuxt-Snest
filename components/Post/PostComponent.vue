@@ -1,8 +1,8 @@
 <template>
   <v-card class="mx-auto rounded-lg">
     <v-list-item>
-      <router-link
-        :to="{ name: 'user-url', params: { url: post.user.url } }"
+      <nuxt-link
+        :to="localePath({ name: 'user-url', params: { url: post.user.url } })"
         v-slot="{ href, navigate }"
       >
         <v-list-item-avatar class="avatar-outlined" color="grey">
@@ -13,7 +13,7 @@
             :href="href"
           />
         </v-list-item-avatar>
-      </router-link>
+      </nuxt-link>
       <v-list-item-content>
         <v-list-item>
           <base-name-link :user="post.user" />

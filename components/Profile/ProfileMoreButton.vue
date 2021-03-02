@@ -21,7 +21,7 @@
         >
           <div class="ma-1">
             <v-btn
-              :to="{ name: 'user-url-image' }"
+              :to="localePath({ name: 'user-url-image' })"
               text
               class="text-capitalize mb-2"
               block
@@ -31,7 +31,7 @@
               <v-spacer />
             </v-btn>
             <v-btn
-              :to="{ name: 'user-url-video' }"
+              :to="localePath({ name: 'user-url-video' })"
               text
               class="text-capitalize mb-2"
               block
@@ -41,7 +41,7 @@
               <v-spacer />
             </v-btn>
             <v-btn
-              :to="{ name: 'user-url-archive' }"
+              :to="localePath({ name: 'user-url-archive' })"
               text
               class="text-capitalize mb-2"
               block
@@ -51,7 +51,7 @@
               <v-spacer />
             </v-btn>
             <v-btn
-              :to="{ name: 'user-url-archive' }"
+              :to="localePath({ name: 'user-url-archive' })"
               text
               class="text-capitalize mb-2"
               block

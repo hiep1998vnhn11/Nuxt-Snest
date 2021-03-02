@@ -152,15 +152,17 @@
             <img :src="participant.profile_photo_path" />
           </v-avatar>
           <div class="font-weight-bold text-capitalize mt-2">
-            <router-link
-              :to="{
-                name: 'user-url',
-                params: { url: participant.url }
-              }"
+            <nuxt-link
+              :to="
+                localePath({
+                  name: 'user-url',
+                  params: { url: participant.url }
+                })
+              "
               class="black--text text-decoration-none"
             >
               {{ participant.name }}
-            </router-link>
+            </nuxt-link>
           </div>
         </div>
       </template>

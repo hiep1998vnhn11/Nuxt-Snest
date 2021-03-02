@@ -110,7 +110,7 @@
           large
           text
           class="text-capitalize mr-2 mt-3"
-          :to="{ name: 'user-url' }"
+          :to="localePath({ name: 'user-url' })"
           active-class="primary--text"
           exact
         >
@@ -120,7 +120,7 @@
           large
           text
           class="text-capitalize mr-2 mt-3"
-          :to="{ name: 'user-url-about' }"
+          :to="localePath({ name: 'user-url-about' })"
           active-class="primary--text"
         >
           {{ $t('profile.About') }}
@@ -129,7 +129,7 @@
           large
           text
           class="text-capitalize mt-3 mr-2"
-          :to="{ name: 'user-url-friend' }"
+          :to="localePath({ name: 'user-url-friend' })"
           active-class="primary--text"
         >
           {{ $t('profile.Friends') }}
@@ -158,7 +158,7 @@
           outlined
           class="text-capitalize mt-3 ml-2"
           text
-          :to="{ name: 'Message' }"
+          :to="localePath({ name: 'Message' })"
         >
           <v-icon class="mr-2">mdi-account-cancel</v-icon>
           Chat

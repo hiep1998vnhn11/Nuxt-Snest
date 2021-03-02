@@ -1,10 +1,12 @@
 <template>
   <div>
-    <router-link
-      :to="{
-        name: 'user-url',
-        params: { url: user.url }
-      }"
+    <nuxt-link
+      :to="
+        localePath({
+          name: 'user-url',
+          params: { url: user.url }
+        })
+      "
       class="text-capitalize"
       v-slot="{ href, navigate }"
     >
@@ -17,7 +19,7 @@
       >
         {{ user.name }}
       </a>
-    </router-link>
+    </nuxt-link>
     <v-card
       v-if="hovering"
       @mouseover="hoverCard = true"

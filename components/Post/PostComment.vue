@@ -41,11 +41,13 @@
           :key="comment.id"
         >
           <v-col cols="1">
-            <router-link
-              :to="{
-                name: 'user-url',
-                params: { url: comment.user.url }
-              }"
+            <nuxt-link
+              :to="
+                localePath({
+                  name: 'user-url',
+                  params: { url: comment.user.url }
+                })
+              "
               v-slot="{ href, navigate }"
             >
               <v-avatar class="avatar-outlined" size="40">
@@ -56,7 +58,7 @@
                   :href="href"
                 />
               </v-avatar>
-            </router-link>
+            </nuxt-link>
           </v-col>
           <v-col cols="11">
             <v-card class="rounded-lg text-body-1 pl-2 py-1">
@@ -104,11 +106,13 @@
                 v-show="comment.id === showId"
               >
                 <v-col cols="1">
-                  <router-link
-                    :to="{
-                      name: 'user-url',
-                      params: { url: sub_comment.user.url }
-                    }"
+                  <nuxt-link
+                    :to="
+                      localePath({
+                        name: 'user-url',
+                        params: { url: sub_comment.user.url }
+                      })
+                    "
                     v-slot="{ href, navigate }"
                     class="ml-5"
                   >
@@ -120,7 +124,7 @@
                         :href="href"
                       />
                     </v-avatar>
-                  </router-link>
+                  </nuxt-link>
                 </v-col>
                 <v-col cols="11">
                   <v-card class="rounded-lg pl-2">
