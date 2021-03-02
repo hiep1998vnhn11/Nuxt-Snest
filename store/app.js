@@ -1,7 +1,7 @@
-const state = {
+const state = () => ({
   mini: false,
   drawer: true
-}
+})
 
 const getters = {
   mini: state => state.mini,

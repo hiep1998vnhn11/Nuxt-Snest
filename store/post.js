@@ -1,12 +1,12 @@
 import axios from 'axios'
-const state = {
+const state = () => ({
   posts: [],
   tab: 'home-tab',
   paramPost: null,
   userPost: [],
   userPostPage: 1,
   feedPage: 1
-}
+})
 
 const getters = {
   posts: state => state.posts,

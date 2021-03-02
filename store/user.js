@@ -1,7 +1,7 @@
 import axios from 'axios'
 import Cookies from 'js-cookie'
 
-const state = {
+const state = () => ({
   currentUser: null,
   token: Cookies.get('access_token') || null,
   socket: null,
@@ -10,7 +10,7 @@ const state = {
       'Bearer' + Cookies.get('access_token')
   },
   friends: []
-}
+})
 
 const getters = {
   currentUser: state => state.currentUser,

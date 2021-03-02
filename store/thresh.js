@@ -1,10 +1,10 @@
 import axios from 'axios'
 
-const state = {
+const state = () => ({
   threshes: [],
   page: 1,
   participant: null
-}
+})
 
 const getters = {
   threshes: state => state.threshes,

@@ -1,12 +1,12 @@
 import axios from 'axios'
 
-const state = {
+const state = () => ({
   rooms: [],
   messages: [],
   pageMessage: 1,
   thresh: null,
   messageCards: []
-}
+})
 
 const getters = {
   rooms: state => state.rooms,

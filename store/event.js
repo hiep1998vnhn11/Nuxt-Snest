@@ -1,7 +1,7 @@
-const state = {
+const state = () => ({
   dialog: false,
   dialogType: null
-}
+})
 
 const getters = {
   dialog: state => state.dialog,

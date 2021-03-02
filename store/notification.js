@@ -1,8 +1,8 @@
 import axios from 'axios'
-const state = {
+const state = () => ({
   numberUnread: 0,
   notifications: []
-}
+})
 
 const getters = {
   numberUnread: state => state.numberUnread,

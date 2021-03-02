@@ -23,7 +23,7 @@
           {{ post.created_at | relativeTime }}
         </v-list-item-subtitle>
       </v-list-item-content>
-      <option-post-button v-if="!!this.currentUser" :post="post" />
+      <button-option-post v-if="!!this.currentUser" :post="post" />
     </v-list-item>
     <v-container>
       {{ post.content }}
@@ -105,14 +105,8 @@
 <script>
 import { mapGetters, mapActions } from 'vuex'
 import axios from 'axios'
-import PostComment from './PostComment'
-import OptionPostButton from '@/components/Button/OptionPostButton'
 export default {
   props: ['post'],
-  components: {
-    PostComment,
-    OptionPostButton
-  },
   data: () => {
     return {
       showComment: false,

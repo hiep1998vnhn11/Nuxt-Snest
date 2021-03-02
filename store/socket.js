@@ -1,7 +1,7 @@
 import { io } from 'socket.io-client'
-const state = {
+const state = () => ({
   socket: null
-}
+})
 
 const getters = {
   socket: state => state.socket
