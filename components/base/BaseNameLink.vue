@@ -1,6 +1,34 @@
 <template>
   <div>
     <nuxt-link
+      v-if="!image"
+      :to="
+        localePath({
+          name: 'user-url',
+          params: { url: user.url }
+        })
+      "
+      class="text-capitalize nuxt-link-active"
+      v-slot="{ href, navigate }"
+    >
+      <a
+        @mouseover="onMouseOver"
+        @mouseleave="onMouseLeave"
+        :class="
+          `font-weight-black nuxt-link-active ${
+            hover ? '' : 'text-decoration-none'
+          }`
+        "
+        :href="href"
+        @click="navigate"
+      >
+        {{ user.name }}
+      </a>
+    </nuxt-link>
+    <v-btn
+      v-else
+      @mouseover="onMouseOver"
+      @mouseleave="onMouseLeave"
       :to="
         localePath({
           name: 'user-url',
@@ -8,20 +36,14 @@
         })
       "
       class="text-capitalize"
-      v-slot="{ href, navigate }"
+      icon
     >
-      <a
-        @mouseover="onMouseOver"
-        @mouseleave="onMouseLeave"
-        class="font-weight-black text-decoration-none"
-        :href="href"
-        @click="navigate"
-      >
-        {{ user.name }}
-      </a>
-    </nuxt-link>
+      <v-avatar class="avatar-outlined" size="40">
+        <img :src="user.profile_photo_path" :alt="user.name" />
+      </v-avatar>
+    </v-btn>
     <v-card
-      v-if="hovering"
+      v-if="hovering && info"
       @mouseover="hoverCard = true"
       @mouseleave="hoverCard = false"
       max-width="344"
@@ -87,7 +109,20 @@
 import { mapGetters } from 'vuex'
 import axios from 'axios'
 export default {
-  props: ['user'],
+  props: {
+    user: {
+      type: Object,
+      default: () => ({
+        id: '3',
+        url: 'hiep',
+        name: 'Hiep'
+      })
+    },
+    image: {
+      type: Boolean,
+      default: false
+    }
+  },
   computed: {
     ...mapGetters('user', ['currentUser']),
     hovering: function() {
@@ -105,6 +140,10 @@ export default {
   },
   methods: {
     async onMouseOver() {
+      if (this.info) {
+        this.hover = true
+        return
+      }
       try {
         const response = await axios.get(`/v1/user/${this.user.id}/get`)
         this.info = response.data.data
@@ -117,7 +156,7 @@ export default {
       const _this = this
       setTimeout(function() {
         _this.hover = false
-      }, 500)
+      }, 100)
     }
   }
 }
@@ -127,5 +166,9 @@ export default {
 .card-user {
   z-index: 999;
   position: fixed;
+}
+
+.nuxt-link-active {
+  color: red;
 }
 </style>

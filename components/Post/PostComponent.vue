@@ -1,19 +1,7 @@
 <template>
   <v-card class="mx-auto rounded-lg">
     <v-list-item>
-      <nuxt-link
-        :to="localePath({ name: 'user-url', params: { url: post.user.url } })"
-        v-slot="{ href, navigate }"
-      >
-        <v-list-item-avatar class="avatar-outlined" color="grey">
-          <img
-            :src="post.user.profile_photo_path"
-            :alt="post.user.name"
-            @click="navigate"
-            :href="href"
-          />
-        </v-list-item-avatar>
-      </nuxt-link>
+      <base-name-link image :user="post.user" />
       <v-list-item-content>
         <v-list-item>
           <base-name-link :user="post.user" />
@@ -25,6 +13,8 @@
       </v-list-item-content>
       <button-option-post v-if="!!this.currentUser" :post="post" />
     </v-list-item>
+
+    <!-- post content -->
     <v-container>
       {{ post.content }}
       <v-row v-if="post.images.length" class="pa-5">
@@ -37,6 +27,8 @@
         ></v-img>
       </v-row>
     </v-container>
+
+    <!-- post like and comment count -->
     <v-toolbar flat>
       <v-tooltip top class="text-body-1 white">
         <template color="grey" v-slot:activator="{ on, attrs }">
@@ -55,7 +47,10 @@
         {{ $t('count.comments') }}
       </span>
     </v-toolbar>
+
     <v-divider class="mx-4"></v-divider>
+
+    <!-- post action -->
     <v-toolbar flat dense>
       <v-row no-gutters>
         <v-col cols="6">
@@ -81,6 +76,7 @@
     </v-toolbar>
     <v-divider class="mx-4" />
 
+    <!-- post comments -->
     <v-container v-if="showComment">
       <v-skeleton-loader
         v-if="loading"
@@ -89,31 +85,17 @@
       <div v-else-if="comments">
         <v-row
           justify="space-around"
+          no-gutters
           v-for="comment in comments"
           :key="comment.id"
         >
           <div>
-            <nuxt-link
-              :to="
-                localePath({
-                  name: 'user-url',
-                  params: { url: comment.user.url }
-                })
-              "
-              v-slot="{ href, navigate }"
-            >
-              <v-avatar class="avatar-outlined" size="40">
-                <img
-                  :src="comment.user.profile_photo_path"
-                  :alt="comment.user.name"
-                  @click="navigate"
-                  :href="href"
-                />
-              </v-avatar>
-            </nuxt-link>
+            <base-name-link image :user="comment.user" class="mr-2" />
           </div>
           <v-col>
-            <v-card class="rounded-lg text-body-1 pl-2 py-1">
+            <v-card
+              class="rounded-lg text-body-1 pl-2 py-1 elevation-0 grey lighten-4"
+            >
               <base-name-link :user="comment.user"></base-name-link>
               {{ comment.content }}
             </v-card>
@@ -138,48 +120,28 @@
               </v-btn>
               {{ comment.updated_at | relativeTime }}
             </div>
+
+            <!-- sub comment count -->
             <div v-if="comment.sub_comments_count">
-              <v-row v-show="comment.id !== showId">
-                <v-btn
-                  text
-                  class="text-capitalize primary--text"
-                  small
-                  block
-                  @click="showId = comment.id"
-                >
-                  Show {{ comment.sub_comments_count }} sub comment
-                  <v-spacer></v-spacer>
-                </v-btn>
-              </v-row>
+              <a
+                v-show="comment.id !== showId"
+                class="text-caption"
+                @click="showId = comment.id"
+              >
+                {{ comment.sub_comments_count }} {{ $t('Reply') }}
+              </a>
               <v-row
                 justify="space-around"
+                no-gutters
                 v-for="sub_comment in comment.sub_comments"
                 :key="sub_comment.id"
                 v-show="comment.id === showId"
               >
-                <v-col cols="1">
-                  <nuxt-link
-                    :to="
-                      localePath({
-                        name: 'user-url',
-                        params: { url: sub_comment.user.url }
-                      })
-                    "
-                    v-slot="{ href, navigate }"
-                    class="ml-5"
-                  >
-                    <v-avatar class="avatar-outlined" size="30">
-                      <img
-                        :src="comment.user.profile_photo_path"
-                        :alt="sub_comment.user.name"
-                        @click="navigate"
-                        :href="href"
-                      />
-                    </v-avatar>
-                  </nuxt-link>
-                </v-col>
-                <v-col cols="11">
-                  <v-card class="rounded-lg pl-2">
+                <div>
+                  <base-name-link image :user="sub_comment.user" class="mr-2" />
+                </div>
+                <v-col>
+                  <v-card class="rounded-lg pl-2 elevation-0 grey lighten-4">
                     <base-name-link :user="sub_comment.user"></base-name-link>
                     {{ sub_comment.content }}
                   </v-card>
@@ -207,11 +169,15 @@
                 </v-avatar>
                 <v-text-field
                   clearable
+                  rounded
+                  solo
+                  dense
                   :label="$t('create_post.content')"
                   v-model="subComment"
                   append-icon="mdi-file-image-outline"
                   @click:append="upload"
                   class="mt-8"
+                  @keydown.enter="onSubComment(comment)"
                   :loading="loadingSubCreate"
                 >
                 </v-text-field>
