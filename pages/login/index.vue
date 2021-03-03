@@ -91,7 +91,7 @@ export default {
     }
   },
   computed: mapGetters('user', ['isLoggedIn']),
-
+  middleware: 'guest',
   methods: {
     async onLogin() {
       if (!this.password || !this.email) {
@@ -110,7 +110,7 @@ export default {
           },
           { root: true }
         )
-        this.$router.push({ name: 'Home' })
+        this.$router.push('/')
       } catch (err) {
         this.error = err.response
         this.loginError = true

@@ -101,6 +101,8 @@ export default {
       ]
     }
   },
+  middleware: 'guest',
+
   methods: {
     async fetchData() {
       if (!this.searchKey) return

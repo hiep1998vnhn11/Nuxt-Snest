@@ -101,6 +101,7 @@ export default {
     }
   },
   mounted() {},
+  middleware: 'auth',
   watch: {
     async search(val) {
       if (!val || this.loading) return

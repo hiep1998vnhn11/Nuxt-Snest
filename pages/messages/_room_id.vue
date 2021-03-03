@@ -323,7 +323,7 @@ export default {
     await this.fetchData()
     // this.scrollToBottom()
   },
-
+  middleware: 'auth',
   methods: {
     ...mapActions('message', [
       'getMessage',

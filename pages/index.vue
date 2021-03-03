@@ -37,7 +37,6 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
-console.log(process.env.NUXT_ENV_BASE_URL)
 export default {
   props: ['loading_user'],
   computed: mapGetters('post', ['posts']),
