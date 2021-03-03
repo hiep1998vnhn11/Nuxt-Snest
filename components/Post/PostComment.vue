@@ -340,7 +340,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .avatar-outlined {
   border: thin solid rgba(0, 0, 0, 0.12) !important;
 }

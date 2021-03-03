@@ -1,7 +1,7 @@
 <template>
-  <v-container class="grey lighten-3">
+  <div>
     <post-component v-if="!!paramPost" :post="paramPost"></post-component>
-  </v-container>
+  </div>
 </template>
 
 <script>
