@@ -170,7 +170,7 @@
               block
               exact
               active-class="blue lighten-3"
-              :to="localePath({ name: 'AccountSetting' })"
+              :to="localePath({ name: 'setting-account' })"
             >
               <v-avatar
                 outlined
@@ -295,7 +295,7 @@ export default {
 .show-setting-app-bar {
   position: absolute;
   z-index: 900;
-  left: 0.5rem;
-  top: 10.5rem;
+  right: 0.5rem;
+  top: 64px;
 }
 </style>

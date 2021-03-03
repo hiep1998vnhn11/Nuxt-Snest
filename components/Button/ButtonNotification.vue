@@ -25,7 +25,7 @@
           v-show="expand"
           v-click-outside="{
             handler: onClickOutsideWithConditional,
-            closeConditional,
+            closeConditional
           }"
           width="21rem"
           class="mx-auto"
@@ -183,7 +183,7 @@ export default {
 .show-noti-app-bar {
   position: absolute;
   z-index: 900;
-  left: 0.5rem;
-  top: 10.5rem;
+  right: 0.5rem;
+  top: 64px;
 }
 </style>

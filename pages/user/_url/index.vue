@@ -1,6 +1,11 @@
 <template>
   <v-row>
-    <v-col cols="10" md="8">
+    <v-col cols="12" md="4">
+      <base-user-info v-if="!!user && !!currentUser" :user="user" />
+      <base-user-friend v-if="user" :user="user"></base-user-friend>
+    </v-col>
+
+    <v-col cols="12" md="8">
       <post-create
         v-if="!!user && !!currentUser && user.id === currentUser.id"
         class="mt-3"
@@ -61,10 +66,6 @@
       ></v-skeleton-loader>
     </v-col>
 
-    <v-col cols="2" md="4">
-      <base-user-info v-if="!!user && !!currentUser" :user="user" />
-      <base-user-friend v-if="user" :user="user"></base-user-friend>
-    </v-col>
     <v-dialog width="600" v-model="filterDialog">
       <v-card>
         <v-card-title class="font-weight-bold">

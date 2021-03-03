@@ -1,24 +1,31 @@
 .<template>
   <div>
-    <base-not-display v-if="!loading && !paramUser" />
-    <profile-header
-      :user="paramUser"
-      :loading="loading"
-      class="index-3"
-      @changed-avatar="fetchData(true)"
-      @changed-background="fetchData(true)"
-      @changed-status-friend-accepted="changeStatusFriendAccept"
-      @changed-status-friend-denied="changeStatusFriendDenied"
-      @changed-status-friend-added="changeStatusFriendAdded"
-    ></profile-header>
-    <router-view :user="paramUser"></router-view>
+    <error v-if="!$route.params.url" :error="{ statusCode: 404 }"></error>
+    <div v-else>
+      <base-not-display v-if="!loading && !paramUser" />
+      <profile-header
+        :user="paramUser"
+        :loading="loading"
+        class="index-3"
+        @changed-avatar="fetchData(true)"
+        @changed-background="fetchData(true)"
+        @changed-status-friend-accepted="changeStatusFriendAccept"
+        @changed-status-friend-denied="changeStatusFriendDenied"
+        @changed-status-friend-added="changeStatusFriendAdded"
+      ></profile-header>
+      <nuxt-child :user="paramUser"></nuxt-child>
+    </div>
   </div>
 </template>
 
 <script>
 import axios from 'axios'
 import { mapGetters } from 'vuex'
+import Error from '@/layouts/error'
 export default {
+  components: {
+    Error
+  },
   data() {
     return {
       paramUser: null,

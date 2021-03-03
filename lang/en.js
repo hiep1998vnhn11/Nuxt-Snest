@@ -307,5 +307,9 @@ export default {
     'Contribute to improving this application',
   Display: 'Display',
   Logout: 'Logout',
-  Shortcuts: 'Shortcuts'
+  Shortcuts: 'Shortcuts',
+  Home: {
+    SearchResult: 'Search result',
+    SearchNoResult: 'Sorry, your keyword have no result!'
+  }
 }

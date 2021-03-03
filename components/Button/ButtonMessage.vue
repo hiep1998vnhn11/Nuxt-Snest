@@ -208,8 +208,8 @@ export default {
 .show-message-app-bar {
   position: absolute;
   z-index: 900;
-  left: 0.5rem;
-  top: 10.5rem;
+  right: 0.5rem;
+  top: 64px;
 }
 
 .title-message-expand {

@@ -26,7 +26,7 @@
           v-show="expand"
           v-click-outside="{
             handler: onClickOutsideWithConditional,
-            closeConditional,
+            closeConditional
           }"
           width="21rem"
           class="mx-auto"
@@ -138,7 +138,7 @@ export default {
 .show-create-app-bar {
   position: absolute;
   z-index: 900;
-  left: 0.5rem;
-  top: 12rem;
+  right: 0.5rem;
+  top: 64px;
 }
 </style>
