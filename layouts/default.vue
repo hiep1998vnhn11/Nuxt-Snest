@@ -9,48 +9,21 @@
       height="56"
       class="elevation-3"
     >
+      <v-spacer />
+      <search-card />
+
+      <v-spacer />
       <v-btn
         v-if="currentUser"
         icon
         small
+        class="mr-3"
         :to="localePath({ name: 'user-url', params: { url: currentUser.url } })"
       >
-        <v-avatar size="30">
+        <v-avatar size="35">
           <img :src="currentUser.profile_photo_path" />
         </v-avatar>
       </v-btn>
-      <v-spacer />
-      <v-card
-        id="search-card-app-bar"
-        v-click-outside="{
-          handler: onClickOutsideWithConditional,
-          closeConditional
-        }"
-        width="400"
-        :class="`elevation-${searchSelected ? 5 : 0} ml-n4`"
-      >
-        <v-app-bar height="56" flat color="primary">
-          <v-text-field
-            v-model="searchKey"
-            class="grey lighten-3 ml-2"
-            rounded
-            hide-details
-            :label="$t('Search')"
-            @focus="searchSelected = true"
-          >
-            <template v-slot:prepend-inner class="mr-n2">
-              <v-icon class="ml-n4">mdi-magnify</v-icon>
-            </template>
-          </v-text-field>
-        </v-app-bar>
-        <v-container v-if="searchSelected">
-          <v-row class="mx-auto font-weight-black">
-            {{ $t('Home.SearchResult') }}
-          </v-row>
-          {{ $t('Home.SearchNoResult') }}
-        </v-container>
-      </v-card>
-      <v-spacer />
       <button-message />
       <button-notification />
       <button-setting />
@@ -153,7 +126,31 @@ export default {
 }
 </script>
 
-<style scoped>
+<style>
+html {
+  overflow-y: hidden;
+}
+
+html:hover {
+  overflow-y: auto;
+}
+
+html::-webkit-scrollbar {
+  width: 0.35rem;
+}
+
+html::-webkit-scrollbar-track {
+  background: white;
+  -webkit-border-radius: 10px;
+  border-radius: 25px;
+  padding: 10px;
+}
+html::-webkit-scrollbar-thumb {
+  background: #9c27b0;
+  -webkit-border-radius: 10px;
+  border-radius: 10px;
+}
+
 .home-navbar-right::-webkit-scrollbar {
   width: 0.25rem;
 }

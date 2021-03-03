@@ -308,8 +308,14 @@ export default {
   Display: 'Display',
   Logout: 'Logout',
   Shortcuts: 'Shortcuts',
-  Home: {
-    SearchResult: 'Search result',
-    SearchNoResult: 'Sorry, your keyword have no result!'
-  }
+  'Home.SearchResult': 'Search result',
+  'Home.SearchNoResult': 'No result found!',
+  RecentSearches: 'Recent searches',
+  SearchFor: 'Search for',
+  People: 'People',
+  'Setting.Display.Darkmode':
+    'Adjust the appearance of Facebook to reduce glare and give your eyes a break.',
+  'Display&Accessibility': 'Display & Accessibility',
+  DarkMode: 'Dark mode',
+  Trending: 'Trending'
 }

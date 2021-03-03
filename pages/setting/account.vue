@@ -172,6 +172,9 @@
 import { mapGetters, mapActions } from 'vuex'
 export default {
   computed: mapGetters('user', ['currentUser']),
+  mounted() {
+    console.log(this.$route.name)
+  },
   methods: {
     ...mapActions('user', ['changeInfo', 'getUser']),
     async changeName() {
