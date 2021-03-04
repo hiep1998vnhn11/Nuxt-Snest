@@ -18,7 +18,12 @@
         icon
         small
         class="mr-3"
-        :to="localePath({ name: 'user-url', params: { url: currentUser.url } })"
+        :to="
+          localePath({
+            name: 'index-user-url',
+            params: { url: currentUser.url }
+          })
+        "
       >
         <v-avatar size="35">
           <img :src="currentUser.profile_photo_path" />

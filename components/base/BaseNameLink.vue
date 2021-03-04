@@ -4,7 +4,7 @@
       v-if="!image"
       :to="
         localePath({
-          name: 'user-url',
+          name: 'index-user-url',
           params: { url: user.url }
         })
       "
@@ -31,7 +31,7 @@
       @mouseleave="onMouseLeave"
       :to="
         localePath({
-          name: 'user-url',
+          name: 'index-user-url',
           params: { url: user.url }
         })
       "

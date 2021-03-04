@@ -122,7 +122,7 @@
               active-class="blue lighten-3"
               :to="
                 localePath({
-                  name: 'user-url',
+                  name: 'index-user-url',
                   params: { url: post.user.url }
                 })
               "

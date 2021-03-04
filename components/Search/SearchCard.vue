@@ -51,7 +51,7 @@
           class="text-none font-weight-bold"
           :to="
             localePath({
-              name: 'user-url',
+              name: 'index-user-url',
               params: { url: search.searchable.url }
             })
           "
@@ -191,4 +191,12 @@ export default {
   }
 }
 </script>
-<style scoped></style>
+<style scoped>
+#search-card-app-bar {
+  position: fixed;
+  top: 0px;
+  left: 50%;
+  z-index: 9999;
+  transform: translateX(-50%);
+}
+</style>

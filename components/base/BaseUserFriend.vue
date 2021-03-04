@@ -19,7 +19,7 @@
           <nuxt-link
             :to="
               localePath({
-                name: 'user-url',
+                name: 'index-user-url',
                 params: { url: friend.user_friend.url }
               })
             "
@@ -34,7 +34,7 @@
           <nuxt-link
             :to="
               localePath({
-                name: 'user-url',
+                name: 'index-user-url',
                 params: { url: friend.user_friend.url }
               })
             "

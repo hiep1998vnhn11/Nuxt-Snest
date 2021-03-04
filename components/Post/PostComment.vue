@@ -44,7 +44,7 @@
             <nuxt-link
               :to="
                 localePath({
-                  name: 'user-url',
+                  name: 'index-user-url',
                   params: { url: comment.user.url }
                 })
               "
@@ -109,7 +109,7 @@
                   <nuxt-link
                     :to="
                       localePath({
-                        name: 'user-url',
+                        name: 'index-user-url',
                         params: { url: sub_comment.user.url }
                       })
                     "

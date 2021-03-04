@@ -351,7 +351,7 @@
             text
             class="text-capitalize primary--text"
             @click="dialog = false"
-            :to="localePath({ name: 'user-url-about' })"
+            :to="localePath({ name: 'index-user-url-about' })"
           >
             Update your infomation
           </v-btn>

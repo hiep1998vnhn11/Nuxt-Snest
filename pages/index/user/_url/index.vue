@@ -34,7 +34,7 @@
               class="text-capitalize"
               block
               text
-              :to="localePath({ name: 'user-url' })"
+              :to="localePath({ name: 'index-user-url' })"
               active-class="primary--text"
             >
               <v-icon class="mr-3">mdi-view-list</v-icon>

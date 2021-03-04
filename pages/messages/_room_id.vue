@@ -155,7 +155,7 @@
             <nuxt-link
               :to="
                 localePath({
-                  name: 'user-url',
+                  name: 'index-user-url',
                   params: { url: participant.url }
                 })
               "

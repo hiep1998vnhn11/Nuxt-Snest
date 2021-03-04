@@ -317,5 +317,7 @@ export default {
     'Adjust the appearance of Facebook to reduce glare and give your eyes a break.',
   'Display&Accessibility': 'Display & Accessibility',
   DarkMode: 'Dark mode',
-  Trending: 'Trending'
+  Trending: 'Trending',
+  WriteAComment: 'Write a comment...',
+  Contacts: 'Contacts'
 }
