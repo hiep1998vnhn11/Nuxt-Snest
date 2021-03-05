@@ -1,15 +1,6 @@
 <template>
   <div>
-    <v-btn
-      class="button-navigation elevation-20"
-      x-large
-      outlined
-      icon
-      text
-      @click="onOpenMessage()"
-    >
-      <v-icon>mdi-pencil-circle-outline</v-icon>
-    </v-btn>
+    <message-card />
     <nuxt-child />
   </div>
 </template>
