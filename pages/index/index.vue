@@ -35,7 +35,7 @@
         </v-sheet>
       </template>
       <v-skeleton-loader
-        v-if="loading"
+        v-if="loadingFriend"
         type="list-item-avatar, list-item@5, divider, list-item-avatar@3"
       />
       <div v-else class="sidebar-container-scroll">
@@ -102,7 +102,7 @@
       app
     >
       <!-- Default temblade -->
-      <div class="sidebar-container-scroll">
+      <div>
         <div v-if="loadingTrending" class="text-center my-10">
           <v-progress-circular
             :size="50"
@@ -124,6 +124,22 @@
                 {{ value[0] }}: {{ value[1] }}
               </p>
             </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="suggestion-card">
+        <div class="box">
+          <div class="content">
+            <h2>{{ $t('Suggestions') }}</h2>
+            <p
+              v-for="value in Object.entries(trending)
+                .slice()
+                .reverse()"
+              :key="value[0]"
+            >
+              {{ value[0] }}: {{ value[1] }}
+            </p>
           </div>
         </div>
       </div>
@@ -232,7 +248,7 @@ export default {
 
 .trending-card {
   position: relative;
-  min-height: 300px;
+  height: 400px;
 }
 
 .trending-card .box {
@@ -248,23 +264,11 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  -webkit-transition: transform 0.3s ease-in-out;
+  transition: 0.5s ease-in-out;
 }
 
-.trending-card .box::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 50%;
-  height: 100%;
-  background: rgba(1, 255, 255, 0.6);
-  border-top-left-radius: 15px;
-  border-bottom-left-radius: 15px;
-  pointer-events: none;
-}
 .trending-card .box:hover {
-  -webkit-transition: transform 0.3s ease-in-out;
+  transition: 0.5s ease-in-out;
   transform: translateY(-10px);
   box-shadow: 0 40px 70px rgba(0, 0, 0, 0.5);
 }
@@ -276,18 +280,18 @@ export default {
 
 .trending-card .box .content h2 {
   position: absolute;
-  right: 20px;
-  width: 7rem;
-  background: red;
-  opacity: 0.5;
+  left: 20px;
+  opacity: 0.2;
+  font-size: 3rem;
   font-weight: 900;
-  -webkit-transition: transform 0.6s ease-in-out;
+  transition: 0.5s ease-in-out;
 }
 
 .trending-card .box:hover .content h2 {
-  opacity: 1;
-  transform: translateX(-2rem);
-  -webkit-transition: transform 0.6s ease-in-out;
+  opacity: 0.8;
+  transform: translateY(calc(-155px + 50%));
+  font-size: 1.8rem;
+  transition: 0.5s ease-in-out;
 }
 
 .trending-card .box .content h3 {
@@ -299,7 +303,70 @@ export default {
 
 .trending-card .box .content p {
   font-size: 1rem;
-  font-weight: 300;
+  /* font-weight: 300; */
+  z-index: 1000;
+  transition: 0.5%;
+}
+
+.suggestion-card {
+  position: relative;
+  height: 300px;
+  bottom: 0px;
+}
+
+.suggestion-card .box {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  right: 1rem;
+  bottom: 1rem;
+  background: #fff;
+  border-radius: 15px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+  transition: 0.5%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: 0.5s ease-in-out;
+}
+
+.suggestion-card .box:hover {
+  transition: 0.5s ease-in-out;
+  transform: translateY(-10px);
+  box-shadow: 0 40px 70px rgba(0, 0, 0, 0.5);
+}
+
+.suggestion-card .box .content {
+  padding: 20px;
+  text-align: center;
+}
+
+.suggestion-card .box .content h2 {
+  position: absolute;
+  left: 20px;
+  opacity: 0.2;
+  font-size: 3rem;
+  font-weight: 900;
+  transition: 0.5s ease-in-out;
+}
+
+.suggestion-card .box:hover .content h2 {
+  opacity: 0.8;
+  transform: translateY(calc(-105px + 50%));
+  font-size: 1.8rem;
+  transition: 0.5s ease-in-out;
+}
+
+.suggestion-card .box .content h3 {
+  font-size: 1.225rem;
+  z-index: 1000;
+  color: rgba(255, 255, 255, 0.5);
+  transition: 0.5%;
+}
+
+.suggestion-card .box .content p {
+  font-size: 1rem;
+  /* font-weight: 300; */
   z-index: 1000;
   transition: 0.5%;
 }

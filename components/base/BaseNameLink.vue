@@ -10,6 +10,7 @@
       "
       class="text-capitalize nuxt-link-active"
       v-slot="{ href, navigate }"
+      custom
     >
       <a
         @mouseover="onMouseOver"

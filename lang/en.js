@@ -319,5 +319,8 @@ export default {
   DarkMode: 'Dark mode',
   Trending: 'Trending',
   WriteAComment: 'Write a comment...',
-  Contacts: 'Contacts'
+  Contacts: 'Contacts',
+  Infomation: 'Information',
+  AddFriend: 'Add friend',
+  Suggestions: 'Suggestions'
 }

@@ -123,7 +123,7 @@
               active-class="primary--text"
               :to="
                 localePath({
-                  name: 'user-url',
+                  name: 'index-user-url',
                   params: { url: currentUser.url }
                 })
               "
