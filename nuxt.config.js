@@ -35,6 +35,12 @@ export default {
     // https://go.nuxtjs.dev/vuetify
     '@nuxtjs/vuetify'
   ],
+  loading: '~/components/LoadingIndicator.vue',
+  loadingIndicator: {
+    name: 'circle',
+    color: 'purple',
+    background: '#1E88E5'
+  },
 
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: ['nuxt-i18n'],

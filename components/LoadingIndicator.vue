@@ -1,5 +1,5 @@
 <template>
-  <div class="loading-page">
+  <div v-if="loading" class="loading-page">
     <div class="sk-circle">
       <div class="sk-circle1 sk-child"></div>
       <div class="sk-circle2 sk-child"></div>
@@ -50,18 +50,15 @@ export default {
   left: 0;
   width: 100%;
   height: 100%;
-  background: #1e88e5;
+  background: rgba(255, 255, 255, 0.8);
   text-align: center;
-  align-content: center;
   z-index: 9999;
 }
-.loading-page .sk-circle {
+.sk-circle {
+  margin: 100px auto;
   width: 40px;
   height: 40px;
   position: relative;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
 }
 .sk-circle .sk-child {
   width: 100%;
@@ -75,9 +72,8 @@ export default {
   display: block;
   margin: 0 auto;
   width: 15%;
-  color: purple;
   height: 15%;
-  background-color: purple;
+  background-color: #333;
   border-radius: 100%;
   -webkit-animation: sk-circleBounceDelay 1.2s infinite ease-in-out both;
   animation: sk-circleBounceDelay 1.2s infinite ease-in-out both;

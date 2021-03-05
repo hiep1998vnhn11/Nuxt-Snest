@@ -31,7 +31,7 @@
               <v-icon>mdi-home</v-icon>
             </v-btn>
           </v-row>
-          <v-divider />
+          <v-divider class="mx-4" />
         </v-sheet>
       </template>
       <v-skeleton-loader
@@ -61,6 +61,13 @@
           />
         </v-container>
       </div>
+
+      <template v-slot:append>
+        <v-divider class="mx-4" />
+        <v-toolbar flat dense class="">
+          Privacy
+        </v-toolbar>
+      </template>
     </v-navigation-drawer>
 
     <v-container>
@@ -94,13 +101,31 @@
       right
       app
     >
-      <v-skeleton-loader
-        v-if="loading"
-        type="list-item-avatar, list-item@5, divider, list-item-avatar@3"
-      />
       <!-- Default temblade -->
-      <div class="sidebar-container-scroll" v-else>
-        container
+      <div class="sidebar-container-scroll">
+        <div v-if="loadingTrending" class="text-center my-10">
+          <v-progress-circular
+            :size="50"
+            :width="2"
+            color="purple"
+            indeterminate
+          ></v-progress-circular>
+        </div>
+        <div v-else class="trending-card">
+          <div class="box">
+            <div class="content">
+              <h2>{{ $t('Trending') }}</h2>
+              <p
+                v-for="value in Object.entries(trending)
+                  .slice()
+                  .reverse()"
+                :key="value[0]"
+              >
+                {{ value[0] }}: {{ value[1] }}
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
     </v-navigation-drawer>
   </div>
@@ -112,18 +137,21 @@ export default {
   props: ['loading_user'],
   computed: {
     ...mapGetters('post', ['posts']),
-    ...mapGetters('user', ['currentUser', 'friends'])
+    ...mapGetters('user', ['currentUser', 'friends']),
+    ...mapGetters('app', ['trending'])
   },
   data() {
     return {
       loading: false,
       loadingFriend: false,
+      loadingTrending: false,
       error: null,
       drawer: null
     }
   },
   mounted() {
     if (!this.friends.length) this.fetchFriend()
+    this.fetchTrending()
   },
   methods: {
     ...mapActions('post', ['getPost', 'setFeedPage']),
@@ -131,6 +159,16 @@ export default {
     ...mapActions('app', ['setMini', 'setDrawer']),
     ...mapActions('socket', ['connectSocket']),
     ...mapActions('message', ['setThreshCard']),
+    ...mapActions('app', ['getTrending']),
+    async fetchTrending() {
+      this.loadingTrending = true
+      try {
+        await this.getTrending()
+      } catch (err) {
+        this.error = err.response ? err.response.data.message : err.toString()
+      }
+      this.loadingTrending = false
+    },
     async fetchFriend() {
       this.loadingFriend = true
       this.error = null
@@ -190,5 +228,79 @@ export default {
   background: #9c27b0;
   -webkit-border-radius: 10px;
   border-radius: 10px;
+}
+
+.trending-card {
+  position: relative;
+  min-height: 300px;
+}
+
+.trending-card .box {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  right: 1rem;
+  bottom: 1rem;
+  background: #fff;
+  border-radius: 15px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+  transition: 0.5%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  -webkit-transition: transform 0.3s ease-in-out;
+}
+
+.trending-card .box::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 50%;
+  height: 100%;
+  background: rgba(1, 255, 255, 0.6);
+  border-top-left-radius: 15px;
+  border-bottom-left-radius: 15px;
+  pointer-events: none;
+}
+.trending-card .box:hover {
+  -webkit-transition: transform 0.3s ease-in-out;
+  transform: translateY(-10px);
+  box-shadow: 0 40px 70px rgba(0, 0, 0, 0.5);
+}
+
+.trending-card .box .content {
+  padding: 20px;
+  text-align: center;
+}
+
+.trending-card .box .content h2 {
+  position: absolute;
+  right: 20px;
+  width: 7rem;
+  background: red;
+  opacity: 0.5;
+  font-weight: 900;
+  -webkit-transition: transform 0.6s ease-in-out;
+}
+
+.trending-card .box:hover .content h2 {
+  opacity: 1;
+  transform: translateX(-2rem);
+  -webkit-transition: transform 0.6s ease-in-out;
+}
+
+.trending-card .box .content h3 {
+  font-size: 1.8rem;
+  z-index: 1000;
+  color: rgba(255, 255, 255, 0.5);
+  transition: 0.5%;
+}
+
+.trending-card .box .content p {
+  font-size: 1rem;
+  font-weight: 300;
+  z-index: 1000;
+  transition: 0.5%;
 }
 </style>

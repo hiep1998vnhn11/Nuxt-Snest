@@ -80,7 +80,10 @@
           replace
           class="text-none"
           :to="
-            localePath({ name: 'search-top', query: { search_key: search } })
+            localePath({
+              name: 'index-search-top',
+              query: { search_key: search }
+            })
           "
           @click="searchKey = search"
         >
@@ -109,7 +112,10 @@
           class="rounded-lg text-none primary--text"
           replace
           :to="
-            localePath({ name: 'search-top', query: { search_key: searchKey } })
+            localePath({
+              name: 'index-search-top',
+              query: { search_key: searchKey }
+            })
           "
         >
           <v-btn width="35" height="35" icon class="primary mr-3 ml-n1">
