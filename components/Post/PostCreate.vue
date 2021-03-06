@@ -2,36 +2,30 @@
   <v-card
     @mouseover="hover = true"
     @mouseleave="hover = false"
-    :class="`rounded-lg hover-up pa-2 elevation-${elevation}`"
+    :class="`rounded-lg hover-up elevation-${elevation}`"
     outlined
-    tile
     v-if="currentUser"
   >
-    <v-skeleton-loader
-      v-if="loading"
-      type="list-item-avatar, divider, actions"
-    ></v-skeleton-loader>
-    <v-row v-else justify="space-around">
-      <v-col cols="2" md="1">
+    <div class="header-card">
+      <div class="header-card-avatar">
         <v-avatar size="45" class="ml-1 avatar-outlined">
           <img :src="currentUser.profile_photo_path" :alt="currentUser.name" />
         </v-avatar>
-      </v-col>
-      <v-col class="ml-2 text-left">
+      </div>
+      <div class="header-card-button">
         <v-btn
-          class="text-capitalize mt-2"
+          class="text-capitalize buttom-create-post"
           rounded
-          block
           @click="dialog = true"
           elevation="0"
+          block
         >
           {{ $t('create_post.writeSt') }}
-          <v-spacer></v-spacer>
         </v-btn>
-      </v-col>
-    </v-row>
+      </div>
+    </div>
     <v-divider class="mx-4"></v-divider>
-    <v-row class="">
+    <v-row class="pa-3">
       <v-col cols="6"> </v-col>
       <v-col cols="6">
         <v-btn class="text-capitalize" block rounded-lg text>
@@ -90,5 +84,19 @@ export default {
 .btn-toggle {
   flex-direction: column;
   width: 500px;
+}
+
+.header-card {
+  display: flex;
+  padding: 10px;
+}
+.header-card .header-card-avatar {
+  width: 60px;
+}
+.header-card .header-card-button {
+  display: flex;
+  width: calc(100% - 60px);
+  justify-content: center;
+  align-items: center;
 }
 </style>

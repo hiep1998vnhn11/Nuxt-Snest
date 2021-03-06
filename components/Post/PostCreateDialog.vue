@@ -1,5 +1,11 @@
 <template>
-  <v-dialog v-model="dialog" scrollable persistent max-width="500">
+  <v-dialog
+    v-model="dialog"
+    scrollable
+    class="rounded-lg"
+    persistent
+    max-width="500"
+  >
     <v-card v-if="!selectPrivacy" :loading="loading">
       <v-card-title>
         {{ $t('create_post.writeSt') }}
@@ -9,7 +15,7 @@
         </v-btn>
       </v-card-title>
       <v-divider />
-      <v-card-title>
+      <v-toolbar flat dense class="my-2">
         <v-avatar size="45" class="avatar-outlined">
           <img :src="currentUser.profile_photo_path" :alt="currentUser.name" />
         </v-avatar>
@@ -31,7 +37,7 @@
             </v-btn>
           </v-list-item-subtitle>
         </v-list-item-content>
-      </v-card-title>
+      </v-toolbar>
       <v-card-text>
         <v-row>
           <v-textarea
