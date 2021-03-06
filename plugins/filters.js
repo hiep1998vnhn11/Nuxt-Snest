@@ -1,13 +1,11 @@
 import Vue from 'vue'
 import moment from 'moment'
-window.test = moment
+
 moment.updateLocale('en', {
   relativeTime: {
     future: 'in %s',
     past: '%s ago',
-    s: function(number, withoutSuffix, key, isFuture) {
-      return '00:' + (number < 10 ? '0' : '') + number + ' minutes'
-    },
+    s: 'a few s',
     m: '1m',
     mm: '%dm',
     h: '1h',
@@ -21,14 +19,14 @@ moment.updateLocale('en', {
   }
 })
 
-Vue.filter('relativeTime', function(value) {
+Vue.filter('relativeTime', function(value, context) {
   if (!value) return 'User not login!'
   else if (moment(value) < moment().subtract(7, 'days')) {
     return moment(value).calendar()
   } else return moment(value).fromNow(true)
 })
 
-Vue.filter('offlineTime', function(value) {
+Vue.filter('offlineTime', function(value, context) {
   if (!value) return 'null'
   else return moment(value).fromNow(true)
 })

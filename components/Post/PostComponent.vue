@@ -1,7 +1,13 @@
 <template>
-  <v-card class="mx-auto rounded-lg">
+  <v-card
+    :class="`mx-auto rounded-lg elevation-${elevation} hover-up`"
+    @mouseover="hover = true"
+    @mouseleave="hover = false"
+  >
     <v-list-item>
-      <base-name-link image :user="post.user" />
+      <v-list-item-avatar>
+        <base-name-link image :user="post.user" />
+      </v-list-item-avatar>
       <v-list-item-content>
         <v-list-item>
           <base-name-link :user="post.user" />
@@ -30,6 +36,30 @@
 
     <!-- post like and comment count -->
     <v-toolbar flat>
+      <v-btn
+        class="text-capitalize rounded-lg"
+        text
+        @click="onLike"
+        :ripple="false"
+        outlined
+      >
+        <v-icon v-if="!post.isLiked">mdi-heart-outline</v-icon>
+        <v-icon v-else color="colorRed">mdi-heart</v-icon>
+        <span class="ml-3">
+          {{ post.likes_count }}
+        </span>
+      </v-btn>
+      <v-btn
+        class="text-capitalize rounded-lg ml-3 primary"
+        outlined
+        color="white"
+        text
+        @click="showComment = !showComment"
+        :ripple="false"
+      >
+        <v-icon class="mr-3">mdi-comment-outline</v-icon>
+        {{ post.comments_count }}
+      </v-btn>
       <v-tooltip top class="text-body-1 white">
         <template color="grey" v-slot:activator="{ on, attrs }">
           <v-icon color="primary" v-bind="attrs" v-on="on" class="ml-7">
@@ -38,43 +68,9 @@
         </template>
         <v-card max-width="300" class="text-body1">{{ post.likes }}</v-card>
       </v-tooltip>
-      <span>
-        {{ post.likes_count }}
-      </span>
-      <v-spacer></v-spacer>
-      <span class="mr-7">
-        {{ post.comments_count }}
-        {{ $t('count.comments') }}
-      </span>
     </v-toolbar>
 
     <v-divider class="mx-4"></v-divider>
-
-    <!-- post action -->
-    <v-toolbar flat dense>
-      <v-row no-gutters>
-        <v-col cols="6">
-          <v-btn class="text-body-1" text block @click="onLike" :ripple="false">
-            <v-icon v-if="!post.isLiked">mdi-heart-outline</v-icon>
-            <v-icon v-else color="primary">mdi-heart</v-icon>
-            <span class="text-capitalize">{{ $t('action.like') }} </span>
-          </v-btn>
-        </v-col>
-        <v-col cols="6">
-          <v-btn
-            class="text-capitalize"
-            text
-            block
-            @click="showComment = true"
-            :ripple="false"
-          >
-            <v-icon>mdi-comment-outline</v-icon>
-            {{ $t('action.comment') }}
-          </v-btn>
-        </v-col>
-      </v-row>
-    </v-toolbar>
-    <v-divider class="mx-4" />
 
     <!-- post comments -->
     <v-container v-if="showComment">
@@ -208,7 +204,7 @@
     </v-container>
     <v-divider v-if="showComment" class="mx-4" />
 
-    <v-toolbar v-if="isLoggedIn && currentUser" flat>
+    <v-toolbar v-if="isLoggedIn && currentUser" flat rounded="lg">
       <v-avatar class="avatar-outlined mr-4" size="40">
         <img :src="currentUser.profile_photo_path" :alt="currentUser.name" />
       </v-avatar>
@@ -258,6 +254,7 @@ export default {
   props: ['post'],
   data: () => {
     return {
+      hover: false,
       showComment: false,
       writeComment: false,
       comment: '',
@@ -277,12 +274,18 @@ export default {
       subComment: ''
     }
   },
-  computed: mapGetters('user', ['currentUser', 'isLoggedIn']),
+  computed: {
+    ...mapGetters('user', ['currentUser', 'isLoggedIn']),
+    elevation() {
+      return this.hover ? 24 : 3
+    }
+  },
   methods: {
     ...mapActions('post', ['deletePost', 'createPost']),
     async getComment() {
+      this.comments = null
       if (this.showComment) {
-        this.comments = this.error = null
+        this.error = null
         this.loading = true
         try {
           const response = await axios.get(
@@ -299,6 +302,7 @@ export default {
     },
     async onComment() {
       if (this.comment) {
+        this.showComment = true
         this.loadingCreate = true
         try {
           let url = `/v1/user/post/${this.post.id}/create_comment`

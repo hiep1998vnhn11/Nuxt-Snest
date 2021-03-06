@@ -39,7 +39,7 @@ export default {
   loadingIndicator: {
     name: 'circle',
     color: 'purple',
-    background: '#1E88E5'
+    background: '#1A5CFF'
   },
 
   // Modules: https://go.nuxtjs.dev/config-modules
@@ -80,10 +80,15 @@ export default {
           success: colors.green.accent3
         },
         light: {
-          primary: colors.blue.darken1,
+          primary: '#1A5CFF',
           secondary: colors.red.lighten4,
           accent: colors.indigo.base,
-          background: colors.grey.lighten3
+          background: colors.grey.lighten3,
+          success: '#47C93A',
+          danger: '#FE4657',
+          warning: '#FFBA00',
+          dark: '#1F1F1F',
+          colorRed: '#FE4657'
         }
       }
     }

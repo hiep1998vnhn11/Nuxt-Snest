@@ -1,5 +1,12 @@
 <template>
-  <v-card class="rounded-lg pa-2" outlined tile v-if="currentUser">
+  <v-card
+    @mouseover="hover = true"
+    @mouseleave="hover = false"
+    :class="`rounded-lg hover-up pa-2 elevation-${elevation}`"
+    outlined
+    tile
+    v-if="currentUser"
+  >
     <v-skeleton-loader
       v-if="loading"
       type="list-item-avatar, divider, actions"
@@ -56,7 +63,6 @@
 import { mapGetters } from 'vuex'
 export default {
   props: ['loading'],
-  computed: mapGetters('user', ['currentUser']),
   data() {
     return {
       writePost: false,
@@ -67,8 +73,15 @@ export default {
       imageUrl: null,
       addImage: false,
       selectPrivacy: false,
-      dialog: false
+      dialog: false,
+      hover: false
     }
+  },
+  computed: {
+    elevation() {
+      return this.hover ? '24' : '3'
+    },
+    ...mapGetters('user', ['currentUser'])
   }
 }
 </script>

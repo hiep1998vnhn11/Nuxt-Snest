@@ -1,6 +1,6 @@
 <template>
   <div>
-    <message-card />
+    <!-- <message-card /> -->
     <nuxt-child />
   </div>
 </template>

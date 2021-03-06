@@ -9,6 +9,9 @@
       height="56"
       class="elevation-3"
     >
+      <nuxt-link :to="localePath({ name: 'index' })">
+        <img src="@/assets/logo.png" />
+      </nuxt-link>
       <v-spacer />
       <search-card />
 
@@ -178,5 +181,13 @@ html::-webkit-scrollbar-thumb {
 
 .row-divider-vertical {
   margin: 0 -0.5px;
+}
+
+.hover-up:hover {
+  transform: translateY(-10px);
+  transition: 0.5s ease-in-out;
+}
+.hover-up {
+  transition: 0.5s ease-in-out;
 }
 </style>

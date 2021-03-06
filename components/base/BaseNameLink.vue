@@ -154,10 +154,7 @@ export default {
       this.hover = true
     },
     onMouseLeave() {
-      const _this = this
-      setTimeout(function() {
-        _this.hover = false
-      }, 100)
+      this.hover = false
     }
   }
 }
@@ -167,9 +164,6 @@ export default {
 .card-user {
   z-index: 999;
   position: fixed;
-}
-
-.nuxt-link-active {
-  color: red;
+  transition: 0.5s ease-in-out;
 }
 </style>
