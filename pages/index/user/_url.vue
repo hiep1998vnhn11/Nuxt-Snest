@@ -26,6 +26,15 @@ export default {
   components: {
     Error
   },
+  head() {
+    return {
+      title: this.loading
+        ? 'Loading'
+        : this.paramUser
+        ? this.paramUser.name
+        : 'Loading User'
+    }
+  },
   data() {
     return {
       paramUser: null,

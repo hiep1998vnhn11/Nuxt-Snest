@@ -1,40 +1,23 @@
 <template>
   <div>
-    <!-- <message-card /> -->
+    <message-card v-if="thresh" />
     <nuxt-child />
   </div>
 </template>
 <script>
 import axios from 'axios'
+import { mapGetters } from 'vuex'
 export default {
   data() {
     return {
-      thresh: null,
       loading: false,
       error: null,
       loadingMessageCard: false
     }
   },
-  methods: {
-    async onOpenMessage(user) {
-      this.loadingMessageCard = true
-      try {
-        const response = await axios.post(`/v1/user/thresh/${user.id}/get`)
-        if (response.data.data) {
-          this.thresh = response.data.data
-        } else {
-          this.thresh = { user_with: user }
-        }
-      } catch (err) {
-        this.error = err.response.data.message
-      }
-      this.loadingMessageCard = false
-    }
-  },
-  created() {
-    console.log(this.$route.name)
-  },
-  mounted() {}
+  computed: {
+    ...mapGetters('message', ['thresh'])
+  }
 }
 </script>
 <style scoped>

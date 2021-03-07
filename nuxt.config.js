@@ -6,8 +6,8 @@ export default {
 
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    titleTemplate: '%s - vuetify',
-    title: 'vuetify',
+    titleTemplate: 'Snest | %s',
+    title: 'Snest',
     htmlAttrs: {
       lang: 'en'
     },

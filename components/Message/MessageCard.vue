@@ -1,6 +1,6 @@
 <template>
   <v-card
-    class="message-card-component message-card_0 rounded-lg"
+    class="message-card-component rounded-lg"
     v-click-outside="{
       handler: onClickOutsideWithConditional,
       closeConditional
@@ -10,9 +10,8 @@
     @keydown.esc="test"
     @click="clickCard"
     v-if="currentUser"
-    :loading="loading"
   >
-    <v-toolbar dense color="elevation-0">
+    <v-toolbar dense flat>
       <v-btn text large class="ml-n3 text-none" v-if="thresh.participants">
         <v-badge
           bordered
@@ -57,7 +56,7 @@
       <v-btn icon small class="mr-2">
         <v-icon :color="selected ? 'primary' : ''">mdi-minus</v-icon>
       </v-btn>
-      <v-btn icon small @click="setThreshCard(null)">
+      <v-btn icon small @click="onCloseCard">
         <v-icon :color="selected ? 'primary' : ''">mdi-close</v-icon>
       </v-btn>
     </v-toolbar>
@@ -164,17 +163,24 @@ export default {
     }
   },
   methods: {
-    ...mapActions('message', ['getMessage', 'sendMessage', 'setThreshCard']),
+    ...mapActions('message', [
+      'getMessageCard',
+      'sendMessage',
+      'setThreshCard'
+    ]),
     onClickOutsideWithConditional() {
       this.selected = false
     },
     closeConditional(e) {
       return this.selected
     },
+    onCloseCard() {
+      this.$store.commit('message/SET_THRESH', null)
+    },
     async fetchData() {
       this.loading = true
       try {
-        await this.getMessage(this.thresh.room.id)
+        await this.getMessageCard()
       } catch (err) {
         this.error = err.response.data.message
       }
@@ -189,7 +195,7 @@ export default {
           content: this.text
         }
         if (this.thresh.participants.id !== this.currentUser.id) {
-          this.socket.emit('sendToUser', {
+          window.socket.emit('sendToUser', {
             userId: this.thresh.participants.id,
             roomId: this.roomId,
             message: message,
@@ -198,9 +204,14 @@ export default {
         }
         this.text = ''
         try {
-          await this.sendMessage(message)
+          const url = `/v1/user/thresh/${message.thresh_id}/message/send`
+          this.$store.commit('message/SEND_MESSAGE', message)
+          this.$store.commit('thresh/SEND_MESSAGE', message)
+          await axios.post(url, {
+            content: message.content
+          })
         } catch (err) {
-          this.error = err.response.data.message
+          this.error = err.toString()
         }
       }
     },
@@ -219,18 +230,31 @@ export default {
   mounted() {
     this.fetchData()
   },
+  watch: {
+    thresh() {
+      this.fetchData()
+    }
+  },
   updated() {
     if (!this.loading) this.scrollToBottom()
   }
 }
 </script>
 
-<style>
+<style scoped lang="scss">
 .message-card-component {
   position: fixed;
-  z-index: 3;
-  bottom: 5px;
+  z-index: 100;
+  bottom: 10px;
   width: 330px;
+  right: 30px;
+  transition: 0.5s ease-in-out;
+}
+.message-card-component:hover {
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+  transition: 0.5%;
+  transform: translateY(-10px);
+  transition: 0.5s ease-in-out;
 }
 
 .message-card-text-component {

@@ -1,4 +1,4 @@
-import { io } from 'socket.io-client'
+import SocketIO from 'socket.io-client'
 const state = () => ({
   socket: null
 })
@@ -8,10 +8,18 @@ const getters = {
 }
 
 const actions = {
-  connectSocket({ commit, rootState }) {
-    const socket = io(process.env.VUE_APP_SOCKET_URL)
-    socket.emit('login', rootState.user.currentUser.id)
-    socket.emit('join', { userId: rootState.user.currentUser.id, roomId: 1 })
+  connectSocket({ commit, state, rootState }) {
+    window.socket = SocketIO(process.env.NUXT_ENV_SOCKET_URL, {
+      transports: ['websocket'],
+      reconnection: true,
+      reconnectionAttempts: Infinity,
+      autoConnect: true
+    })
+    window.socket.emit('login', rootState.user.currentUser.id)
+    window.socket.emit('join', {
+      userId: rootState.user.currentUser.id,
+      roomId: 1
+    })
 
     // an user had send an message
     socket.on('receiptMessage', ({ userId, roomId, message, userName }) => {

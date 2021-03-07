@@ -103,26 +103,22 @@
     >
       <!-- Default temblade -->
       <div>
-        <div v-if="loadingTrending" class="text-center my-10">
-          <v-progress-circular
-            :size="50"
-            :width="2"
-            color="purple"
-            indeterminate
-          ></v-progress-circular>
-        </div>
-        <div v-else class="trending-card">
+        <div class="trending-card">
           <div class="box">
             <div class="content">
               <h2>{{ $t('Trending') }}</h2>
-              <p
-                v-for="value in Object.entries(trending)
-                  .slice()
-                  .reverse()"
-                :key="value[0]"
-              >
-                {{ value[0] }}: {{ value[1] }}
-              </p>
+              <transition name="slide-fade">
+                <div>
+                  <p
+                    v-for="value in Object.entries(trending)
+                      .slice()
+                      .reverse()"
+                    :key="value[0]"
+                  >
+                    {{ value[0] }}: {{ value[1] }}
+                  </p>
+                </div>
+              </transition>
             </div>
           </div>
         </div>
@@ -132,14 +128,18 @@
         <div class="box">
           <div class="content">
             <h2>{{ $t('Suggestions') }}</h2>
-            <p
-              v-for="value in Object.entries(trending)
-                .slice()
-                .reverse()"
-              :key="value[0]"
-            >
-              {{ value[0] }}: {{ value[1] }}
-            </p>
+            <transition name="slide-fade">
+              <div>
+                <p
+                  v-for="value in Object.entries(trending)
+                    .slice()
+                    .reverse()"
+                  :key="value[0]"
+                >
+                  {{ value[0] }}: {{ value[1] }}
+                </p>
+              </div>
+            </transition>
           </div>
         </div>
       </div>
@@ -151,6 +151,12 @@
 import { mapActions, mapGetters } from 'vuex'
 export default {
   props: ['loading_user'],
+  middleware: 'auth',
+  head() {
+    return {
+      title: 'Home'
+    }
+  },
   computed: {
     ...mapGetters('post', ['posts']),
     ...mapGetters('user', ['currentUser', 'friends']),
@@ -174,7 +180,7 @@ export default {
     ...mapActions('user', ['getUser', 'getFriend']),
     ...mapActions('app', ['setMini', 'setDrawer']),
     ...mapActions('socket', ['connectSocket']),
-    ...mapActions('message', ['setThreshCard']),
+    ...mapActions('message', ['getThreshByUser']),
     ...mapActions('app', ['getTrending']),
     async fetchTrending() {
       this.loadingTrending = true
@@ -197,7 +203,7 @@ export default {
     },
     async onClickFriend(user) {
       try {
-        await this.setThreshCard(user)
+        await this.getThreshByUser(user)
       } catch (err) {
         console.log(err.response.data.message)
       }
@@ -369,5 +375,17 @@ export default {
   /* font-weight: 300; */
   z-index: 1000;
   transition: 0.5%;
+}
+
+.slide-fade-enter-active {
+  transition: all 0.3s ease;
+}
+.slide-fade-leave-active {
+  transition: all 0.8s cubic-bezier(1, 0.5, 0.8, 1);
+}
+.slide-fade-enter, .slide-fade-leave-to
+/* .slide-fade-leave-active below version 2.1.8 */ {
+  transform: translateX(10px);
+  opacity: 0;
 }
 </style>

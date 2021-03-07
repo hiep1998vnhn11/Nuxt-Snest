@@ -15,6 +15,37 @@ const getters = {
   thresh: state => state.thresh
 }
 const actions = {
+  //Get thresh by userId
+  async getThreshByUser({ commit, state }, user) {
+    const response = await axios.post(`/v1/user/thresh/${user.id}/get`)
+    if (response.data.data) {
+      const thresh = Object.assign(response.data.data, {
+        participants: user
+      })
+      commit('SET_THRESH', response.data.data)
+    } else {
+      commit('SET_THRESH', {
+        participants: user
+      })
+    }
+  },
+  async getMessageCard({ commit, state }) {
+    if (state.thresh.id) {
+      const response = await axios.get(
+        `/v1/user/thresh/${state.thresh.id}/message/get`,
+        {
+          params: {
+            page: state.pageMessage,
+            limit: 25
+          }
+        }
+      )
+      const messages = response.data.data.data
+      if (messages && messages.length) {
+        commit('SET_MESSAGE', response.data.data.data)
+      }
+    }
+  },
   async getRoom({ commit }) {
     const url = '/v1/user/room/store'
     const response = await axios.get(url)
@@ -123,7 +154,7 @@ const mutations = {
   RECEIVED_MESSAGE: function(state, message) {
     state.messages.unshift(message)
   },
-  SET_THRESH_CARD: function(state, thresh) {
+  SET_THRESH: function(state, thresh) {
     state.thresh = thresh
   }
 }
