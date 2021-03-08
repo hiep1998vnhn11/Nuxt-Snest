@@ -288,7 +288,6 @@ export default {
     ...mapGetters('user', ['currentUser']),
     ...mapGetters('message', ['messages']),
     ...mapGetters('thresh', ['participant']),
-    ...mapGetters('socket', ['socket']),
     ...mapGetters('app', ['mini', 'drawer']),
     classes() {
       return !this.drawer ? '' : this.mini ? 'ml-8rem' : 'ml-22rem'
@@ -367,7 +366,7 @@ export default {
         }
       }
       if (this.participant.id !== this.currentUser.id) {
-        this.socket.emit('sendToUser', {
+        window.socket.emit('sendToUser', {
           userId: this.participant.id,
           roomId: this.$route.params.room_id,
           message,

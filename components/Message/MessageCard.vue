@@ -138,7 +138,6 @@ import axios from 'axios'
 export default {
   computed: {
     ...mapGetters('user', ['currentUser']),
-    ...mapGetters('socket', ['socket']),
     ...mapGetters('message', ['thresh', 'messages']),
     reverseMessages() {
       return this.messages.slice().reverse()

@@ -2,9 +2,7 @@ import { io } from 'socket.io-client'
 
 const socketService = {
   connectSocket(context) {
-    console.log(context)
     window.socket = io(process.env.NUXT_ENV_SOCKET_URL)
-    // an user had send an message
     window.socket.on(
       'receiptMessage',
       ({ userId, roomId, message, userName }) => {

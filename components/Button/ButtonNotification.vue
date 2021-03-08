@@ -126,8 +126,7 @@ export default {
     classes() {
       return this.expand ? 'primary--text blue lighten-4' : null
     },
-    ...mapGetters('notification', ['notifications', 'numberUnread']),
-    ...mapGetters('socket', ['socket'])
+    ...mapGetters('notification', ['notifications', 'numberUnread'])
   },
   mounted() {
     this.fetchUnread()
@@ -166,7 +165,7 @@ export default {
       this.notifications[index].data.status = 'accepted'
       // const response = await axios.post(`/v1/user/friend/${this.notifications[index].id}/accept`)
       const response = 'hello'
-      this.socket.emit('acceptFriend', {
+      window.socket.emit('acceptFriend', {
         userId: this.notifications[index].data.user.id,
         response
       })

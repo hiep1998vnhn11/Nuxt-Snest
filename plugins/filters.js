@@ -28,7 +28,7 @@ Vue.filter('relativeTime', function(value, context) {
 
 Vue.filter('offlineTime', function(value, context) {
   if (!value) return 'null'
-  else return moment(value).fromNow(true)
+  else return moment.utc(value).fromNow(true)
 })
 
 Vue.filter('onlyName', function(username) {
