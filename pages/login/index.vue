@@ -81,7 +81,9 @@ export default {
       loginError: false
     }
   },
-  computed: mapGetters('user', ['isLoggedIn']),
+  computed: {
+    ...mapGetters('user', ['isLoggedIn'])
+  },
   middleware: 'guest',
   layout: 'login',
   methods: {

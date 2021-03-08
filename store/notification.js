@@ -1,4 +1,9 @@
 import axios from 'axios'
+
+const initialState = () => ({
+  numberUnread: 0,
+  notifications: []
+})
 const state = () => ({
   numberUnread: 0,
   notifications: []
@@ -31,6 +36,12 @@ const mutations = {
   ADD_NOTIFICATION: function(state, notification) {
     state.notifications.unshift(notification)
     state.numberUnread += 1
+  },
+  RESET: function(state) {
+    const s = initialState()
+    Object.keys(s).forEach(key => {
+      state[key] = s[key]
+    })
   }
 }
 

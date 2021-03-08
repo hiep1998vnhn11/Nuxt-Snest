@@ -65,14 +65,7 @@
       class="message-card-text-component text--primary"
       id="container"
     >
-      <v-container v-if="loading" class="text-center">
-        <v-progress-circular
-          :size="40"
-          :width="2"
-          color="purple"
-          indeterminate
-        ></v-progress-circular>
-      </v-container>
+      <loading-component v-if="loading" />
       <div v-else-if="messages.length">
         <message-row
           v-for="(message, index) in reverseMessages"

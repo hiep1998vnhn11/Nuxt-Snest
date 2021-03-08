@@ -269,6 +269,7 @@ export default {
   },
   methods: {
     ...mapActions('user', ['logout', 'getUser']),
+    ...mapActions(['clearAllState']),
     onClickOutsideWithConditional() {
       this.expand = false
     },
@@ -285,6 +286,8 @@ export default {
     },
     async onLogout() {
       await this.logout()
+      this.clearAllState()
+      window.socket.disconnect()
       this.$router.push('/login')
     }
   }

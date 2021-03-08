@@ -1,5 +1,12 @@
 import axios from 'axios'
 
+const initialState = () => ({
+  rooms: [],
+  messages: [],
+  pageMessage: 1,
+  thresh: null,
+  messageCards: []
+})
 const state = () => ({
   rooms: [],
   messages: [],
@@ -156,6 +163,12 @@ const mutations = {
   },
   SET_THRESH: function(state, thresh) {
     state.thresh = thresh
+  },
+  RESET: function(state) {
+    const s = initialState()
+    Object.keys(s).forEach(key => {
+      state[key] = s[key]
+    })
   }
 }
 export default {

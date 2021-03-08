@@ -1,4 +1,13 @@
 import axios from 'axios'
+const initialState = () => ({
+  posts: [],
+  tab: 'home-tab',
+  paramPost: null,
+  userPost: [],
+  userPostPage: 1,
+  feedPage: 1
+})
+
 const state = () => ({
   posts: [],
   tab: 'home-tab',
@@ -107,6 +116,12 @@ const mutations = {
   SET_PAGE: function(state) {
     state.userPostPage = 1
     state.userPost = []
+  },
+  RESET: function(state) {
+    const s = initialState()
+    Object.keys(s).forEach(key => {
+      state[key] = s[key]
+    })
   }
 }
 
