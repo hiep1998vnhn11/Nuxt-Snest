@@ -2,7 +2,7 @@
   <v-list v-if="currentUser && !loading">
     <template v-for="room in threshes">
       <v-hover v-slot:default="{ hover }" :key="`room-${room.id}`">
-        <v-list-item
+        <div
           link
           :to="
             localePath({
@@ -70,7 +70,7 @@
           >
             <v-icon>mdi-dots-horizontal</v-icon>
           </v-btn>
-        </v-list-item>
+        </div>
       </v-hover>
     </template>
   </v-list>

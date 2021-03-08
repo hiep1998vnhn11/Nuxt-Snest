@@ -134,31 +134,35 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss">
 html {
   overflow-y: hidden;
+  height: 100%;
+  &:hover {
+    overflow-y: auto;
+  }
+  &::-webkit-scrollbar {
+    width: 0.35rem;
+  }
+  &::-webkit-scrollbar-track {
+    background: white;
+    -webkit-border-radius: 10px;
+    border-radius: 25px;
+    padding: 10px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: #9c27b0;
+    -webkit-border-radius: 10px;
+    border-radius: 10px;
+  }
 }
 
-html:hover {
-  overflow-y: auto;
+.show-button-app-bar {
+  position: absolute;
+  z-index: 900;
+  right: 0.5rem;
+  top: $navbarHeight;
 }
-
-html::-webkit-scrollbar {
-  width: 0.35rem;
-}
-
-html::-webkit-scrollbar-track {
-  background: white;
-  -webkit-border-radius: 10px;
-  border-radius: 25px;
-  padding: 10px;
-}
-html::-webkit-scrollbar-thumb {
-  background: #9c27b0;
-  -webkit-border-radius: 10px;
-  border-radius: 10px;
-}
-
 .home-navbar-right::-webkit-scrollbar {
   width: 0.25rem;
 }

@@ -28,7 +28,7 @@
           }"
           width="21rem"
           max-height="600"
-          class="mx-auto scroll-y rounded-lg"
+          class="mx-auto button-message-card rounded-lg"
         >
           <v-toolbar tile class="elevation-0 font-weight-black text-h5">
             Message
@@ -204,7 +204,29 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss">
+.button-message-card {
+  overflow-y: hidden;
+  z-index: 100;
+  height: 100%;
+  &:hover {
+    overflow-y: auto;
+  }
+  &::-webkit-scrollbar {
+    width: 0.35rem;
+  }
+  &::-webkit-scrollbar-track {
+    background: white;
+    -webkit-border-radius: 10px;
+    border-radius: 25px;
+    padding: 10px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: #9c27b0;
+    -webkit-border-radius: 10px;
+    border-radius: 10px;
+  }
+}
 .show-message-app-bar {
   position: absolute;
   z-index: 900;
@@ -222,22 +244,5 @@ export default {
   z-index: 101;
   top: 70px;
   right: 100px;
-}
-
-.scroll-y {
-  overflow-y: auto;
-  z-index: 100;
-}
-
-.scroll-y::-webkit-scrollbar {
-  width: 0.25rem;
-}
-
-.scroll-y::-webkit-scrollbar-track {
-  background: white;
-}
-
-.scroll-y::-webkit-scrollbar-thumb {
-  background: #0077ff;
 }
 </style>
