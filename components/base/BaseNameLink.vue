@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div @mouseover="onMouseOver" @mouseleave="onMouseLeave">
     <nuxt-link
       v-if="!image"
       :to="
@@ -13,8 +13,6 @@
       custom
     >
       <a
-        @mouseover="onMouseOver"
-        @mouseleave="onMouseLeave"
         :class="
           `font-weight-black nuxt-link-active ${
             hover ? '' : 'text-decoration-none'
@@ -28,8 +26,6 @@
     </nuxt-link>
     <v-btn
       v-else
-      @mouseover="onMouseOver"
-      @mouseleave="onMouseLeave"
       :to="
         localePath({
           name: 'index-user-url',
@@ -43,14 +39,7 @@
         <img :src="user.profile_photo_path" :alt="user.name" />
       </v-avatar>
     </v-btn>
-    <v-card
-      v-if="hovering && info"
-      @mouseover="hoverCard = true"
-      @mouseleave="hoverCard = false"
-      max-width="344"
-      class="card-user"
-      outlined
-    >
+    <v-card v-if="hover && info" max-width="344" class="card-user" outlined>
       <v-container>
         <v-list-item>
           <v-list-item-avatar class="avatar-outlined" size="100">
@@ -125,16 +114,11 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('user', ['currentUser']),
-    hovering: function() {
-      if (this.hover || this.hoverCard) return true
-      else return false
-    }
+    ...mapGetters('user', ['currentUser'])
   },
   data() {
     return {
       hover: false,
-      hoverCard: false,
       info: null,
       error: null
     }
@@ -160,7 +144,7 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss">
 .card-user {
   z-index: 999;
   position: fixed;

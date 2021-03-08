@@ -41,7 +41,7 @@
             Active now
           </span>
           <span class="text-caption" v-else>
-            {{ thresh.participants.online_status | relativeTime }}
+            {{ thresh.participants.online_status.time | offlineTime }}
           </span>
         </v-col>
       </v-btn>

@@ -10,29 +10,11 @@
       bordered
       avatar
       overlap
-      color="success"
+      :color="color"
       dot
       offset-x="22"
       offset-y="37"
-      v-if="user.online_status.status"
     >
-      <v-avatar size="40" class="avatar-outlined mr-3 ml-n3">
-        <img :alt="user.name" :src="user.profile_photo_path" />
-      </v-avatar>
-    </v-badge>
-    <v-badge
-      color="green lighten-4"
-      bordered
-      offset-x="32"
-      offset-y="37"
-      small
-      v-else
-    >
-      <template v-slot:badge>
-        <div class="black--text">
-          {{ user.online_status.time | offlineTime }}
-        </div>
-      </template>
       <v-avatar size="40" class="avatar-outlined mr-3 ml-n3">
         <img :alt="user.name" :src="user.profile_photo_path" />
       </v-avatar>
@@ -57,6 +39,9 @@ export default {
   computed: {
     avatarOutlined() {
       return this.avatar_outlined ? 'avatar-outlined' : ''
+    },
+    color() {
+      return this.user.online_status.status ? 'success' : 'grey'
     }
   }
 }

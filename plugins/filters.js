@@ -22,8 +22,8 @@ moment.updateLocale('en', {
 Vue.filter('relativeTime', function(value, context) {
   if (!value) return 'User not login!'
   else if (moment(value) < moment().subtract(7, 'days')) {
-    return moment(value).calendar()
-  } else return moment(value).fromNow(true)
+    return moment.utc(value).calendar()
+  } else return moment.utc(value).fromNow(true)
 })
 
 Vue.filter('offlineTime', function(value, context) {
