@@ -1,14 +1,6 @@
 <template>
   <v-app dark class="main-container">
-    <v-app-bar
-      color="primary"
-      clipped-left
-      clipped-right
-      fixed
-      app
-      height="56"
-      class="elevation-3"
-    >
+    <v-app-bar color="primary" clipped-left clipped-right fixed app height="56">
       <nuxt-link :to="localePath({ name: 'index' })">
         <img src="@/assets/logo.png" />
       </nuxt-link>
@@ -36,7 +28,7 @@
       <button-notification />
       <button-setting />
     </v-app-bar>
-    <v-main>
+    <v-main ref="main">
       <v-container>
         <nuxt />
       </v-container>
@@ -126,10 +118,6 @@ export default {
       }
       this.loadingMessageCard = false
     }
-  },
-  async created() {
-    // if (!this.currentUser) await this.fetchUser()
-    // if (!this.socket || this.socket.disconnected) this.connectSocket()
   }
 }
 </script>
@@ -157,22 +145,31 @@ html {
   }
 }
 
-.show-button-app-bar {
+.overflow-scroll-y {
+  overflow-y: auto;
+  &:hover {
+    overflow-y: auto;
+  }
+  &::-webkit-scrollbar {
+    width: 0.35rem;
+  }
+  &::-webkit-scrollbar-track {
+    background: white;
+    -webkit-border-radius: 10px;
+    border-radius: 25px;
+    padding: 10px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: #9c27b0;
+    -webkit-border-radius: 10px;
+    border-radius: 10px;
+  }
+}
+
+.navbar-button-show-card {
   position: absolute;
-  z-index: 900;
   right: 0.5rem;
-  top: $navbarHeight;
-}
-.home-navbar-right::-webkit-scrollbar {
-  width: 0.25rem;
-}
-
-.home-navbar-right::-webkit-scrollbar-track {
-  background: white;
-}
-
-.home-navbar-right::-webkit-scrollbar-thumb {
-  background: #0077ff;
+  top: $navbar-card-top;
 }
 
 #search-card-app-bar {

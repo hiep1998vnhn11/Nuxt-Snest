@@ -241,43 +241,37 @@ export default {
 <style scoped lang="scss">
 .message-card-component {
   position: fixed;
-  z-index: 100;
   bottom: 10px;
+  z-index: 4;
   width: 330px;
   right: 30px;
   transition: 0.5s ease-in-out;
+  &:hover {
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+    transform: translateY(-10px);
+    transition: 0.5s ease-in-out;
+  }
 }
-.message-card-component:hover {
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
-  transition: 0.5%;
-  transform: translateY(-10px);
-  transition: 0.5s ease-in-out;
-}
-
 .message-card-text-component {
   overflow-y: hidden;
   height: 350px;
-}
-
-.message-card-text-component:hover {
-  overflow-y: auto;
-}
-
-.message-card-text-component::-webkit-scrollbar {
-  width: 0.35rem;
-}
-
-.message-card-text-component::-webkit-scrollbar-track {
-  background: white;
-  -webkit-border-radius: 10px;
-  border-radius: 25px;
-  padding: 10px;
-}
-
-.message-card-text-component::-webkit-scrollbar-thumb {
-  background: #9c27b0;
-  -webkit-border-radius: 10px;
-  border-radius: 10px;
+  &:hover {
+    overflow-y: auto;
+  }
+  &::-webkit-scrollbar {
+    width: 0.35rem;
+  }
+  &::-webkit-scrollbar-track {
+    background: white;
+    -webkit-border-radius: 10px;
+    border-radius: 25px;
+    padding: 10px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: #9c27b0;
+    -webkit-border-radius: 10px;
+    border-radius: 10px;
+  }
 }
 
 .active-now-icon {

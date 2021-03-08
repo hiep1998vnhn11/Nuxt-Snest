@@ -20,11 +20,4 @@ export default {
   }
 }
 </script>
-<style scoped>
-.button-navigation {
-  position: fixed;
-  z-index: 9999;
-  bottom: 15px;
-  right: 15px;
-}
-</style>
+<style scoped></style>

@@ -5,6 +5,7 @@
       v-model="drawer"
       v-if="currentUser"
       clipped
+      bottom
       width="22rem"
       fixed
       app
@@ -100,6 +101,7 @@
       flat
       right
       app
+      style="z-index: 3;"
     >
       <!-- Default temblade -->
       <div>
