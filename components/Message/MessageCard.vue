@@ -140,6 +140,7 @@
 <script>
 import { mapGetters, mapActions } from 'vuex'
 import MessageRow from './MessageRow'
+import axios from 'axios'
 
 export default {
   computed: {
@@ -166,7 +167,8 @@ export default {
     ...mapActions('message', [
       'getMessageCard',
       'sendMessage',
-      'setThreshCard'
+      'setThreshCard',
+      'setDefaultMessage'
     ]),
     onClickOutsideWithConditional() {
       this.selected = false
@@ -202,9 +204,10 @@ export default {
             userName: this.thresh.participants.name
           })
         }
+        console.log(message)
         this.text = ''
         try {
-          const url = `/v1/user/thresh/${message.thresh_id}/message/send`
+          const url = `/v1/user/thresh/${this.thresh.id}/message/send`
           this.$store.commit('message/SEND_MESSAGE', message)
           this.$store.commit('thresh/SEND_MESSAGE', message)
           await axios.post(url, {
@@ -232,6 +235,7 @@ export default {
   },
   watch: {
     thresh() {
+      this.setDefaultMessage()
       this.fetchData()
     }
   },

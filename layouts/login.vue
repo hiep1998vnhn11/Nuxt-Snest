@@ -1,7 +1,7 @@
 <template>
-  <v-card width="50%" class="red">
-    <loading-component />
-  </v-card>
+  <v-app dark class="main-container">
+    <nuxt />
+  </v-app>
 </template>
 <script>
 export default {
