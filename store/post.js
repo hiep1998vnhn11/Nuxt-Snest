@@ -117,6 +117,14 @@ const mutations = {
     state.userPostPage = 1
     state.userPost = []
   },
+  LIKE_POST: function(state, indexPost) {
+    state.posts[indexPost].isLiked = true
+    state.posts[indexPost].likes_count += 1
+  },
+  UNLIKE_POST: function(state, indexPost) {
+    state.posts[indexPost].isLiked = false
+    state.posts[indexPost].likes_count -= 1
+  },
   RESET: function(state) {
     const s = initialState()
     Object.keys(s).forEach(key => {

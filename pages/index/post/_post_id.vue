@@ -1,7 +1,5 @@
 <template>
-  <div>
-    <post-component v-if="!!paramPost" :post="paramPost"></post-component>
-  </div>
+  <post-component v-if="!!paramPost" :post="paramPost" page></post-component>
 </template>
 
 <script>
