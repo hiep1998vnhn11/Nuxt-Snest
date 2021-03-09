@@ -253,7 +253,7 @@
 import { mapGetters, mapActions } from 'vuex'
 import axios from 'axios'
 export default {
-  props: ['post'],
+  props: ['post', 'page'],
   data: () => {
     return {
       hover: false,
@@ -398,16 +398,20 @@ export default {
       })
     },
     async onLike() {
-      if (!this.currentUser) {
-        console.log('handleLike failed!')
-        return
+      if (this.page) {
+        if (!this.currentUser) {
+          console.log('handleLike failed!')
+          return
+        }
+        this.post.isLiked = !this.post.isLiked
+        if (!this.post.isLiked) {
+          this.post.likes_count -= 1
+        } else this.post.likes_count += 1
+        let url = `/v1/user/post/${this.post.id}/handle_like`
+        await axios.post(url)
+      } else {
+        this.$emit('onLike', this.post)
       }
-      this.post.isLiked = !this.post.isLiked
-      if (!this.post.isLiked) {
-        this.post.likes_count -= 1
-      } else this.post.likes_count += 1
-      let url = `/v1/user/post/${this.post.id}/handle_like`
-      await axios.post(url)
     }
   },
   watch: {

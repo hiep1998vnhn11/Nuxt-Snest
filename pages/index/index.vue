@@ -75,9 +75,10 @@
       <div class="mt-3" v-if="posts.length">
         <post-component
           class="mt-3"
-          v-for="post in posts"
+          v-for="(post, index) in posts"
           :key="post.creadted"
           :post="post"
+          @onLike="onLike(index, post)"
         ></post-component>
       </div>
       <div v-else>Not have</div>
@@ -150,6 +151,7 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
+import axios from 'axios'
 export default {
   props: ['loading_user'],
   middleware: 'auth',
@@ -221,6 +223,15 @@ export default {
     },
     intersected() {
       this.fetchData()
+    },
+    async onLike(index, post) {
+      if (!post.isLiked) {
+        this.$store.commit('post/LIKE_POST', index)
+      } else {
+        this.$store.commit('post/UNLIKE_POST', index)
+      }
+      let url = `/v1/user/post/${this.posts[index].id}/handle_like`
+      await axios.post(url)
     }
   }
 }
