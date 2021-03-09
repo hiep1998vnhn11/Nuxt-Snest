@@ -71,37 +71,43 @@
         <div class="font-weight-bold text-subtitle-1">
           {{ $t('RecentSearches') }}
         </div>
-        <v-btn
+        <div
           v-for="(search, index) in searchHistory"
           :key="`search-history-${search}`"
-          block
-          text
-          exact
-          large
-          replace
-          class="text-none"
-          :to="
-            localePath({
-              name: 'index-search-top',
-              query: { search_key: search }
-            })
-          "
-          @click="searchKey = search"
+          class="search-button"
         >
-          <v-avatar class="ml-n4">
-            <v-icon>mdi-magnify</v-icon>
-          </v-avatar>
-          {{ search }}
-          <v-spacer />
+          <v-btn
+            block
+            text
+            exact
+            large
+            replace
+            class="text-none"
+            active-class="primary--text"
+            :to="
+              localePath({
+                name: 'index-search-top',
+                query: { search_key: search }
+              })
+            "
+            @click="searchKey = search"
+          >
+            <v-avatar class="ml-n4">
+              <v-icon>mdi-magnify</v-icon>
+            </v-avatar>
+            {{ search }}
+            <v-spacer />
+          </v-btn>
           <v-btn
             icon
             small
             text
+            class="button-in-search-button"
             @click="onDeleteSearchHistory({ index, value: search })"
           >
             <v-icon>mdi-close</v-icon>
           </v-btn>
-        </v-btn>
+        </div>
       </div>
 
       <!-- Search result -->
@@ -112,6 +118,7 @@
           text
           class="rounded-lg text-none primary--text"
           replace
+          exact
           :to="
             localePath({
               name: 'index-search-top',
@@ -166,7 +173,7 @@ export default {
       try {
         await this.deleteSearchHistory({ index, value })
       } catch (err) {
-        this.errpr = err.response ? err.response.data.message : err.toString()
+        this.err = err.response ? err.response.data.message : err.toString()
       }
     },
     onClickSearchResult() {
@@ -198,12 +205,22 @@ export default {
   }
 }
 </script>
-<style scoped>
+<style lang="scss" scoped>
 #search-card-app-bar {
   position: fixed;
   top: 0px;
   left: 50%;
   z-index: 9999;
   transform: translateX(-50%);
+}
+
+.search-button {
+  position: relative;
+  .button-in-search-button {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+  }
 }
 </style>

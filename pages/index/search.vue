@@ -1,7 +1,22 @@
 <template>
   <div>
-    <v-navigation-drawer v-model="drawer" clipped fixed app>
-      <!-- Search temblade -->
+    <v-navigation-drawer
+      v-model="drawer"
+      clipped
+      bottom
+      width="22rem"
+      fixed
+      app
+    >
+      <template v-slot:prepend>
+        <v-sheet class="mt-3">
+          <h2>
+            {{ $t('SearchResultFor') }}
+          </h2>
+          {{ $route.query.search_key }}
+          <v-divider class="mx-4" />
+        </v-sheet>
+      </template>
       <v-container>
         <v-btn
           v-for="item in searchLink"
@@ -33,17 +48,17 @@ export default {
         {
           icon: 'mdi-dock-top',
           text: _this.$t('All'),
-          name: 'search-top'
+          name: 'index-search-top'
         },
         {
           icon: 'mdi-dock-top',
           text: _this.$t('Posts'),
-          name: 'search-posts'
+          name: 'index-search-posts'
         },
         {
           icon: 'mdi-dock-top',
           text: _this.$t('People'),
-          name: 'search-people'
+          name: 'index-search-people'
         }
       ]
     }
