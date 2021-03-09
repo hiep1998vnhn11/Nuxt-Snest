@@ -7,6 +7,7 @@
         <v-text-field
           dense
           flat
+          autocomplete="off"
           hide-details
           rounded
           solo-inverted
@@ -68,6 +69,7 @@
         background-color="grey lighten-1"
         dense
         flat
+        autocomplete="off"
         hide-details
         rounded
         solo

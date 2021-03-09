@@ -16,6 +16,7 @@
                 :label="$t('PleaseEnterYourEmailToSearchAccount')"
                 :placeholder="$t('Email')"
                 outlined
+                autocomplete="off"
                 dense
                 class="mt-5"
                 :rules="emailRules"

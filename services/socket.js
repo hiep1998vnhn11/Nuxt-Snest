@@ -3,6 +3,11 @@ import { io } from 'socket.io-client'
 const socketService = {
   connectSocket(context) {
     window.socket = io(process.env.NUXT_ENV_SOCKET_URL)
+    window.socket.emit('login', context.store.getters['user/currentUser'].id)
+    // window.socket.emit('join', {
+    //   userId: context.store.getters['user/currentUser'].id,
+    //   roomId: 1
+    // })
     window.socket.on(
       'receiptMessage',
       ({ userId, roomId, message, userName }) => {

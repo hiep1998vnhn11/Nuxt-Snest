@@ -167,6 +167,7 @@
                   clearable
                   rounded
                   solo
+                  autocomplete="off"
                   dense
                   :label="$t('create_post.content')"
                   v-model="subComment"
@@ -212,6 +213,7 @@
         clearable
         rounded
         solo
+        autocomplete="off"
         dense
         class="mt-8"
         :label="$t('WriteAComment')"

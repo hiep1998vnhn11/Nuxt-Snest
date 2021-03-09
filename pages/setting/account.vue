@@ -26,6 +26,7 @@
                     placeholder="Enter name"
                     outlined
                     class="mt-3"
+                    autocomplete="off"
                     dense
                     width="40%"
                     v-model="name"
@@ -84,6 +85,7 @@
                     placeholder="Enter url"
                     outlined
                     class="mt-3"
+                    autocomplete="off"
                     dense
                     v-model="url"
                   ></v-text-field>

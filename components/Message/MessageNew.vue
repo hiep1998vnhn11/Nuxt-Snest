@@ -25,6 +25,7 @@
         :label="$t('To:')"
         ref="search"
         dense
+        autocomplete="off"
       ></v-text-field>
     </v-card-title>
 

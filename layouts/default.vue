@@ -24,7 +24,7 @@
           <img :src="currentUser.profile_photo_path" />
         </v-avatar>
       </v-btn>
-      <button-message />
+      <button-message v-if="!$route.name.includes('messages')" />
       <button-notification />
       <button-setting />
     </v-app-bar>

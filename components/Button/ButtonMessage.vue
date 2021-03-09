@@ -75,6 +75,7 @@
           <v-toolbar class="elevation-0">
             <v-text-field
               v-model="search"
+              autocomplete="off"
               rounded
               class="grey lighten-3"
               label="Search"

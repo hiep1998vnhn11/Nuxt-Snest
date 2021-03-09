@@ -154,6 +154,7 @@
                   />
                 </v-avatar>
                 <v-text-field
+                  autocomplete="off"
                   clearable
                   :label="$t('create_post.content')"
                   v-model="subComment"
@@ -196,6 +197,7 @@
             />
           </v-avatar>
           <v-text-field
+            autocomplete="off"
             clearable
             :label="$t('create_post.content')"
             v-model="comment"

@@ -8,21 +8,15 @@
           params: { url: user.url }
         })
       "
-      class="text-capitalize nuxt-link-active"
-      v-slot="{ href, navigate }"
+      :class="
+        `font-weight-black black--text nuxt-link-active ${
+          hover ? '' : 'text-decoration-none'
+        }`
+      "
       custom
+      tag="a"
     >
-      <a
-        :class="
-          `font-weight-black nuxt-link-active ${
-            hover ? '' : 'text-decoration-none'
-          }`
-        "
-        :href="href"
-        @click="navigate"
-      >
-        {{ user.name }}
-      </a>
+      {{ user.name }}
     </nuxt-link>
     <v-btn
       v-else
@@ -39,7 +33,12 @@
         <img :src="user.profile_photo_path" :alt="user.name" />
       </v-avatar>
     </v-btn>
-    <v-card v-if="hover && info" max-width="344" class="card-user" outlined>
+    <v-card
+      v-if="hover && info"
+      max-width="344"
+      class="card-user rounded-lg"
+      outlined
+    >
       <v-container>
         <v-list-item>
           <v-list-item-avatar class="avatar-outlined" size="100">

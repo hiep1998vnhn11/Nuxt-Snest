@@ -24,6 +24,7 @@
             class="login-input"
             v-model="email"
             :rules="emailRules"
+            autocomplete="off"
             :label="$t('Email')"
             required
             color="rgba(255,255,255,0.5)"
@@ -31,6 +32,7 @@
           ></v-text-field>
           <v-text-field
             v-model="password"
+            autocomplete="off"
             type="password"
             :rules="passwordRules"
             :label="$t('Password')"

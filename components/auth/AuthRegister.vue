@@ -29,14 +29,17 @@
             :rules="emailRules"
             :label="$t('Email')"
             required
+            autocomplete="off"
           ></v-text-field>
           <v-text-field
             v-model="name"
             :rules="nameRules"
             :label="$t('Name')"
             required
+            autocomplete="off"
           ></v-text-field>
           <v-text-field
+            autocomplete="off"
             v-model="password"
             type="password"
             :rules="passwordRules"
@@ -53,6 +56,7 @@
             >
               <template v-slot:activator="{ on, attrs }">
                 <v-text-field
+                  autocomplete="off"
                   v-model="birthDay"
                   :label="$t('user.message.register.birthday')"
                   prepend-icon="mdi-calendar"

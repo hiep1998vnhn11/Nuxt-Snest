@@ -2,7 +2,7 @@
   <div>
     <v-navigation-drawer v-model="drawer" width="22rem" app clipped>
       <template v-slot:prepend>
-        <v-toolbar class="font-weight-black elevation-0" v-if="!mini">
+        <v-toolbar class="font-weight-black elevation-0">
           Message
           <v-spacer />
           <v-tooltip bottom>
@@ -43,6 +43,7 @@
           <v-text-field
             v-model="search"
             rounded
+            autocomplete="off"
             class="grey lighten-3"
             label="Search"
             single-line
@@ -61,37 +62,9 @@
         <message-list-thresh />
       </div>
     </v-navigation-drawer>
-
-    <v-app-bar absolute clipped-right flat>
-      hello
-      <v-spacer />
-      hello2
-    </v-app-bar>
-
-    <v-navigation-drawer width="22rem" app clipped right>
-      <v-list>
-        <v-list-item v-for="n in 5" :key="n" link>
-          <v-list-item-content>
-            <v-list-item-title>Item {{ n }}</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-      </v-list>
-    </v-navigation-drawer>
-
     <v-container>
       <nuxt-child />
     </v-container>
-
-    <v-footer app color="transparent" height="72" inset>
-      <v-text-field
-        background-color="grey lighten-1"
-        dense
-        flat
-        hide-details
-        rounded
-        solo
-      ></v-text-field>
-    </v-footer>
   </div>
 </template>
 <script>
@@ -100,7 +73,8 @@ export default {
   data() {
     return {
       drawer: null,
-      search: ''
+      search: '',
+      selectSearch: false
     }
   },
   computed: {

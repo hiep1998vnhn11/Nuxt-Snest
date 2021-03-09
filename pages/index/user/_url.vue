@@ -29,10 +29,10 @@ export default {
   head() {
     return {
       title: this.loading
-        ? 'Loading'
+        ? 'Loading |'
         : this.paramUser
-        ? this.paramUser.name
-        : 'Loading User'
+        ? `${this.paramUser.name} |`
+        : 'Loading User |'
     }
   },
   data() {

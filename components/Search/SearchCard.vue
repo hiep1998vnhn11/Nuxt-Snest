@@ -11,6 +11,7 @@
   >
     <v-app-bar height="56" flat color="primary" class="text--white">
       <v-text-field
+        autocomplete="off"
         v-model="searchKey"
         class="elevation-0 grey lighten-3 ml-2"
         rounded
