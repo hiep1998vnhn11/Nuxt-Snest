@@ -13,6 +13,7 @@
           rounded
           single-line
           hide-details
+          autocomplete="off"
           large
           @click="focus = true"
           @focus="focus = true"

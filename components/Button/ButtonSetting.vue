@@ -102,7 +102,7 @@
         </div>
       </v-card>
     </v-dialog>
-    <div class="show-setting-app-bar">
+    <div class="navbar-button-show-card">
       <v-expand-transition right>
         <v-card
           v-show="expand"
@@ -110,7 +110,7 @@
             handler: onClickOutsideWithConditional,
             closeConditional
           }"
-          width="21rem"
+          width="22rem"
           class="mx-auto"
         >
           <v-container>
@@ -269,6 +269,7 @@ export default {
   },
   methods: {
     ...mapActions('user', ['logout', 'getUser']),
+    ...mapActions(['clearAllState']),
     onClickOutsideWithConditional() {
       this.expand = false
     },
@@ -285,17 +286,10 @@ export default {
     },
     async onLogout() {
       await this.logout()
+      this.clearAllState()
+      window.socket.disconnect()
       this.$router.push('/login')
     }
   }
 }
 </script>
-
-<style>
-.show-setting-app-bar {
-  position: absolute;
-  z-index: 900;
-  right: 0.5rem;
-  top: 64px;
-}
-</style>

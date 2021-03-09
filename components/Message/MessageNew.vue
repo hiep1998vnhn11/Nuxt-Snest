@@ -1,9 +1,9 @@
 <template>
   <v-card
-    :class="`new-message-card-component rounded-lg ${elevation} message-card_${location}`"
+    :class="`new-message-card-component rounded-lg ${elevation}`"
     v-click-outside="{
       handler: onClickOutsideWithConditional,
-      closeConditional,
+      closeConditional
     }"
     :ripple="false"
     :loading="loading"
@@ -25,6 +25,7 @@
         :label="$t('To:')"
         ref="search"
         dense
+        autocomplete="off"
       ></v-text-field>
     </v-card-title>
 
@@ -162,11 +163,8 @@ export default {
     clickCard() {
       this.selected = true
     },
-    onCloseCard() {
-      this.closeMessageCard(this.location)
-    }
-  },
-  props: ['location']
+    onCloseCard() {}
+  }
 }
 </script>
 

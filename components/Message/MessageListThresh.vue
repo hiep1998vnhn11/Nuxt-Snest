@@ -1,67 +1,77 @@
 <template>
-  <v-list v-if="currentUser && !loading">
+  <div class="pa-2" v-if="threshes.length && !loading">
     <template v-for="room in threshes">
       <v-hover v-slot:default="{ hover }" :key="`room-${room.id}`">
-        <v-list-item
-          link
-          :to="
-            localePath({
-              name: 'messages-room_id',
-              params: { room_id: room.id }
-            })
-          "
-          active-class="blue--text"
-        >
-          <template v-if="room.type === 'private'">
-            <v-list-item-icon>
-              <v-badge
-                bordered
-                bottom
-                color="deep-purple accent-4"
-                dot
-                :value="currentUser.online_status.status"
-                offset-x="12"
-                offset-y="12"
-              >
-                <v-avatar class="avatar-outlined">
-                  <v-img :src="currentUser.profile_photo_path"></v-img>
-                </v-avatar>
-              </v-badge>
-            </v-list-item-icon>
-            <v-list-item-content>
-              <v-list-item-title
-                class="font-weight-bold text-capitalize black--text"
-              >
-                {{ currentUser.name }}
-              </v-list-item-title>
-              <v-list-item-subtitle>
-                {{ currentUser.name }}
-              </v-list-item-subtitle>
-            </v-list-item-content>
-          </template>
-          <template v-else-if="room.type === 'with'">
-            <v-list-item-icon>
-              <v-badge
-                bordered
-                bottom
-                color="deep-purple accent-4"
-                dot
-                :value="room.represent.user.online_status.status"
-                offset-x="12"
-                offset-y="12"
-              >
-                <v-avatar class="avatar-outlined">
-                  <v-img :src="room.represent.user.profile_photo_path"></v-img>
-                </v-avatar>
-              </v-badge>
-            </v-list-item-icon>
-            <v-list-item-content>
-              <v-list-item-title class="font-weight-bold black--text">
-                {{ room.represent.user.name }}
-              </v-list-item-title>
-            </v-list-item-content>
-          </template>
+        <div class="thresh-button">
           <v-btn
+            block
+            height="5rem"
+            class="text-none"
+            text
+            active-class="primary--text"
+            :to="
+              localePath({
+                name: 'messages-room_id',
+                params: { room_id: room.id }
+              })
+            "
+          >
+            <template v-if="room.type === 'private'">
+              <v-list-item-icon>
+                <v-badge
+                  bordered
+                  bottom
+                  color="success"
+                  dot
+                  offset-x="12"
+                  offset-y="12"
+                >
+                  <v-avatar class="avatar-outlined">
+                    <v-img :src="currentUser.profile_photo_path"></v-img>
+                  </v-avatar>
+                </v-badge>
+              </v-list-item-icon>
+              <v-list-item-content>
+                <v-list-item-title
+                  class="font-weight-bold text-capitalize black--text"
+                >
+                  {{ currentUser.name }}
+                </v-list-item-title>
+                <v-list-item-subtitle>
+                  {{ currentUser.name }}
+                </v-list-item-subtitle>
+              </v-list-item-content>
+            </template>
+            <template v-else-if="room.type === 'with'">
+              <v-list-item-icon>
+                <v-badge
+                  bordered
+                  bottom
+                  :color="
+                    room.represent.user.online_status.status
+                      ? 'success'
+                      : 'grey'
+                  "
+                  dot
+                  offset-x="12"
+                  offset-y="12"
+                >
+                  <v-avatar class="avatar-outlined">
+                    <v-img
+                      :src="room.represent.user.profile_photo_path"
+                    ></v-img>
+                  </v-avatar>
+                </v-badge>
+              </v-list-item-icon>
+              <v-list-item-content>
+                <v-list-item-title class="font-weight-bold black--text">
+                  {{ room.represent.user.name }}
+                </v-list-item-title>
+              </v-list-item-content>
+            </template>
+          </v-btn>
+          <v-btn
+            class="thresh-option-button"
             icon
             text
             outlined
@@ -70,10 +80,10 @@
           >
             <v-icon>mdi-dots-horizontal</v-icon>
           </v-btn>
-        </v-list-item>
+        </div>
       </v-hover>
     </template>
-  </v-list>
+  </div>
 </template>
 
 <script>
@@ -85,8 +95,24 @@ export default {
     ...mapGetters('user', ['currentUser'])
   },
   methods: {},
-  props: ['loading']
+  props: ['loading'],
+  methods: {
+    onClickOption(value) {
+      console.log(value)
+    }
+  }
 }
 </script>
 
-<style></style>
+<style lang="scss">
+.thresh-button {
+  position: relative;
+  .thresh-option-button {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
+  }
+}
+</style>

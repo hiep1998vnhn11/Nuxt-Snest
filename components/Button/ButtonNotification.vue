@@ -19,7 +19,7 @@
       </template>
       <span>{{ $t('common.notification') }}</span>
     </v-tooltip>
-    <div class="show-noti-app-bar">
+    <div class="navbar-button-show-card">
       <v-expand-transition right>
         <v-card
           v-show="expand"
@@ -27,10 +27,10 @@
             handler: onClickOutsideWithConditional,
             closeConditional
           }"
-          width="21rem"
-          class="mx-auto"
+          width="22rem"
+          class="mx-auto  overflow-scroll-y"
         >
-          <v-card-title class="headline font-weight-black">
+          <v-card-title class="headline  font-weight-black">
             Notifications
             <v-spacer />
             <v-tooltip bottom>
@@ -126,8 +126,7 @@ export default {
     classes() {
       return this.expand ? 'primary--text blue lighten-4' : null
     },
-    ...mapGetters('notification', ['notifications', 'numberUnread']),
-    ...mapGetters('socket', ['socket'])
+    ...mapGetters('notification', ['notifications', 'numberUnread'])
   },
   mounted() {
     this.fetchUnread()
@@ -166,7 +165,7 @@ export default {
       this.notifications[index].data.status = 'accepted'
       // const response = await axios.post(`/v1/user/friend/${this.notifications[index].id}/accept`)
       const response = 'hello'
-      this.socket.emit('acceptFriend', {
+      window.socket.emit('acceptFriend', {
         userId: this.notifications[index].data.user.id,
         response
       })
@@ -178,12 +177,3 @@ export default {
   }
 }
 </script>
-
-<style>
-.show-noti-app-bar {
-  position: absolute;
-  z-index: 900;
-  right: 0.5rem;
-  top: 64px;
-}
-</style>

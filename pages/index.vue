@@ -1,47 +1,38 @@
 <template>
   <div>
-    <!-- <message-card /> -->
+    <transition name="fade">
+      <message-card v-if="thresh" />
+    </transition>
     <nuxt-child />
   </div>
 </template>
 <script>
 import axios from 'axios'
+import { mapGetters } from 'vuex'
 export default {
   data() {
     return {
-      thresh: null,
       loading: false,
       error: null,
       loadingMessageCard: false
     }
   },
-  methods: {
-    async onOpenMessage(user) {
-      this.loadingMessageCard = true
-      try {
-        const response = await axios.post(`/v1/user/thresh/${user.id}/get`)
-        if (response.data.data) {
-          this.thresh = response.data.data
-        } else {
-          this.thresh = { user_with: user }
-        }
-      } catch (err) {
-        this.error = err.response.data.message
-      }
-      this.loadingMessageCard = false
-    }
-  },
-  created() {
-    console.log(this.$route.name)
-  },
-  mounted() {}
+  computed: {
+    ...mapGetters('message', ['thresh'])
+  }
 }
 </script>
-<style scoped>
-.button-navigation {
-  position: fixed;
-  z-index: 9999;
-  bottom: 15px;
-  right: 15px;
+<style lang="scss" scoped>
+.fade-enter-active {
+  transition: opacity 0.5s;
+}
+.fade-leave-active {
+  transition: opacity 0.5s;
+}
+.fade-enter {
+  opacity: 0;
+}
+.fade-leave-to {
+  opacity: 0;
 }
 </style>

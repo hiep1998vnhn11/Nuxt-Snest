@@ -1,6 +1,15 @@
 import axios from 'axios'
 import Cookies from 'js-cookie'
-
+const initialState = () => ({
+  currentUser: null,
+  token: Cookies.get('access_token') || null,
+  socket: null,
+  setHeader() {
+    axios.defaults.headers.common['Authorization'] =
+      'Bearer' + Cookies.get('access_token')
+  },
+  friends: []
+})
 const state = () => ({
   currentUser: null,
   token: Cookies.get('access_token') || null,
@@ -27,11 +36,11 @@ const actions = {
     })
     const token = response.data.access_token
     Cookies.set('access_token', token, { expires: 1 })
-    state.setHeader()
-    const userResponse = await axios.post('/auth/me')
-    commit('SET_CURRENT_USER', userResponse.data.data)
-    const friendResponse = await axios.post('/v1/user/friend/get')
-    commit('SET_FRIENDS', friendResponse.data.data)
+    // state.setHeader()
+    // const userResponse = await axios.post('/auth/me')
+    // commit('SET_CURRENT_USER', userResponse.data.data)
+    // const friendResponse = await axios.post('/v1/user/friend/get')
+    // commit('SET_FRIENDS', friendResponse.data.data)
     commit('SET_ACCESS_TOKEN', token)
   },
   async getUser({ commit, state }) {
@@ -41,10 +50,8 @@ const actions = {
   },
   async logout(context) {
     if (context.getters.isLoggedIn) {
-      context.state.setHeader()
       await axios.post('/auth/logout')
       Cookies.remove('access_token')
-      context.commit('DESTROY_TOKEN')
     }
   },
   async register(context, user) {
@@ -90,6 +97,12 @@ const mutations = {
       if (friend.friend_id === userId) {
         friend.user_friend.online_status.status = false
       }
+    })
+  },
+  RESET: function(state) {
+    const s = initialState()
+    Object.keys(s).forEach(key => {
+      state[key] = s[key]
     })
   }
 }

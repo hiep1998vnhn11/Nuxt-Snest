@@ -1,7 +1,7 @@
 <template>
   <v-row
     v-if="message.user_id !== currentUser.id"
-    class="mx-auto d-flex align-end"
+    class="mx-auto d-flex align-end mt-1"
   >
     <v-avatar class="mr-1 mt-1 avatar-outlined" size="30" v-if="same">
       <img :src="user.profile_photo_path" />
@@ -26,5 +26,4 @@ export default {
 }
 </script>
 
-<style>
-</style>
+<style></style>

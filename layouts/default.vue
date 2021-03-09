@@ -1,14 +1,6 @@
 <template>
   <v-app dark class="main-container">
-    <v-app-bar
-      color="primary"
-      clipped-left
-      clipped-right
-      fixed
-      app
-      height="56"
-      class="elevation-3"
-    >
+    <v-app-bar color="primary" clipped-left clipped-right fixed app height="56">
       <nuxt-link :to="localePath({ name: 'index' })">
         <img src="@/assets/logo.png" />
       </nuxt-link>
@@ -32,11 +24,11 @@
           <img :src="currentUser.profile_photo_path" />
         </v-avatar>
       </v-btn>
-      <button-message />
+      <button-message v-if="!$route.name.includes('messages')" />
       <button-notification />
       <button-setting />
     </v-app-bar>
-    <v-main>
+    <v-main ref="main">
       <v-container>
         <nuxt />
       </v-container>
@@ -79,7 +71,6 @@ export default {
   },
   computed: {
     ...mapGetters('user', ['currentUser']),
-    ...mapGetters('socket', ['socket']),
     ...mapGetters('message', ['thresh']),
     messageIcon() {
       return this.$route.name === 'Home'
@@ -126,49 +117,58 @@ export default {
       }
       this.loadingMessageCard = false
     }
-  },
-  async created() {
-    // if (!this.currentUser) await this.fetchUser()
-    // if (!this.socket || this.socket.disconnected) this.connectSocket()
   }
 }
 </script>
 
-<style>
+<style lang="scss">
 html {
   overflow-y: hidden;
+  height: 100%;
+  &:hover {
+    overflow-y: auto;
+  }
+  &::-webkit-scrollbar {
+    width: 0.35rem;
+  }
+  &::-webkit-scrollbar-track {
+    background: white;
+    -webkit-border-radius: 10px;
+    border-radius: 25px;
+    padding: 10px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: #9c27b0;
+    -webkit-border-radius: 10px;
+    border-radius: 10px;
+  }
 }
 
-html:hover {
+.overflow-scroll-y {
   overflow-y: auto;
+  &:hover {
+    overflow-y: auto;
+  }
+  &::-webkit-scrollbar {
+    width: 0.35rem;
+  }
+  &::-webkit-scrollbar-track {
+    background: white;
+    -webkit-border-radius: 10px;
+    border-radius: 25px;
+    padding: 10px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: #9c27b0;
+    -webkit-border-radius: 10px;
+    border-radius: 10px;
+  }
 }
 
-html::-webkit-scrollbar {
-  width: 0.35rem;
-}
-
-html::-webkit-scrollbar-track {
-  background: white;
-  -webkit-border-radius: 10px;
-  border-radius: 25px;
-  padding: 10px;
-}
-html::-webkit-scrollbar-thumb {
-  background: #9c27b0;
-  -webkit-border-radius: 10px;
-  border-radius: 10px;
-}
-
-.home-navbar-right::-webkit-scrollbar {
-  width: 0.25rem;
-}
-
-.home-navbar-right::-webkit-scrollbar-track {
-  background: white;
-}
-
-.home-navbar-right::-webkit-scrollbar-thumb {
-  background: #0077ff;
+.navbar-button-show-card {
+  position: absolute;
+  right: 0.5rem;
+  top: $navbar-card-top;
 }
 
 #search-card-app-bar {

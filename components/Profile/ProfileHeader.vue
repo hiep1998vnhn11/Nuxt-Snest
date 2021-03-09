@@ -509,8 +509,7 @@ export default {
     displayStory() {
       return true
     },
-    ...mapGetters('user', ['currentUser']),
-    ...mapGetters('socket', ['socket'])
+    ...mapGetters('user', ['currentUser'])
   },
   methods: {
     onRemoveChange() {
@@ -557,7 +556,7 @@ export default {
         const response = await axios.post(url, params)
         this.addFriendStatus = true
         this.$emit('changed-status-friend-added')
-        this.socket.emit('requestAddFriend', {
+        window.socket.emit('requestAddFriend', {
           userId: this.user.id,
           requestUserId: this.currentUser.id,
           data: response.data.data

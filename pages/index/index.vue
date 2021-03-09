@@ -5,12 +5,13 @@
       v-model="drawer"
       v-if="currentUser"
       clipped
+      bottom
       width="22rem"
       fixed
       app
     >
       <template v-slot:prepend>
-        <v-sheet class="text-center">
+        <v-sheet class="text-center mt-3">
           <v-avatar :size="64">
             <v-img :src="currentUser.profile_photo_path" />
           </v-avatar>
@@ -61,7 +62,6 @@
           />
         </v-container>
       </div>
-
       <template v-slot:append>
         <v-divider class="mx-4" />
         <v-toolbar flat dense class="">
@@ -100,29 +100,26 @@
       flat
       right
       app
+      style="z-index: 3;"
     >
       <!-- Default temblade -->
       <div>
-        <div v-if="loadingTrending" class="text-center my-10">
-          <v-progress-circular
-            :size="50"
-            :width="2"
-            color="purple"
-            indeterminate
-          ></v-progress-circular>
-        </div>
-        <div v-else class="trending-card">
+        <div class="trending-card">
           <div class="box">
             <div class="content">
               <h2>{{ $t('Trending') }}</h2>
-              <p
-                v-for="value in Object.entries(trending)
-                  .slice()
-                  .reverse()"
-                :key="value[0]"
-              >
-                {{ value[0] }}: {{ value[1] }}
-              </p>
+              <transition name="slide-fade">
+                <div>
+                  <p
+                    v-for="value in Object.entries(trending)
+                      .slice()
+                      .reverse()"
+                    :key="value[0]"
+                  >
+                    {{ value[0] }}: {{ value[1] }}
+                  </p>
+                </div>
+              </transition>
             </div>
           </div>
         </div>
@@ -132,14 +129,18 @@
         <div class="box">
           <div class="content">
             <h2>{{ $t('Suggestions') }}</h2>
-            <p
-              v-for="value in Object.entries(trending)
-                .slice()
-                .reverse()"
-              :key="value[0]"
-            >
-              {{ value[0] }}: {{ value[1] }}
-            </p>
+            <transition name="slide-fade">
+              <div>
+                <p
+                  v-for="value in Object.entries(trending)
+                    .slice()
+                    .reverse()"
+                  :key="value[0]"
+                >
+                  {{ value[0] }}: {{ value[1] }}
+                </p>
+              </div>
+            </transition>
           </div>
         </div>
       </div>
@@ -151,6 +152,12 @@
 import { mapActions, mapGetters } from 'vuex'
 export default {
   props: ['loading_user'],
+  middleware: 'auth',
+  head() {
+    return {
+      title: 'Home'
+    }
+  },
   computed: {
     ...mapGetters('post', ['posts']),
     ...mapGetters('user', ['currentUser', 'friends']),
@@ -174,7 +181,7 @@ export default {
     ...mapActions('user', ['getUser', 'getFriend']),
     ...mapActions('app', ['setMini', 'setDrawer']),
     ...mapActions('socket', ['connectSocket']),
-    ...mapActions('message', ['setThreshCard']),
+    ...mapActions('message', ['getThreshByUser']),
     ...mapActions('app', ['getTrending']),
     async fetchTrending() {
       this.loadingTrending = true
@@ -197,7 +204,7 @@ export default {
     },
     async onClickFriend(user) {
       try {
-        await this.setThreshCard(user)
+        await this.getThreshByUser(user)
       } catch (err) {
         console.log(err.response.data.message)
       }
@@ -219,155 +226,152 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="scss">
 .sidebar-container-scroll {
   overflow-y: hidden;
   height: 100%;
+  &:hover {
+    overflow-y: auto;
+  }
+  &::-webkit-scrollbar {
+    width: 0.35rem;
+  }
+  &::-webkit-scrollbar-track {
+    background: white;
+    -webkit-border-radius: 10px;
+    border-radius: 25px;
+    padding: 10px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: #9c27b0;
+    -webkit-border-radius: 10px;
+    border-radius: 10px;
+  }
 }
-
-.sidebar-container-scroll:hover {
-  overflow-y: auto;
-}
-
-.sidebar-container-scroll::-webkit-scrollbar {
-  width: 0.35rem;
-}
-
-.sidebar-container-scroll::-webkit-scrollbar-track {
-  background: white;
-  -webkit-border-radius: 10px;
-  border-radius: 25px;
-  padding: 10px;
-}
-
-.sidebar-container-scroll::-webkit-scrollbar-thumb {
-  background: #9c27b0;
-  -webkit-border-radius: 10px;
-  border-radius: 10px;
-}
-
+/* .slide-fade-leave-active below version 2.1.8 */
 .trending-card {
   position: relative;
   height: 400px;
+  .box {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    right: 1rem;
+    bottom: 1rem;
+    background: #fff;
+    border-radius: 15px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+    transition: 0.5%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: 0.5s ease-in-out;
+    &:hover {
+      transition: 0.5s ease-in-out;
+      transform: translateY(-10px);
+      box-shadow: 0 40px 70px rgba(0, 0, 0, 0.5);
+      .content {
+        h2 {
+          opacity: 0.8;
+          transform: translateY(calc(-155px + 50%));
+          font-size: 1.8rem;
+          transition: 0.5s ease-in-out;
+        }
+      }
+    }
+    .content {
+      padding: 20px;
+      text-align: center;
+      h2 {
+        position: absolute;
+        left: 20px;
+        opacity: 0.2;
+        font-size: 3rem;
+        font-weight: 900;
+        transition: 0.5s ease-in-out;
+      }
+      h3 {
+        font-size: 1.8rem;
+        z-index: 1000;
+        color: rgba(255, 255, 255, 0.5);
+        transition: 0.5%;
+      }
+      p {
+        font-size: 1rem;
+        z-index: 1000;
+        transition: 0.5%;
+      }
+    }
+  }
 }
-
-.trending-card .box {
-  position: absolute;
-  top: 1rem;
-  left: 1rem;
-  right: 1rem;
-  bottom: 1rem;
-  background: #fff;
-  border-radius: 15px;
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
-  transition: 0.5%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  transition: 0.5s ease-in-out;
-}
-
-.trending-card .box:hover {
-  transition: 0.5s ease-in-out;
-  transform: translateY(-10px);
-  box-shadow: 0 40px 70px rgba(0, 0, 0, 0.5);
-}
-
-.trending-card .box .content {
-  padding: 20px;
-  text-align: center;
-}
-
-.trending-card .box .content h2 {
-  position: absolute;
-  left: 20px;
-  opacity: 0.2;
-  font-size: 3rem;
-  font-weight: 900;
-  transition: 0.5s ease-in-out;
-}
-
-.trending-card .box:hover .content h2 {
-  opacity: 0.8;
-  transform: translateY(calc(-155px + 50%));
-  font-size: 1.8rem;
-  transition: 0.5s ease-in-out;
-}
-
-.trending-card .box .content h3 {
-  font-size: 1.8rem;
-  z-index: 1000;
-  color: rgba(255, 255, 255, 0.5);
-  transition: 0.5%;
-}
-
-.trending-card .box .content p {
-  font-size: 1rem;
-  /* font-weight: 300; */
-  z-index: 1000;
-  transition: 0.5%;
-}
-
 .suggestion-card {
   position: relative;
   height: 300px;
   bottom: 0px;
+  .box {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    right: 1rem;
+    bottom: 1rem;
+    background: #fff;
+    border-radius: 15px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+    transition: 0.5%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: 0.5s ease-in-out;
+    &:hover {
+      transition: 0.5s ease-in-out;
+      transform: translateY(-10px);
+      box-shadow: 0 40px 70px rgba(0, 0, 0, 0.5);
+      .content {
+        h2 {
+          opacity: 0.8;
+          transform: translateY(calc(-105px + 50%));
+          font-size: 1.8rem;
+          transition: 0.5s ease-in-out;
+        }
+      }
+    }
+    .content {
+      padding: 20px;
+      text-align: center;
+      h2 {
+        position: absolute;
+        left: 20px;
+        opacity: 0.2;
+        font-size: 3rem;
+        font-weight: 900;
+        transition: 0.5s ease-in-out;
+      }
+      h3 {
+        font-size: 1.225rem;
+        z-index: 1000;
+        color: rgba(255, 255, 255, 0.5);
+        transition: 0.5%;
+      }
+      p {
+        font-size: 1rem;
+        z-index: 1000;
+        transition: 0.5%;
+      }
+    }
+  }
 }
-
-.suggestion-card .box {
-  position: absolute;
-  top: 1rem;
-  left: 1rem;
-  right: 1rem;
-  bottom: 1rem;
-  background: #fff;
-  border-radius: 15px;
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
-  transition: 0.5%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  transition: 0.5s ease-in-out;
+.slide-fade-enter-active {
+  transition: all 0.3s ease;
 }
-
-.suggestion-card .box:hover {
-  transition: 0.5s ease-in-out;
-  transform: translateY(-10px);
-  box-shadow: 0 40px 70px rgba(0, 0, 0, 0.5);
+.slide-fade-leave-active {
+  transition: all 0.8s cubic-bezier(1, 0.5, 0.8, 1);
 }
-
-.suggestion-card .box .content {
-  padding: 20px;
-  text-align: center;
+.slide-fade-enter {
+  transform: translateX(10px);
+  opacity: 0;
 }
-
-.suggestion-card .box .content h2 {
-  position: absolute;
-  left: 20px;
-  opacity: 0.2;
-  font-size: 3rem;
-  font-weight: 900;
-  transition: 0.5s ease-in-out;
-}
-
-.suggestion-card .box:hover .content h2 {
-  opacity: 0.8;
-  transform: translateY(calc(-105px + 50%));
-  font-size: 1.8rem;
-  transition: 0.5s ease-in-out;
-}
-
-.suggestion-card .box .content h3 {
-  font-size: 1.225rem;
-  z-index: 1000;
-  color: rgba(255, 255, 255, 0.5);
-  transition: 0.5%;
-}
-
-.suggestion-card .box .content p {
-  font-size: 1rem;
-  /* font-weight: 300; */
-  z-index: 1000;
-  transition: 0.5%;
+.slide-fade-leave-to {
+  transform: translateX(10px);
+  opacity: 0;
 }
 </style>

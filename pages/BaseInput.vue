@@ -1,18 +1,14 @@
 <template>
   <div>
-    <button-test :user="currentUser" />
+    base
   </div>
 </template>
 <script>
-import { mapGetters } from 'vuex'
 export default {
   data() {
     return {}
   },
-  computed: {
-    ...mapGetters('user', ['currentUser'])
-  },
-
+  methods: {},
   created() {},
   mounted() {},
   computed: {}

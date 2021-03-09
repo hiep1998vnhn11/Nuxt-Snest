@@ -1,13 +1,6 @@
 <template>
   <div v-if="participant">
-    <v-app-bar
-      fixed
-      :class="`${classes} ${classRight} mt-16`"
-      flat
-      height="64"
-      outlined
-      style="z-index: 3"
-    >
+    <v-app-bar absolute clipped-right flat>
       <v-badge
         bordered
         bottom
@@ -71,18 +64,10 @@
         </template>
         <span>{{ $t('ConversationInformation') }}</span>
       </v-tooltip>
-      <v-app-bar-nav-icon @click.stop="rightDrawer = !rightDrawer" />
     </v-app-bar>
 
-    <v-app-bar
-      :class="`${classes} ${classRight}`"
-      bottom
-      fixed
-      flat
-      height="56"
-      outlined
-      style="z-index: 3"
-    >
+    <!-- bottom appbar -->
+    <v-footer app color="transparent" height="56" inset>
       <v-tooltip top>
         <template v-slot:activator="{ on, attrs }">
           <v-btn small icon text v-bind="attrs" class="ml-n3" v-on="on">
@@ -107,19 +92,20 @@
         </template>
         <span>{{ $t('ChooseSticker') }}</span>
       </v-tooltip>
-
       <v-text-field
-        v-model="text"
-        class="mt-6"
+        background-color="grey lighten-1"
         dense
         flat
+        hint
+        autocomplete="off"
+        hide-details
         rounded
         solo
-        autofocus
         label="Aa"
         @keydown.enter.exact.prevent
         @keydown.enter.exact="onSendMessage"
         @keydown.enter.shift.exact="newLine"
+        v-model="text"
       >
         <template v-slot:append>
           <v-btn icon text class="mr-n6" @click="$emit('onConvert')">
@@ -127,7 +113,6 @@
           </v-btn>
         </template>
       </v-text-field>
-
       <v-tooltip top>
         <template v-slot:activator="{ on, attrs }">
           <v-btn icon text v-bind="attrs" class="ml-1" v-on="on">
@@ -136,16 +121,9 @@
         </template>
         <span>{{ $t('SendLike') }}</span>
       </v-tooltip>
-    </v-app-bar>
+    </v-footer>
 
-    <v-navigation-drawer
-      v-model="rightDrawer"
-      fixed
-      class="mt-16"
-      width="22rem"
-      right
-      style="z-index: 3"
-    >
+    <v-navigation-drawer width="22rem" app clipped right>
       <template v-slot:prepend>
         <div class="text-center mt-5">
           <v-avatar class="avatar-outlined" size="100">
@@ -246,11 +224,7 @@
         class="mt-10"
       ></v-progress-circular>
     </div>
-    <div
-      v-else
-      id="messageContainer"
-      :class="`${classMessage} ${classMessageRight}`"
-    >
+    <div v-else class="message-container">
       <!-- <observer @intersect="intersected" /> -->
       <message-chat-row
         v-for="(message, index) in messageReverse"
@@ -288,7 +262,6 @@ export default {
     ...mapGetters('user', ['currentUser']),
     ...mapGetters('message', ['messages']),
     ...mapGetters('thresh', ['participant']),
-    ...mapGetters('socket', ['socket']),
     ...mapGetters('app', ['mini', 'drawer']),
     classes() {
       return !this.drawer ? '' : this.mini ? 'ml-8rem' : 'ml-22rem'
@@ -367,7 +340,7 @@ export default {
         }
       }
       if (this.participant.id !== this.currentUser.id) {
-        this.socket.emit('sendToUser', {
+        window.socket.emit('sendToUser', {
           userId: this.participant.id,
           roomId: this.$route.params.room_id,
           message,
@@ -388,75 +361,35 @@ export default {
 }
 </script>
 
-<style>
-#messageContainer {
+<style lang="scss">
+.message-container {
   overflow-y: hidden;
-  overflow-x: hidden;
-  bottom: 56px;
-  top: 128px;
   padding: 5px;
-  position: fixed;
-}
+  padding-top: 15px;
+  position: absolute;
+  width: 100%;
+  height: calc(100% - 64px);
+  top: 64px;
+  left: 0;
 
-#messageContainer:hover {
-  overflow-y: auto;
-}
+  &:hover {
+    overflow-y: auto;
+  }
+  &::-webkit-scrollbar {
+    width: 0.35rem;
+  }
 
-.right-22rem {
-  right: 22rem;
-}
+  &::-webkit-scrollbar-track {
+    background: white;
+    -webkit-border-radius: 10px;
+    border-radius: 25px;
+    padding: 10px;
+  }
 
-.left-22rem {
-  left: 22rem;
-}
-
-.right-0rem {
-  right: 0px;
-}
-
-.left-0rem {
-  left: 0px;
-}
-
-.left-5rem {
-  left: 5rem;
-}
-
-.right-0 {
-  right: 0px;
-  left: 5rem;
-}
-
-#messageContainer::-webkit-scrollbar {
-  width: 0.35rem;
-}
-
-#messageContainer::-webkit-scrollbar-track {
-  background: white;
-  -webkit-border-radius: 10px;
-  border-radius: 25px;
-  padding: 10px;
-}
-
-#messageContainer::-webkit-scrollbar-thumb {
-  background: #9c27b0;
-  -webkit-border-radius: 10px;
-  border-radius: 10px;
-}
-
-.v-btn {
-  letter-spacing: 0 !important;
-}
-
-.ml-22rem {
-  margin-left: 22rem;
-}
-
-.ml-8rem {
-  margin-left: 8rem;
-}
-
-.mr-22rem {
-  margin-right: 22rem;
+  &::-webkit-scrollbar-thumb {
+    background: #9c27b0;
+    -webkit-border-radius: 10px;
+    border-radius: 10px;
+  }
 }
 </style>

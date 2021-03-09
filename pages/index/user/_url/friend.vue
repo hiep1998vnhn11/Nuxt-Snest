@@ -10,6 +10,7 @@
           :label="$t('Search')"
           outlined
           dense
+          autocomplete="off"
           rounded
           single-line
           hide-details

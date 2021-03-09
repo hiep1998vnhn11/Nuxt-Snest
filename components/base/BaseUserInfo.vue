@@ -117,6 +117,7 @@
             <v-row v-if="status === 'job'" class="mb-n4">
               <v-col cols="7">
                 <v-text-field
+                  autocomplete="off"
                   dense
                   rounded
                   outlined
@@ -127,6 +128,7 @@
               </v-col>
               <v-col cols="4">
                 <v-text-field
+                  autocomplete="off"
                   dense
                   rounded
                   outlined
@@ -186,6 +188,7 @@
             <v-row class="mt-4 mb-n4" v-if="status === 'school'">
               <v-col cols="7">
                 <v-text-field
+                  autocomplete="off"
                   dense
                   rounded
                   outlined
@@ -197,6 +200,7 @@
               <v-col cols="4">
                 <v-text-field
                   dense
+                  autocomplete="off"
                   rounded
                   outlined
                   label="Workspace"
@@ -257,6 +261,7 @@
             <v-row v-else-if="!liveAtEdited" class="ml-0 mb-n6">
               <v-text-field
                 dense
+                autocomplete="off"
                 rounded
                 outlined
                 label="Enter your City/Town you are living ..."
@@ -315,6 +320,7 @@
             <v-row v-else-if="!fromEdited" class="ml-0 mb-n6">
               <v-text-field
                 dense
+                autocomplete="off"
                 rounded
                 outlined
                 label="Enter your City/Town you are living ..."

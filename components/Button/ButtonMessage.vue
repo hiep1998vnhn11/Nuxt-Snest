@@ -18,7 +18,7 @@
       </template>
       <span>{{ $t('common.message') }}</span>
     </v-tooltip>
-    <div class="show-message-app-bar">
+    <div class="navbar-button-show-card">
       <v-expand-transition bottom>
         <v-card
           v-show="expand"
@@ -26,9 +26,9 @@
             handler: onClickOutsideWithConditional,
             closeConditional
           }"
-          width="21rem"
-          max-height="600"
-          class="mx-auto scroll-y rounded-lg"
+          width="22rem"
+          max-height="700px"
+          class="rounded-lg overflow-scroll-y"
         >
           <v-toolbar tile class="elevation-0 font-weight-black text-h5">
             Message
@@ -75,6 +75,7 @@
           <v-toolbar class="elevation-0">
             <v-text-field
               v-model="search"
+              autocomplete="off"
               rounded
               class="grey lighten-3"
               label="Search"
@@ -204,14 +205,7 @@ export default {
 }
 </script>
 
-<style>
-.show-message-app-bar {
-  position: absolute;
-  z-index: 900;
-  right: 0.5rem;
-  top: 64px;
-}
-
+<style lang="scss">
 .title-message-expand {
   position: fixed;
   z-index: 100;
@@ -222,22 +216,5 @@ export default {
   z-index: 101;
   top: 70px;
   right: 100px;
-}
-
-.scroll-y {
-  overflow-y: auto;
-  z-index: 100;
-}
-
-.scroll-y::-webkit-scrollbar {
-  width: 0.25rem;
-}
-
-.scroll-y::-webkit-scrollbar-track {
-  background: white;
-}
-
-.scroll-y::-webkit-scrollbar-thumb {
-  background: #0077ff;
 }
 </style>
