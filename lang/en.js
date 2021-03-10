@@ -322,5 +322,53 @@ export default {
   Contacts: 'Contacts',
   Infomation: 'Information',
   AddFriend: 'Add friend',
-  Suggestions: 'Suggestions'
+  Suggestions: 'Suggestions',
+  Reply: 'Reply',
+  EditCoverPhoto: 'Edit cover photo',
+  'Select cover photo': 'Select cover photo',
+  Upload: 'Upload',
+  Remove: 'Remove',
+  'Upload your cover photo': 'Upload your cover photo',
+  'Preview on your personal page': 'Preview on your personal page',
+  '(To upload background, you must preview first!)':
+    '(To upload background, you must preview first!)',
+  Cancel: 'Cancel',
+  'Remove this change?': 'Remove this change?',
+  'Are you sure about discard this change?':
+    'Are you sure about discard this change?',
+  Agree: 'Agree',
+  'Remove cover photo': 'Remove cover photo',
+  'Are you sure about remove your cover photo?':
+    'Are you sure about remove your cover photo?',
+  'Create your story': 'Create your story',
+  Change: 'Change',
+  Save: 'Save',
+  Chat: 'Chat',
+  'You had blocked this user': 'You had blocked this user',
+  'You had been blocked': 'You had been blocked',
+  'Cancel invitation': 'Cancel invitation',
+  'Accept invitation friend': 'Accept invitation friend',
+  'View mode': 'View mode',
+  'Search on this personal page': 'Search on this personal page',
+  'Update your avatar': 'Update your avatar',
+  'Create frame': 'Create frame',
+  'Upload image to change your avatar': 'Upload image to change your avatar',
+  'Select your image to upload:': 'Select your image to upload:',
+  'Preview in your personal page': 'Preview in your personal page',
+  'Preview your personal page before your change':
+    'Preview your personal page before your change',
+  'Remove this change?': 'Remove this change?',
+  'Are you sure about discard this change?':
+    'Are you sure about discard this change?',
+  'Report this personal page': 'Report this personal page',
+  'Setting your time line': 'Setting your time line',
+  'Block this user': 'Block this user',
+  'Report this user': 'Report this user',
+  'Please choose the problem you had seen':
+    'Please choose the problem you had seen',
+  'You only can report this personal page after choose one problem':
+    'You only can report this personal page after choose one problem',
+  'This is your personal page after your change':
+    'This is your personal page after your change',
+  SeeAllFriend: 'See all friend'
 }

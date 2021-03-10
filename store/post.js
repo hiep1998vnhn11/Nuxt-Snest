@@ -66,8 +66,10 @@ const actions = {
     const response = await axios.post(`v1/user/post/${payload.post_id}/update`)
     commit('CREATE_POST', response.data.data)
   },
-  async getUserPost({ commit, state }, payload) {
-    const url = '/v1/user/post/store'
+  async getUserPost({ commit, state, rootState }, payload) {
+    const url = rootState['user/currentUser']
+      ? '/v1/user/post/store'
+      : '/v1/guest/post/store'
     const userPostResponse = await axios.get(url, {
       params: {
         user_url: payload.user_url,
@@ -124,6 +126,9 @@ const mutations = {
   UNLIKE_POST: function(state, indexPost) {
     state.posts[indexPost].isLiked = false
     state.posts[indexPost].likes_count -= 1
+  },
+  COMMENTED_POST: function(state, indexPost) {
+    state.posts[indexPost].comments_count += 1
   },
   RESET: function(state) {
     const s = initialState()

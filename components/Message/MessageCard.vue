@@ -188,25 +188,23 @@ export default {
           user_id: this.currentUser.id,
           content: this.text
         }
-        if (this.thresh.participants.id !== this.currentUser.id) {
-          window.socket.emit('sendToUser', {
-            userId: this.thresh.participants.id,
-            roomId: this.roomId,
-            message: message,
-            userName: this.thresh.participants.name
-          })
-        }
-        console.log(message)
+        this.$store.commit('message/SEND_MESSAGE', message)
         this.text = ''
         try {
           const url = `/v1/user/thresh/${this.thresh.id}/message/send`
-          this.$store.commit('message/SEND_MESSAGE', message)
-          this.$store.commit('thresh/SEND_MESSAGE', message)
-          await axios.post(url, {
+          const response = await axios.post(url, {
             content: message.content
           })
+          if (this.thresh.participants.id !== this.currentUser.id) {
+            window.socket.emit('sendToUser', {
+              userId: this.thresh.participants.id,
+              roomId: this.thresh.id,
+              message: response.data.data,
+              userName: this.thresh.participants.name
+            })
+          }
         } catch (err) {
-          this.error = err.toString()
+          this.$nuxt.error(err)
         }
       }
     },

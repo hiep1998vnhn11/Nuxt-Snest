@@ -26,17 +26,17 @@
             small
           >
             <v-icon class="mr-2">mdi-alert-box-outline</v-icon>
-            Report this personal page
+            {{ $t('Report this personal page') }}
             <v-spacer></v-spacer>
           </v-btn>
           <v-btn v-if="current" block text class="text-capitalize" small>
             <v-icon class="mr-2">mdi-account-cog-outline</v-icon>
-            Setting your time line
+            {{ $t('Setting your time line') }}
             <v-spacer></v-spacer>
           </v-btn>
           <v-btn v-else block text class="text-capitalize" small>
             <v-icon class="mr-2">mdi-account-cancel-outline</v-icon>
-            Block this user
+            {{ $t('Block this user') }}
             <v-spacer></v-spacer>
           </v-btn>
         </v-card>
@@ -46,7 +46,7 @@
       <v-card>
         <v-card-title class="font-weight-bold">
           <v-spacer></v-spacer>
-          Report this user
+          {{ $t('Report this user') }}
           <v-spacer></v-spacer>
           <v-btn icon class="grey lighten-2">
             <v-icon>mdi-close</v-icon>
@@ -54,9 +54,14 @@
         </v-card-title>
         <v-divider />
         <v-container>
-          Please choose the problem you had seen
+          {{ $t('Please choose the problem you had seen') }}
           <div class="text-body-2">
-            You only can report this personal page after choose one problem
+            '
+            {{
+              $t(
+                'You only can report this personal page after choose one problem'
+              )
+            }}
           </div>
           <v-list-item-group v-model="problem">
             <v-btn

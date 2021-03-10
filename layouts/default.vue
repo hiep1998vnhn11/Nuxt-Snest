@@ -9,8 +9,8 @@
 
       <v-spacer />
       <v-btn
-        v-if="currentUser"
         icon
+        v-if="currentUser"
         small
         class="mr-3"
         :to="
@@ -24,10 +24,23 @@
           <img :src="currentUser.profile_photo_path" />
         </v-avatar>
       </v-btn>
-      <button-message v-if="!$route.name.includes('messages')" />
-      <button-notification />
-      <button-setting />
+      <button-message
+        v-if="currentUser && $route.name && !$route.name.includes('messages')"
+      />
+      <button-notification v-if="currentUser" />
+      <button-setting v-if="currentUser" />
     </v-app-bar>
+    <v-slide-x-reverse-transition>
+      <notifications type="velocity">
+        <template slot="body" slot-scope="props">
+          <toast-notification
+            :title="props.item.title"
+            :content="props.item.text"
+            @onClose="props.close"
+          />
+        </template>
+      </notifications>
+    </v-slide-x-reverse-transition>
     <v-main ref="main">
       <v-container>
         <nuxt />
@@ -38,13 +51,11 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
+
 import axios from 'axios'
 export default {
   data() {
     return {
-      clipped: false,
-      drawer: false,
-      fixed: false,
       items: [
         {
           icon: 'mdi-apps',
@@ -57,16 +68,10 @@ export default {
           to: '/inspire'
         }
       ],
-      miniVariant: false,
-      right: true,
-      rightDrawer: false,
-      title: 'Vuetify.js',
-      loadingMessageCard: false,
       loading: false,
       error: null,
       searchKey: '',
-      searchSelected: false,
-      mini: false
+      searchSelected: false
     }
   },
   computed: {
@@ -189,5 +194,8 @@ html {
 }
 .hover-up {
   transition: 0.5s ease-in-out;
+}
+.avatar-outlined {
+  border: thin solid rgba(0, 0, 0, 0.12) !important;
 }
 </style>

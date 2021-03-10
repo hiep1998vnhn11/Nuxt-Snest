@@ -1,13 +1,8 @@
 <template>
-  <div>
-    <v-btn
-      block
-      @click="expand = true"
-      small
-      class="icon-background-header text-capitalize ml-2"
-    >
+  <div class="change-cover-photo-button">
+    <v-btn block @click="expand = true" small class="text-capitalize">
       <v-icon class="mr-2" color="black">mdi-camera</v-icon>
-      Change background image
+      {{ $t('EditCoverPhoto') }}
     </v-btn>
     <v-expand-transition>
       <v-card
@@ -16,22 +11,22 @@
           closeConditional
         }"
         v-show="expand"
-        width="200"
-        class="mx-auto"
+        max-width="400"
+        class="change-cover-photo-tooltip"
       >
         <v-btn text block class="text-capitalize" @click="dialog = true">
           <v-icon class="mr-3">mdi-image-multiple-outline</v-icon>
-          Select background
+          {{ $t('Select cover photo') }}
           <v-spacer />
         </v-btn>
         <v-btn text block class="text-capitalize" @click="dialog = true">
           <v-icon class="mr-3">mdi-cloud-upload-outline</v-icon>
-          Upload
+          {{ $t('Upload') }}
           <v-spacer />
         </v-btn>
         <v-btn text block class="text-capitalize" @click="removeDialog = true">
           <v-icon class="mr-3">mdi-trash-can-outline</v-icon>
-          Remove
+          {{ $t('Remove') }}
           <v-spacer />
         </v-btn>
       </v-card>
@@ -40,7 +35,7 @@
       <v-card :loading="loading">
         <v-card-title class="font-weight-bold">
           <v-spacer />
-          Upload your background
+          {{ $t('Upload your cover photo') }}
           <v-spacer />
           <v-btn
             icon
@@ -92,9 +87,9 @@
         <v-divider />
         <v-card-actions>
           <v-btn class="text-capitalize" text @click="preview">
-            Preview on your personal page
+            {{ $t('Preview on your personal page') }}
           </v-btn>
-          (To upload background, you must preview first!)
+          {{ $t('(To upload background, you must preview first!)') }}
           <v-spacer />
           <v-btn
             v-if="!!image"
@@ -102,27 +97,27 @@
             text
             class="text-capitalize primary"
           >
-            Upload
+            {{ $t('Upload') }}
           </v-btn>
           <v-btn
             text
             class="text-capitalize"
             @click="image ? (discardDialog = true) : (dialog = false)"
           >
-            Cancel
+            {{ $t('Cancel') }}
           </v-btn>
         </v-card-actions>
         <v-dialog v-model="discardDialog" persistent max-width="500">
           <v-card>
             <v-card-title class="font-weight-bold">
-              Remove this change?
+              {{ $t('Remove this change?') }}
               <v-spacer></v-spacer>
               <v-btn icon class="grey lighten-2" @click="discardDialog = false">
                 <v-icon>mdi-close</v-icon>
               </v-btn>
             </v-card-title>
             <v-card-text>
-              Are you sure about discard this change?
+              {{ $t('Are you sure about discard this change?') }}
             </v-card-text>
             <v-card-actions>
               <v-spacer></v-spacer>
@@ -131,10 +126,10 @@
                 text
                 @click="discardDialog = false"
               >
-                Cancel
+                {{ $t('Cancel') }}
               </v-btn>
               <v-btn class="primary text-capitalize" @click="onRemoveChange">
-                Agree
+                {{ $t('Agree') }}
               </v-btn>
             </v-card-actions>
           </v-card>
@@ -149,7 +144,7 @@
             <v-icon>mdi-arrow-left</v-icon>
           </v-btn>
           <v-spacer />
-          This is your presonal page after your change
+          {{ $t('This is your personal page after your change') }}
           <v-spacer></v-spacer>
         </v-card-title>
         <v-container>
@@ -175,14 +170,14 @@
     <v-dialog v-model="removeDialog" persistent max-width="500">
       <v-card :loading="loadingRemove">
         <v-card-title class="font-weight-bold">
-          Remove Background
+          {{ $t('Remove cover photo') }}
           <v-spacer></v-spacer>
           <v-btn icon class="grey lighten-2" @click="removeDialog = false">
             <v-icon>mdi-close</v-icon>
           </v-btn>
         </v-card-title>
         <v-card-text>
-          Are you sure about remove your background?
+          {{ $t('Are you sure about remove your cover photo?') }}
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
@@ -191,10 +186,10 @@
             text
             @click="removeDialog = false"
           >
-            Cancel
+            {{ $t('Cancel') }}
           </v-btn>
           <v-btn class="primary text-capitalize" @click="removeBackground">
-            Agree
+            {{ $t('Agree') }}
           </v-btn>
         </v-card-actions>
       </v-card>
@@ -314,9 +309,24 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss" scoped>
 .show-more-2 {
   position: fixed;
   z-index: 100;
+}
+
+.change-cover-photo-button {
+  position: absolute;
+  max-width: 100px;
+  min-width: 80px;
+  left: 10px;
+  bottom: 10px;
+  // background: red;
+  .change-cover-photo-tooltip {
+    position: absolute;
+    bottom: 30px;
+    left: 10px;
+    z-index: 10;
+  }
 }
 </style>
