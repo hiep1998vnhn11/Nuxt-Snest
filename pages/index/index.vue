@@ -18,21 +18,7 @@
           <div class="font-weight-bold text-capitalize">
             {{ currentUser.name }}
           </div>
-          <v-row class="mx-auto my-4" justify="center">
-            <v-btn
-              class="mx-1"
-              width="40"
-              height="40"
-              text
-              to="/"
-              icon
-              outlined
-              active-class="primary--text"
-            >
-              <v-icon>mdi-home</v-icon>
-            </v-btn>
-          </v-row>
-          <v-divider class="mx-4" />
+          <v-divider class="mx-4 mt-2" />
         </v-sheet>
       </template>
       <v-skeleton-loader
@@ -210,7 +196,7 @@ export default {
       try {
         await this.getThreshByUser(user)
       } catch (err) {
-        console.log(err.response.data.message)
+        this.$nuxt.error(err)
       }
     },
     async fetchData() {

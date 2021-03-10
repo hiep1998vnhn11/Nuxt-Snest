@@ -29,14 +29,14 @@ export default {
     },
     finish() {
       this.loading = false
-    },
-    fail(error) {
-      if (error.response) {
-        console.log(this.error.response.data.message)
-      } else {
-        console.log(error.toString())
-      }
     }
+    // fail(error) {
+    //   if (error.response) {
+    //     console.log(this.error.response.data.message)
+    //   } else {
+    //     console.log(error.toString())
+    //   }
+    // }
   },
   created() {},
   mounted() {},

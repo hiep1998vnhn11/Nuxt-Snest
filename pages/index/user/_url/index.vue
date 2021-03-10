@@ -1,16 +1,34 @@
 <template>
   <v-row>
     <v-col cols="12" md="4">
-      <base-user-info v-if="!!user && !!currentUser" :user="user" />
-      <base-user-friend v-if="user" :user="user"></base-user-friend>
+      <v-skeleton-loader
+        v-if="loadingUser"
+        class="mx-auto mt-3"
+        type="card"
+      ></v-skeleton-loader>
+      <div v-else>
+        <base-user-info v-if="!!user && !!currentUser" :user="user" />
+        <base-user-friend v-if="user" :user="user"></base-user-friend>
+      </div>
     </v-col>
 
     <v-col cols="12" md="8">
+      <v-skeleton-loader
+        v-if="loadingUser"
+        class="mx-auto mt-3"
+        type="card"
+      ></v-skeleton-loader>
       <post-create
-        v-if="!!user && !!currentUser && user.id === currentUser.id"
+        v-else-if="!!user && !!currentUser && user.id === currentUser.id"
         class="mt-3"
       ></post-create>
-      <v-card class="mt-3 rounded-lg" tile outlined>
+
+      <v-skeleton-loader
+        v-if="loadingUser"
+        class="mx-auto mt-3"
+        type="card"
+      ></v-skeleton-loader>
+      <v-card v-else class="mt-3 rounded-lg" tile outlined>
         <v-card-title class="font-weight-bold">
           {{ $t('Posts') }}
           <v-spacer />
@@ -128,7 +146,7 @@
 <script>
 import { mapActions, mapGetters } from 'vuex'
 export default {
-  props: ['user'],
+  props: ['user', 'loadingUser'],
   data() {
     return {
       loading: false,

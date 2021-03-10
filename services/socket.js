@@ -11,14 +11,12 @@ const socketService = {
     window.socket.on(
       'receiptMessage',
       ({ userId, roomId, message, userName }) => {
-        context.store.commit('message/RECEIVED_MESSAGE', message, {
-          root: true
-        })
-        context.store.commit(
-          'thresh/RECEIVED_MESSAGE',
-          { message, userName },
-          { root: true }
-        )
+        if (
+          Number(context.store.getters['message/thresh'].id) ===
+          Number(message.thresh_id)
+        ) {
+          context.store.commit('message/RECEIVED_MESSAGE', message)
+        }
       }
     )
 

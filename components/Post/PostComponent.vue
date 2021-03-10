@@ -71,6 +71,47 @@
 
     <v-divider class="mx-4"></v-divider>
 
+    <transition name="fade">
+      <v-toolbar v-if="isLoggedIn && currentUser" flat rounded="lg">
+        <v-avatar class="avatar-outlined mr-4" size="40">
+          <img :src="currentUser.profile_photo_path" :alt="currentUser.name" />
+        </v-avatar>
+        <v-text-field
+          background-color="grey lighten-3"
+          dense
+          flat
+          hint
+          autocomplete="off"
+          hide-details
+          rounded
+          solo
+          :label="$t('WriteAComment')"
+          v-model="comment"
+          append-icon="mdi-file-image-outline"
+          @click:append="upload"
+          @keydown.enter="onComment"
+          :loading="loadingCreate"
+          @focus="showComment = true"
+        >
+        </v-text-field>
+        <v-btn
+          class="ml-3 mr-0"
+          width="40"
+          height="40"
+          icon
+          text
+          outlined
+          @click="onComment"
+        >
+          <v-icon>mdi-send</v-icon>
+        </v-btn>
+      </v-toolbar>
+    </transition>
+
+    <v-expand-x-transition>
+      <v-divider v-if="showComment" class="mx-4" />
+    </v-expand-x-transition>
+
     <!-- post comments -->
     <v-expand-transition>
       <v-container v-if="showComment">
@@ -218,46 +259,6 @@
         </div>
       </v-container>
     </v-expand-transition>
-    <v-expand-x-transition>
-      <v-divider v-if="showComment" class="mx-4" />
-    </v-expand-x-transition>
-
-    <transition name="fade">
-      <v-toolbar v-if="isLoggedIn && currentUser" flat rounded="lg">
-        <v-avatar class="avatar-outlined mr-4" size="40">
-          <img :src="currentUser.profile_photo_path" :alt="currentUser.name" />
-        </v-avatar>
-        <v-text-field
-          background-color="grey lighten-3"
-          dense
-          flat
-          hint
-          autocomplete="off"
-          hide-details
-          rounded
-          solo
-          :label="$t('WriteAComment')"
-          v-model="comment"
-          append-icon="mdi-file-image-outline"
-          @click:append="upload"
-          @keydown.enter="onComment"
-          :loading="loadingCreate"
-          @focus="showComment = true"
-        >
-        </v-text-field>
-        <v-btn
-          class="ml-3 mr-0"
-          width="40"
-          height="40"
-          icon
-          text
-          outlined
-          @click="onComment"
-        >
-          <v-icon>mdi-send</v-icon>
-        </v-btn>
-      </v-toolbar>
-    </transition>
 
     <!-- delete dialog -->
     <v-dialog v-model="deleteDialog" max-width="290">

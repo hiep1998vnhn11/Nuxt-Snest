@@ -9,8 +9,8 @@
 
       <v-spacer />
       <v-btn
-        v-if="currentUser"
         icon
+        v-if="currentUser"
         small
         class="mr-3"
         :to="
@@ -24,9 +24,11 @@
           <img :src="currentUser.profile_photo_path" />
         </v-avatar>
       </v-btn>
-      <button-message v-if="!$route.name.includes('messages')" />
-      <button-notification />
-      <button-setting />
+      <button-message
+        v-if="currentUser && $route.name && !$route.name.includes('messages')"
+      />
+      <button-notification v-if="currentUser" />
+      <button-setting v-if="currentUser" />
     </v-app-bar>
     <v-slide-x-reverse-transition>
       <notifications type="velocity">
@@ -54,9 +56,6 @@ import axios from 'axios'
 export default {
   data() {
     return {
-      clipped: false,
-      drawer: false,
-      fixed: false,
       items: [
         {
           icon: 'mdi-apps',
@@ -69,16 +68,10 @@ export default {
           to: '/inspire'
         }
       ],
-      miniVariant: false,
-      right: true,
-      rightDrawer: false,
-      title: 'Vuetify.js',
-      loadingMessageCard: false,
       loading: false,
       error: null,
       searchKey: '',
-      searchSelected: false,
-      mini: false
+      searchSelected: false
     }
   },
   computed: {

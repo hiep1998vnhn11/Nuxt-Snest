@@ -1,32 +1,32 @@
 <template>
-  <div v-if="participant">
+  <div v-if="thresh">
     <v-app-bar absolute clipped-right flat>
       <v-badge
         bordered
         bottom
         color="deep-purple accent-4"
         dot
-        :value="participant.online_status.status"
+        :value="thresh.participants.online_status.status"
         offset-x="12"
         offset-y="12"
       >
         <v-avatar class="avatar-outlined">
-          <v-img :src="participant.profile_photo_path"></v-img>
+          <v-img :src="thresh.participants.profile_photo_path"></v-img>
         </v-avatar>
       </v-badge>
       <v-list-item two-line>
         <v-list-item-content>
           <v-list-item-title
             class="font-weight-bold text-capitalize"
-            v-text="participant.name"
+            v-text="thresh.participants.name"
           />
           <v-list-item-subtitle>
-            <span v-if="participant.online_status.status">
+            <span v-if="thresh.participants.online_status.status">
               {{ $t('Active Now') }}
             </span>
             <span v-else>
               {{ $t('Active') }}
-              {{ participant.online_status.time | relativeTime }}
+              {{ thresh.participants.online_status.time | relativeTime }}
             </span>
           </v-list-item-subtitle>
         </v-list-item-content>
@@ -127,19 +127,19 @@
       <template v-slot:prepend>
         <div class="text-center mt-5">
           <v-avatar class="avatar-outlined" size="100">
-            <img :src="participant.profile_photo_path" />
+            <img :src="thresh.participants.profile_photo_path" />
           </v-avatar>
           <div class="font-weight-bold text-capitalize mt-2">
             <nuxt-link
               :to="
                 localePath({
                   name: 'index-user-url',
-                  params: { url: participant.url }
+                  params: { url: thresh.participants.url }
                 })
               "
               class="black--text text-decoration-none"
             >
-              {{ participant.name }}
+              {{ thresh.participants.name }}
             </nuxt-link>
           </div>
         </div>
@@ -236,17 +236,18 @@
             : true
         "
         class="d-flex align-end"
-        :user="participant"
+        :user="thresh.participants"
       />
     </div>
   </div>
   <div v-else>
-    {{ $route.params.room_id }}
+    {{ messages }}
   </div>
 </template>
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
+import axios from 'axios'
 
 export default {
   data() {
@@ -260,21 +261,8 @@ export default {
   },
   computed: {
     ...mapGetters('user', ['currentUser']),
-    ...mapGetters('message', ['messages']),
-    ...mapGetters('thresh', ['participant']),
+    ...mapGetters('message', ['messages', 'thresh']),
     ...mapGetters('app', ['mini', 'drawer']),
-    classes() {
-      return !this.drawer ? '' : this.mini ? 'ml-8rem' : 'ml-22rem'
-    },
-    classRight() {
-      return this.rightDrawer ? 'mr-22rem' : ''
-    },
-    classMessage() {
-      return !this.drawer ? 'left-0rem' : this.mini ? 'left-5rem' : 'left-22rem'
-    },
-    classMessageRight() {
-      return this.rightDrawer ? 'right-22rem' : 'right-0rem'
-    },
     breakPoint() {
       return this.$vuetify.breakpoint.name
     },
@@ -292,63 +280,75 @@ export default {
     if (this.load) this.load = false
     else this.scrollToBottom()
   },
-  async mounted() {
-    await this.fetchData()
+  mounted() {
+    this.setDefaultMessage()
+    this.fetchData()
     // this.scrollToBottom()
   },
   middleware: 'auth',
   methods: {
-    ...mapActions('message', [
-      'getMessage',
-      'setDefaultMessage',
-      'sendMessage'
-    ]),
+    ...mapActions('message', ['setDefaultMessage', 'getMessageCard']),
     ...mapActions('thresh', ['getParticipant']),
     async fetchData() {
       this.loading = true
       try {
-        await this.getParticipant(this.$route.params.room_id)
-        await this.getMessage(this.$route.params.room_id)
+        let url = `/v1/user/thresh/${this.$route.params.room_id}/participant/get`
+        const response = await axios.post(url)
+        if (response.data.data)
+          this.$store.commit('message/SET_THRESH', {
+            id: this.$route.params.room_id,
+            participants: response.data.data
+          })
+        await this.getMessageCard()
       } catch (err) {
-        this.error = err.toString()
+        this.$nuxt.error(err)
       }
       this.loading = false
     },
     async fetchMessage() {
       this.loading = true
       try {
-        await this.getMessage(this.$route.params.room_id)
+        await this.getMessageCard()
       } catch (err) {
-        this.error = err.toString()
+        this.$nuxt.error(err)
       }
       this.loading = false
-      this.load = true
     },
     convertInfo() {
       this.$emit('convert-info')
     },
     async onSendMessage() {
-      if (!this.text.length) return
-      const message = {
-        id: Math.random(),
-        thresh_id: this.$route.params.room_id,
-        user_id: this.currentUser.id,
-        content: this.text,
-        user: {
-          id: this.currentUser.id,
-          name: this.currentUser.name
+      if (this.text) {
+        const message = {
+          id: Math.random(),
+          thresh_id: this.$route.params.room_id,
+          user_id: this.currentUser.id,
+          content: this.text,
+          user: {
+            id: this.currentUser.id,
+            name: this.currentUser.name
+          }
         }
+        this.$store.commit('message/SEND_MESSAGE', message)
+        this.text = ''
+        try {
+          const url = `/v1/user/thresh/${this.thresh.id}/message/send`
+          const response = await axios.post(url, {
+            content: message.content
+          })
+          if (this.thresh.participants.id !== this.currentUser.id) {
+            window.socket.emit('sendToUser', {
+              userId: this.thresh.participants.id,
+              roomId: this.$route.params.room_id,
+              message: response.data.data,
+              userName: this.thresh.participants.name
+            })
+          }
+        } catch (err) {
+          this.$nuxt.error(err)
+        }
+        this.load = true
       }
-      if (this.participant.id !== this.currentUser.id) {
-        window.socket.emit('sendToUser', {
-          userId: this.participant.id,
-          roomId: this.$route.params.room_id,
-          message,
-          userName: this.participant.name
-        })
-      }
-      this.text = ''
-      await this.sendMessage(message)
     },
     scrollToBottom() {
       const container = this.$el.querySelector('#messageContainer')
@@ -356,6 +356,9 @@ export default {
     },
     intersected() {
       this.fetchMessage()
+    },
+    newLine() {
+      console.log('new line')
     }
   }
 }
