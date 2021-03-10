@@ -137,8 +137,4 @@ export default {
   top: 100px;
   right: 10px;
 }
-
-.avatar-outlined {
-  border: thin solid rgba(0, 0, 0, 0.12) !important;
-}
 </style>

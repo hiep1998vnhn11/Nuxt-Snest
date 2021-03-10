@@ -96,9 +96,5 @@ const messages = [
 
 ### Doing
 
-1. Thời gian online đang sai
-2. Like Action: Lỗi can thiệp vuex state không thông qua mutation
-3. Message:
-
-- Phần card ở ngoài màn hình hiện đang chung ???
-- Cần sửa gấp
+1. USer param hiện đang chưa có ỉntersect
+2. Css friend param user

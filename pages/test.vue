@@ -23,11 +23,7 @@ export default {
     title: String,
     content: String
   },
-  methods: {
-    onToast() {
-      this.$notify('Hello!')
-    }
-  },
+  methods: {},
   created() {},
   mounted() {
     // setTimeout(() => {

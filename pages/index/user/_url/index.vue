@@ -28,7 +28,14 @@
         class="mx-auto mt-3"
         type="card"
       ></v-skeleton-loader>
-      <v-card v-else class="mt-3 rounded-lg" tile outlined>
+      <v-card
+        v-else
+        :class="`mt-3 rounded-lg hover-up elevation-${elevationFilter}`"
+        tile
+        @mouseleave="hoverFilter = false"
+        @mouseenter="hoverFilter = true"
+        outlined
+      >
         <v-card-title class="font-weight-bold">
           {{ $t('Posts') }}
           <v-spacer />
@@ -74,9 +81,8 @@
           :key="post.id"
           :post="post"
         ></post-component>
-        <observer @intersect="intersected"></observer>
       </div>
-      <div v-else-if="!loading">not have</div>
+      <observer @intersect="intersected"></observer>
       <v-skeleton-loader
         v-if="loading"
         class="mx-auto mt-3"
@@ -162,6 +168,9 @@ export default {
       ),
       day: null,
       month: null,
+      hoverFilter: false,
+      hoverIntro: false,
+      hoverFriend: false,
       months: [
         {
           text: this.$t('month.1'),
@@ -244,7 +253,7 @@ export default {
       this.error = null
       this.loading = true
       try {
-        this.getUserPost(payload)
+        await this.getUserPost(payload)
       } catch (err) {
         this.error = err.toString()
       }
@@ -259,9 +268,6 @@ export default {
     onDone() {
       this.filterDialog = false
     }
-  },
-  mounted() {
-    this.fetchData()
   },
   computed: {
     ...mapGetters('post', ['userPost']),
@@ -281,6 +287,15 @@ export default {
         default:
           return Array.from({ length: 30 }, (_, i) => i + 1)
       }
+    },
+    elevationFilter() {
+      return this.hoverFilter ? 24 : 3
+    },
+    elevationIntro() {
+      return this.hoverIntro ? 24 : 3
+    },
+    elevationFriend() {
+      return this.hoverFriend ? 24 : 3
     }
   },
   watch: {

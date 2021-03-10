@@ -481,18 +481,9 @@ export default {
 </script>
 
 <style scoped>
-.avatar-outlined {
-  border: thin solid rgba(0, 0, 0, 0.12) !important;
-}
-
 .z-index-4 {
   z-index: 4;
 }
-
-.avatar-outlined {
-  border: thin solid rgba(0, 0, 0, 0.12) !important;
-}
-
 .fixed {
   position: fixed;
   z-index: 999;

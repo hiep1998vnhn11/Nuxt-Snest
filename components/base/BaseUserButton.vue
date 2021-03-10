@@ -46,9 +46,3 @@ export default {
   }
 }
 </script>
-
-<style>
-.avatar-outlined {
-  border: thin solid rgba(0, 0, 0, 0.12) !important;
-}
-</style>

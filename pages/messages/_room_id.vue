@@ -211,7 +211,6 @@
           <template v-slot:activator>
             <v-list-item-title v-text="$t('SharedPhoto')"></v-list-item-title>
           </template>
-          hello
         </v-list-group>
       </v-list>
     </v-navigation-drawer>

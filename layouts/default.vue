@@ -195,4 +195,7 @@ html {
 .hover-up {
   transition: 0.5s ease-in-out;
 }
+.avatar-outlined {
+  border: thin solid rgba(0, 0, 0, 0.12) !important;
+}
 </style>

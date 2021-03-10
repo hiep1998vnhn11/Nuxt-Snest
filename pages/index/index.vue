@@ -5,10 +5,11 @@
       v-model="drawer"
       v-if="currentUser"
       clipped
-      bottom
       width="22rem"
       fixed
+      flat
       app
+      style="z-index: 3;"
     >
       <template v-slot:prepend>
         <v-sheet class="text-center mt-3">
@@ -56,35 +57,12 @@
       </template>
     </v-navigation-drawer>
 
-    <v-container>
-      <post-create :loading="loading_user"></post-create>
-      <div class="mt-3" v-if="posts.length">
-        <post-component
-          class="mt-3"
-          v-for="(post, index) in posts"
-          :key="post.creadted"
-          :post="post"
-          @onLike="onLike(index, post)"
-          @onSubComment="onComment(index, post)"
-          @onComment="onComment(index, post)"
-        ></post-component>
-      </div>
-      <div v-else>Not have</div>
-      <observer @intersect="intersected"></observer>
-      <v-skeleton-loader
-        v-if="loading"
-        class="mx-auto mt-3"
-        type="card"
-      ></v-skeleton-loader>
-    </v-container>
-
     <!-- sidebar right -->
     <v-navigation-drawer
       v-model="drawer"
       v-if="currentUser"
       clipped
       width="22rem"
-      mini-variant-width="5rem"
       fixed
       flat
       right
@@ -134,6 +112,26 @@
         </div>
       </div>
     </v-navigation-drawer>
+
+    <post-create :loading="loading_user"></post-create>
+    <div class="mt-3" v-if="posts.length">
+      <post-component
+        class="mt-3"
+        v-for="(post, index) in posts"
+        :key="post.creadted"
+        :post="post"
+        @onLike="onLike(index, post)"
+        @onSubComment="onComment(index, post)"
+        @onComment="onComment(index, post)"
+      ></post-component>
+    </div>
+    <div v-else>Not have</div>
+    <observer @intersect="intersected"></observer>
+    <v-skeleton-loader
+      v-if="loading"
+      class="mx-auto mt-3"
+      type="card"
+    ></v-skeleton-loader>
   </div>
 </template>
 

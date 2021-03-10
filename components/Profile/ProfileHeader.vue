@@ -7,14 +7,13 @@
     <v-container v-else-if="!!user">
       <v-card justify="center" class="mx-auto" max-width="100%" height="400">
         <v-img class="align-end" width="100%" height="400" :src="background">
+          <profile-change-background
+            :avatar="user.profile_photo_path"
+            v-if="current"
+            @changed-background="$emit('changed-background')"
+          ></profile-change-background>
           <v-row>
-            <v-col cols="4">
-              <profile-change-background
-                :avatar="user.profile_photo_path"
-                v-if="current"
-                @changed-background="$emit('changed-background')"
-              ></profile-change-background>
-            </v-col>
+            <v-col cols="4"> </v-col>
             <v-col cols="4" class="text-center">
               <v-avatar size="150" class="avatar-outlined">
                 <img :src="user.profile_photo_path" />
@@ -47,19 +46,12 @@
       <div class="text-center text-h4 mt-3 text-capitalize font-weight-bold">
         {{ user.name }}
       </div>
-      <div class="text-center">
+      <div class="text-center mb-2">
         <div v-if="user.info.story">
           {{ user.info.story }}
         </div>
-        <a
-          v-if="current"
-          @click="
-            changeStory = true
-            story = user.info.story ? user.info.story : ''
-          "
-        >
-          <p v-if="!user.info.story">Create your story</p>
-          <p v-else>Change</p>
+        <a @click="onOpenChangeStory" v-if="current">
+          {{ !user.info.story ? $t('Create your story') : $t('Change') }}
         </a>
         <v-card
           :loading="loadingChangeStory"
@@ -85,12 +77,9 @@
               outlined
               class="text-capitalize"
               small
-              @click="
-                changeStory = false
-                story = ''
-              "
+              @click="onCancelChangeStory"
             >
-              Cancel
+              {{ $t('Cancel') }}
             </v-btn>
             <v-btn
               text
@@ -98,7 +87,7 @@
               @click="onChangeStory"
               small
             >
-              Save
+              {{ $t('Save') }}
             </v-btn>
           </v-card-actions>
         </v-card>
@@ -161,7 +150,7 @@
           :to="localePath({ name: 'Message' })"
         >
           <v-icon class="mr-2">mdi-account-cancel</v-icon>
-          Chat
+          {{ $t('Chat') }}
         </v-btn>
         <v-btn
           disabled
@@ -171,7 +160,7 @@
           text
         >
           <v-icon class="mr-2">mdi-account-cancel</v-icon>
-          You had blocked this user
+          {{ $t('You had blocked this user') }}
         </v-btn>
         <v-btn
           disabled
@@ -181,7 +170,7 @@
           text
         >
           <v-icon class="mr-2">mdi-account-cancel</v-icon>
-          You had been blocked
+          {{ $t('You had been blocked') }}
         </v-btn>
         <v-btn
           :loading="loadingAddFriend"
@@ -193,7 +182,7 @@
           @click="onCancelFriend"
         >
           <v-icon class="mr-2">mdi-account-cancel</v-icon>
-          Cancel invitation
+          {{ $t('Cancel invitation') }}
         </v-btn>
         <v-btn
           :loading="loadingAddFriend"
@@ -205,7 +194,7 @@
           @click="onAcceptFriend"
         >
           <v-icon class="mr-2">mdi-account-cancel</v-icon>
-          Accept invitation friend
+          {{ $t('Accept invitation friend') }}
         </v-btn>
         <v-tooltip v-if="current" bottom>
           <template v-slot:activator="{ on, attrs }">
@@ -220,7 +209,7 @@
               <v-icon>mdi-eye</v-icon>
             </v-btn>
           </template>
-          <span>View mode</span>
+          <span>{{ $t('View mode') }}</span>
         </v-tooltip>
         <v-tooltip v-else bottom>
           <template v-slot:activator="{ on, attrs }">
@@ -235,7 +224,7 @@
               <v-icon>mdi-facebook-messenger</v-icon>
             </v-btn>
           </template>
-          <span>Message</span>
+          <span>{{ $t('Message') }}</span>
         </v-tooltip>
         <v-tooltip bottom>
           <template v-slot:activator="{ on, attrs }">
@@ -250,7 +239,7 @@
               <v-icon>mdi-magnify</v-icon>
             </v-btn>
           </template>
-          <span>Search on this personal page</span>
+          <span>{{ $t('Search on this personal page') }}</span>
         </v-tooltip>
         <profile-more-icon :current="current"></profile-more-icon>
       </v-toolbar>
@@ -259,7 +248,7 @@
       <v-card>
         <v-card-title class="font-weight-bold">
           <v-spacer></v-spacer>
-          Update your avatar
+          {{ $t('Update your avatar') }}
           <v-spacer></v-spacer>
           <v-btn
             icon
@@ -282,13 +271,13 @@
                 @click="uploadAvatarDialog = true"
               >
                 <v-icon class="mr-2">mdi-plus</v-icon>
-                Upload image
+                {{ $t('Upload') }}
               </v-btn>
             </v-col>
             <v-col cols="5">
               <v-btn class="text-capitalize" block text outlined>
                 <v-icon class="mr-2">mdi-image</v-icon>
-                Create frame
+                {{ $t('Create frame') }}
               </v-btn>
             </v-col>
             <v-col>
@@ -311,23 +300,15 @@
       <v-card v-if="!avatarPreview" :loading="loadingAvatar">
         <v-card-title>
           <v-spacer />
-          Upload image to change your avatar
+          {{ $t('Upload image to change your avatar') }}
           <v-spacer />
-          <v-btn
-            icon
-            class="grey ligthen-2"
-            @click="
-              $refs.vueavatar || image
-                ? (dialog = true)
-                : (uploadAvatarDialog = false)
-            "
-          >
+          <v-btn icon class="grey ligthen-2" @click="onCloseUploadAvatar">
             <v-icon>mdi-close</v-icon>
           </v-btn>
         </v-card-title>
         <v-divider />
         <v-container>
-          Select your image to upload:
+          {{ $t('Select your image to upload:') }}
 
           <v-row class="mx-auto">
             <vue-avatar
@@ -380,7 +361,7 @@
             @click="avatarPreview = true"
             :disabled="!avatarPreviewSrc"
           >
-            Preview in your presonal page
+            {{ $t('Preview in your personal page') }}
           </v-btn>
           <v-spacer />
           <v-btn
@@ -389,7 +370,7 @@
             text
             class="primary text-capitalize"
           >
-            Save
+            {{ $t('Save') }}
           </v-btn>
           <v-btn
             v-else
@@ -397,7 +378,7 @@
             text
             class="primary text-capitalize"
           >
-            Cancel
+            {{ $t('Cancel') }}
           </v-btn>
         </v-card-actions>
       </v-card>
@@ -407,7 +388,7 @@
             <v-icon>mdi-arrow-left</v-icon>
           </v-btn>
           <v-spacer />
-          Preview your personal page before your change
+          {{ $t('Preview your personal page before your change') }}
           <v-spacer />
         </v-card-title>
         <v-container>
@@ -433,13 +414,15 @@
     <v-dialog v-model="dialog" persistent max-width="500">
       <v-card>
         <v-card-title class="font-weight-bold">
-          Remove this change?
+          {{ $t('Remove this change?') }}
           <v-spacer></v-spacer>
           <v-btn icon class="grey lighten-2" @click="dialog = false">
             <v-icon>mdi-close</v-icon>
           </v-btn>
         </v-card-title>
-        <v-card-text> Are you sure about discard this change? </v-card-text>
+        <v-card-text>
+          {{ $t('Are you sure about discard this change?') }}
+        </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn
@@ -447,10 +430,10 @@
             text
             @click="dialog = false"
           >
-            Cancel
+            {{ $t('Cancel') }}
           </v-btn>
           <v-btn class="primary text-capitalize" @click="onRemoveChange">
-            Agree
+            {{ $t('Agree') }}
           </v-btn>
         </v-card-actions>
       </v-card>
@@ -539,6 +522,18 @@ export default {
         this.loadingChangeStory = false
         this.changeStory = false
       }
+    },
+    onCloseUploadAvatar() {
+      if (this.$refs.vueavatar || image) dialog = true
+      else uploadAvatarDialog = false
+    },
+    onOpenChangeStory() {
+      changeStory = true
+      story = user.info.story ? user.info.story : ''
+    },
+    onCancelChangeStory() {
+      changeStory = false
+      story = ''
     },
     saveClicked: function saveClicked() {
       this.image = this.$refs.vueavatar.getImageScaled()
