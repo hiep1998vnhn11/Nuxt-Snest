@@ -1,31 +1,23 @@
 .<template>
   <div>
-    <error v-if="!$route.params.url" :error="{ statusCode: 404 }"></error>
-    <div v-else>
-      <base-not-display v-if="!loading && !paramUser" />
-      <profile-header
-        :user="paramUser"
-        :loading="loading"
-        class="index-3"
-        @changed-avatar="fetchData(true)"
-        @changed-background="fetchData(true)"
-        @changed-status-friend-accepted="changeStatusFriendAccept"
-        @changed-status-friend-denied="changeStatusFriendDenied"
-        @changed-status-friend-added="changeStatusFriendAdded"
-      ></profile-header>
-      <nuxt-child :user="paramUser"></nuxt-child>
-    </div>
+    <profile-header
+      :user="paramUser"
+      :loading="loading"
+      class="index-3"
+      @changed-avatar="fetchData(true)"
+      @changed-background="fetchData(true)"
+      @changed-status-friend-accepted="changeStatusFriendAccept"
+      @changed-status-friend-denied="changeStatusFriendDenied"
+      @changed-status-friend-added="changeStatusFriendAdded"
+    ></profile-header>
+    <nuxt-child :user="paramUser" :loadingUser="loading"></nuxt-child>
   </div>
 </template>
 
 <script>
 import axios from 'axios'
 import { mapGetters } from 'vuex'
-import Error from '@/layouts/error'
 export default {
-  components: {
-    Error
-  },
   head() {
     return {
       title: this.loading
@@ -38,8 +30,7 @@ export default {
   data() {
     return {
       paramUser: null,
-      loading: false,
-      error: null
+      loading: false
     }
   },
   async created() {
@@ -55,7 +46,6 @@ export default {
       if (this.paramUser && userUrl === this.paramUser.url && reload !== true) {
         return
       }
-      this.error = null
       this.loading = true
       try {
         const url = this.isLoggedIn ? '/v1/user/get_user' : '/v1/guest/user/get'
@@ -66,8 +56,8 @@ export default {
         })
         this.paramUser = response.data.data
       } catch (err) {
+        this.$nuxt.error(err)
         this.paramUser = null
-        this.error = err.toString()
       }
       this.loading = false
     },

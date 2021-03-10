@@ -5,10 +5,11 @@
       v-model="drawer"
       v-if="currentUser"
       clipped
-      bottom
       width="22rem"
       fixed
+      flat
       app
+      style="z-index: 3;"
     >
       <template v-slot:prepend>
         <v-sheet class="text-center mt-3">
@@ -18,21 +19,7 @@
           <div class="font-weight-bold text-capitalize">
             {{ currentUser.name }}
           </div>
-          <v-row class="mx-auto my-4" justify="center">
-            <v-btn
-              class="mx-1"
-              width="40"
-              height="40"
-              text
-              to="/"
-              icon
-              outlined
-              active-class="primary--text"
-            >
-              <v-icon>mdi-home</v-icon>
-            </v-btn>
-          </v-row>
-          <v-divider class="mx-4" />
+          <v-divider class="mx-4 mt-2" />
         </v-sheet>
       </template>
       <v-skeleton-loader
@@ -70,33 +57,12 @@
       </template>
     </v-navigation-drawer>
 
-    <v-container>
-      <post-create :loading="loading_user"></post-create>
-      <div class="mt-3" v-if="posts.length">
-        <post-component
-          class="mt-3"
-          v-for="(post, index) in posts"
-          :key="post.creadted"
-          :post="post"
-          @onLike="onLike(index, post)"
-        ></post-component>
-      </div>
-      <div v-else>Not have</div>
-      <observer @intersect="intersected"></observer>
-      <v-skeleton-loader
-        v-if="loading"
-        class="mx-auto mt-3"
-        type="card"
-      ></v-skeleton-loader>
-    </v-container>
-
     <!-- sidebar right -->
     <v-navigation-drawer
       v-model="drawer"
       v-if="currentUser"
       clipped
       width="22rem"
-      mini-variant-width="5rem"
       fixed
       flat
       right
@@ -107,8 +73,8 @@
       <div>
         <div class="trending-card">
           <div class="box">
+            <h2>{{ $t('Trending') }}</h2>
             <div class="content">
-              <h2>{{ $t('Trending') }}</h2>
               <transition name="slide-fade">
                 <div>
                   <p
@@ -128,8 +94,8 @@
 
       <div class="suggestion-card">
         <div class="box">
+          <h2>{{ $t('Suggestions') }}</h2>
           <div class="content">
-            <h2>{{ $t('Suggestions') }}</h2>
             <transition name="slide-fade">
               <div>
                 <p
@@ -146,6 +112,26 @@
         </div>
       </div>
     </v-navigation-drawer>
+
+    <post-create :loading="loading_user"></post-create>
+    <div class="mt-3" v-if="posts.length">
+      <post-component
+        class="mt-3"
+        v-for="(post, index) in posts"
+        :key="post.creadted"
+        :post="post"
+        @onLike="onLike(index, post)"
+        @onSubComment="onComment(index, post)"
+        @onComment="onComment(index, post)"
+      ></post-component>
+    </div>
+    <div v-else>Not have</div>
+    <observer @intersect="intersected"></observer>
+    <v-skeleton-loader
+      v-if="loading"
+      class="mx-auto mt-3"
+      type="card"
+    ></v-skeleton-loader>
   </div>
 </template>
 
@@ -208,7 +194,7 @@ export default {
       try {
         await this.getThreshByUser(user)
       } catch (err) {
-        console.log(err.response.data.message)
+        this.$nuxt.error(err)
       }
     },
     async fetchData() {
@@ -232,6 +218,9 @@ export default {
       }
       let url = `/v1/user/post/${this.posts[index].id}/handle_like`
       await axios.post(url)
+    },
+    onComment(index, post) {
+      this.$store.commit('post/COMMENTED_POST', index)
     }
   }
 }
@@ -282,25 +271,25 @@ export default {
       transform: translateY(-10px);
       box-shadow: 0 40px 70px rgba(0, 0, 0, 0.5);
       .content {
-        h2 {
-          opacity: 0.8;
-          transform: translateY(calc(-155px + 50%));
-          font-size: 1.8rem;
-          transition: 0.5s ease-in-out;
-        }
+        display: flex;
       }
+      h2 {
+        opacity: 0.8;
+        transform: translateY(calc(-180px + 50%));
+        font-size: 1.8rem;
+        transition: 0.5s ease-in-out;
+      }
+    }
+    h2 {
+      position: absolute;
+      opacity: 0.2;
+      font-size: 3rem;
+      font-weight: 900;
+      transition: 0.5s ease-in-out;
     }
     .content {
       padding: 20px;
       text-align: center;
-      h2 {
-        position: absolute;
-        left: 20px;
-        opacity: 0.2;
-        font-size: 3rem;
-        font-weight: 900;
-        transition: 0.5s ease-in-out;
-      }
       h3 {
         font-size: 1.8rem;
         z-index: 1000;
@@ -337,26 +326,24 @@ export default {
       transition: 0.5s ease-in-out;
       transform: translateY(-10px);
       box-shadow: 0 40px 70px rgba(0, 0, 0, 0.5);
-      .content {
-        h2 {
-          opacity: 0.8;
-          transform: translateY(calc(-105px + 50%));
-          font-size: 1.8rem;
-          transition: 0.5s ease-in-out;
-        }
+      h2 {
+        opacity: 0.8;
+        transform: translateY(calc(-130px + 50%));
+        font-size: 1.8rem;
+        transition: 0.5s ease-in-out;
       }
+    }
+    h2 {
+      position: absolute;
+      opacity: 0.2;
+      font-size: 3rem;
+      font-weight: 900;
+      transition: 0.5s ease-in-out;
     }
     .content {
       padding: 20px;
       text-align: center;
-      h2 {
-        position: absolute;
-        left: 20px;
-        opacity: 0.2;
-        font-size: 3rem;
-        font-weight: 900;
-        transition: 0.5s ease-in-out;
-      }
+
       h3 {
         font-size: 1.225rem;
         z-index: 1000;

@@ -343,10 +343,6 @@ export default {
 </script>
 
 <style scoped>
-.avatar-outlined {
-  border: thin solid rgba(0, 0, 0, 0.12) !important;
-}
-
 .fixed {
   position: fixed;
   z-index: 999;

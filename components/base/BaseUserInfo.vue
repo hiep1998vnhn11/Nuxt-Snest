@@ -1,5 +1,9 @@
 <template>
-  <v-card class="rounded-lg mt-3">
+  <v-card
+    :class="`rounded-lg mt-3 hover-up elevation-${hover ? 24 : 3}`"
+    @mouseleave="hover = false"
+    @mouseenter="hover = true"
+  >
     <v-container>
       <div class="font-weight-black text-body-1">
         {{ $t('profile.Intro') }}
@@ -425,6 +429,7 @@ export default {
         details: '',
         status: true
       },
+      hover: false,
       status: null,
       text: null,
       details: null,
