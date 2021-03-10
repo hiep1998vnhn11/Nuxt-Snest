@@ -322,5 +322,6 @@ export default {
   Contacts: 'Contacts',
   Infomation: 'Information',
   AddFriend: 'Add friend',
-  Suggestions: 'Suggestions'
+  Suggestions: 'Suggestions',
+  Reply: 'Reply'
 }

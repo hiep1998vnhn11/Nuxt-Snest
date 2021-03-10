@@ -36,19 +36,26 @@
 
     <!-- post like and comment count -->
     <v-toolbar flat>
-      <v-btn
-        class="text-capitalize rounded-lg"
-        text
-        @click="onLike"
-        :ripple="false"
-        outlined
-      >
-        <v-icon v-if="!post.isLiked">mdi-heart-outline</v-icon>
-        <v-icon v-else color="colorRed">mdi-heart</v-icon>
-        <span class="ml-3">
-          {{ post.likes_count }}
-        </span>
-      </v-btn>
+      <v-tooltip top max-width="200" min-width="200" offset-overflow>
+        <template color="grey" v-slot:activator="{ on, attrs }">
+          <v-btn
+            class="text-capitalize rounded-lg"
+            text
+            @click="onLike"
+            :ripple="false"
+            outlined
+            v-bind="attrs"
+            v-on="on"
+          >
+            <v-icon v-if="!post.isLiked">mdi-heart-outline</v-icon>
+            <v-icon v-else color="colorRed">mdi-heart</v-icon>
+            <span class="ml-3">
+              {{ post.likes_count }}
+            </span>
+          </v-btn>
+        </template>
+        {{ post.likes }}
+      </v-tooltip>
       <v-btn
         class="text-capitalize rounded-lg ml-3 primary"
         outlined
@@ -60,175 +67,197 @@
         <v-icon class="mr-3">mdi-comment-outline</v-icon>
         {{ post.comments_count }}
       </v-btn>
-      <v-tooltip top class="text-body-1 white">
-        <template color="grey" v-slot:activator="{ on, attrs }">
-          <v-icon color="primary" v-bind="attrs" v-on="on" class="ml-7">
-            mdi-heart
-          </v-icon>
-        </template>
-        <v-card max-width="300" class="text-body1">{{ post.likes }}</v-card>
-      </v-tooltip>
     </v-toolbar>
 
     <v-divider class="mx-4"></v-divider>
 
     <!-- post comments -->
-    <v-container v-if="showComment">
-      <v-skeleton-loader
-        v-if="loading"
-        type="list-item-avatar, list-item-avatar, list-item-avatar"
-      ></v-skeleton-loader>
-      <div v-else-if="comments">
-        <v-row
-          justify="space-around"
-          no-gutters
-          v-for="comment in comments"
-          :key="comment.id"
-        >
-          <div>
-            <base-name-link image :user="comment.user" class="mr-2" />
-          </div>
-          <v-col>
-            <v-card
-              class="rounded-lg text-body-1 pl-2 py-1 elevation-0 grey lighten-4"
-            >
-              <base-name-link :user="comment.user"></base-name-link>
-              {{ comment.content }}
-            </v-card>
-            <div class="text-caption">
-              <v-btn
-                @click="showId = comment.id"
-                class="text-capitalize"
-                text
-                :ripple="false"
-                x-small
-              >
-                like
-              </v-btn>
-              <v-btn
-                @click="showId = comment.id"
-                class="text-capitalize"
-                text
-                :ripple="false"
-                x-small
-              >
-                Answer
-              </v-btn>
-              {{ comment.updated_at | relativeTime }}
+    <v-expand-transition>
+      <v-container v-if="showComment">
+        <v-skeleton-loader
+          v-if="loading"
+          type="list-item-avatar, list-item-avatar, list-item-avatar"
+        ></v-skeleton-loader>
+        <div v-else-if="comments">
+          <v-row
+            justify="space-around"
+            no-gutters
+            v-for="(comment, index) in comments"
+            :key="comment.id"
+          >
+            <div>
+              <base-name-link image :user="comment.user" class="mr-2" />
             </div>
-
-            <!-- sub comment count -->
-            <div v-if="comment.sub_comments_count">
-              <a
-                v-show="comment.id !== showId"
-                class="text-caption"
-                @click="showId = comment.id"
+            <v-col>
+              <v-card
+                class="rounded-lg text-body-1 pl-2 py-1 elevation-0 grey lighten-4"
               >
-                {{ comment.sub_comments_count }} {{ $t('Reply') }}
-              </a>
-              <v-row
-                justify="space-around"
-                no-gutters
-                v-for="sub_comment in comment.sub_comments"
-                :key="sub_comment.id"
-                v-show="comment.id === showId"
-              >
-                <div>
-                  <base-name-link image :user="sub_comment.user" class="mr-2" />
-                </div>
-                <v-col>
-                  <v-card class="rounded-lg pl-2 elevation-0 grey lighten-4">
-                    <base-name-link :user="sub_comment.user"></base-name-link>
-                    {{ sub_comment.content }}
-                  </v-card>
-                  <div class="text-caption ml-3">
-                    {{ sub_comment.created_at | relativeTime }}
-                  </div>
-                </v-col>
-              </v-row>
-            </div>
-            <v-alert
-              :value="createSubError"
-              transition="scale-transition"
-              type="error"
-              height="50"
-            >
-              Something went wrong. Please try again
-            </v-alert>
-            <div v-if="showId === comment.id">
-              <v-app-bar color="white" elevation="0" bottom v-if="isLoggedIn">
-                <v-avatar class="avatar-outlined mr-4" size="30">
-                  <img
-                    :src="currentUser.profile_photo_path"
-                    :alt="currentUser.name"
-                  />
-                </v-avatar>
-                <v-text-field
-                  clearable
-                  rounded
-                  solo
-                  autocomplete="off"
-                  dense
-                  :label="$t('create_post.content')"
-                  v-model="subComment"
-                  append-icon="mdi-file-image-outline"
-                  @click:append="upload"
-                  class="mt-8"
-                  @keydown.enter="onSubComment(comment)"
-                  :loading="loadingSubCreate"
-                >
-                </v-text-field>
-
+                <v-row class="pa-3">
+                  <base-name-link :user="comment.user"></base-name-link>
+                </v-row>
+                {{ comment.content }}
+              </v-card>
+              <div class="text-caption">
                 <v-btn
-                  class="ml-3"
-                  small
-                  icon
+                  @click="showId = comment.id"
+                  class="text-capitalize"
                   text
-                  outlined
-                  @click="onSubComment(comment)"
+                  :ripple="false"
+                  x-small
                 >
-                  <v-icon size="15">mdi-send</v-icon>
+                  like
                 </v-btn>
-              </v-app-bar>
-            </div>
-          </v-col>
-        </v-row>
-        <v-alert
-          :value="createError"
-          transition="scale-transition"
-          type="error"
-          height="50"
+                <v-btn
+                  @click="showId = comment.id"
+                  class="text-capitalize"
+                  text
+                  :ripple="false"
+                  x-small
+                >
+                  Answer
+                </v-btn>
+                {{ comment.updated_at | relativeTime }}
+              </div>
+              <!-- sub comment count -->
+              <div v-if="comment.sub_comments_count">
+                <a
+                  v-show="comment.id !== showId"
+                  class="text-caption"
+                  @click="showId = comment.id"
+                >
+                  {{ comment.sub_comments_count }} {{ $t('Reply') }}
+                </a>
+                <v-row
+                  justify="space-around"
+                  no-gutters
+                  v-for="sub_comment in comment.sub_comments"
+                  :key="sub_comment.id"
+                  v-show="comment.id === showId"
+                >
+                  <div>
+                    <base-name-link
+                      image
+                      :user="sub_comment.user"
+                      class="mr-2"
+                    />
+                  </div>
+                  <v-col>
+                    <v-card class="rounded-lg pl-2 elevation-0 grey lighten-4">
+                      <base-name-link :user="sub_comment.user"></base-name-link>
+                      {{ sub_comment.content }}
+                    </v-card>
+                    <div class="text-caption ml-3">
+                      {{ sub_comment.created_at | relativeTime }}
+                    </div>
+                  </v-col>
+                </v-row>
+              </div>
+              <v-alert
+                :value="createSubError"
+                transition="scale-transition"
+                type="error"
+                height="50"
+              >
+                Something went wrong. Please try again
+              </v-alert>
+              <v-expand-transition>
+                <div v-if="showId === comment.id">
+                  <v-app-bar
+                    color="white"
+                    elevation="0"
+                    bottom
+                    v-if="isLoggedIn"
+                  >
+                    <v-avatar class="avatar-outlined mr-4" size="30">
+                      <img
+                        :src="currentUser.profile_photo_path"
+                        :alt="currentUser.name"
+                      />
+                    </v-avatar>
+                    <v-text-field
+                      background-color="grey lighten-3"
+                      dense
+                      flat
+                      hint
+                      autocomplete="off"
+                      hide-details
+                      rounded
+                      solo
+                      height="30"
+                      :label="$t('create_post.content')"
+                      v-model="subComment"
+                      append-icon="mdi-file-image-outline"
+                      @click:append="upload"
+                      @keydown.enter="onSubComment(comment, index)"
+                      :loading="loadingSubCreate"
+                    >
+                    </v-text-field>
+                    <v-btn
+                      class="ml-3"
+                      small
+                      icon
+                      text
+                      outlined
+                      @click="onSubComment(comment, index)"
+                    >
+                      <v-icon size="15">mdi-send</v-icon>
+                    </v-btn>
+                  </v-app-bar>
+                </div>
+              </v-expand-transition>
+            </v-col>
+          </v-row>
+          <v-alert
+            :value="createError"
+            transition="scale-transition"
+            type="error"
+            height="50"
+          >
+            Something went wrong. Please try again
+          </v-alert>
+        </div>
+      </v-container>
+    </v-expand-transition>
+    <v-expand-x-transition>
+      <v-divider v-if="showComment" class="mx-4" />
+    </v-expand-x-transition>
+
+    <transition name="fade">
+      <v-toolbar v-if="isLoggedIn && currentUser" flat rounded="lg">
+        <v-avatar class="avatar-outlined mr-4" size="40">
+          <img :src="currentUser.profile_photo_path" :alt="currentUser.name" />
+        </v-avatar>
+        <v-text-field
+          background-color="grey lighten-3"
+          dense
+          flat
+          hint
+          autocomplete="off"
+          hide-details
+          rounded
+          solo
+          :label="$t('WriteAComment')"
+          v-model="comment"
+          append-icon="mdi-file-image-outline"
+          @click:append="upload"
+          @keydown.enter="onComment"
+          :loading="loadingCreate"
+          @focus="showComment = true"
         >
-          Something went wrong. Please try again
-        </v-alert>
-      </div>
-    </v-container>
-    <v-divider v-if="showComment" class="mx-4" />
-
-    <v-toolbar v-if="isLoggedIn && currentUser" flat rounded="lg">
-      <v-avatar class="avatar-outlined mr-4" size="40">
-        <img :src="currentUser.profile_photo_path" :alt="currentUser.name" />
-      </v-avatar>
-      <v-text-field
-        clearable
-        rounded
-        solo
-        autocomplete="off"
-        dense
-        class="mt-8"
-        :label="$t('WriteAComment')"
-        v-model="comment"
-        append-icon="mdi-file-image-outline"
-        @click:append="upload"
-        @keydown.enter="onComment"
-        :loading="loadingCreate"
-      >
-      </v-text-field>
-
-      <v-btn class="ml-3" icon text outlined @click="onComment">
-        <v-icon>mdi-send</v-icon>
-      </v-btn>
-    </v-toolbar>
+        </v-text-field>
+        <v-btn
+          class="ml-3 mr-0"
+          width="40"
+          height="40"
+          icon
+          text
+          outlined
+          @click="onComment"
+        >
+          <v-icon>mdi-send</v-icon>
+        </v-btn>
+      </v-toolbar>
+    </transition>
 
     <!-- delete dialog -->
     <v-dialog v-model="deleteDialog" max-width="290">
@@ -252,6 +281,7 @@
 <script>
 import { mapGetters, mapActions } from 'vuex'
 import axios from 'axios'
+import moment from 'moment'
 export default {
   props: ['post', 'page'],
   data: () => {
@@ -304,56 +334,83 @@ export default {
     },
     async onComment() {
       if (this.comment) {
-        this.showComment = true
         this.loadingCreate = true
+        const rawComment = {
+          id: Math.random(),
+          content: this.comment,
+          created_at: moment.utc().format(),
+          updated_at: moment.utc().format(),
+          user: {
+            id: this.currentUser,
+            url: this.currentUser.url,
+            profile_photo_path: this.currentUser.profile_photo_path,
+            name: this.currentUser.name
+          },
+          sub_comments_count: 0,
+          sub_comments: []
+        }
+        const indexRawComment = this.comments.length
+        this.comments = [...this.comments, rawComment]
+        if (this.page) {
+          this.post.comments_count += 1
+        } else {
+          this.$emit('onComment')
+        }
         try {
           let url = `/v1/user/post/${this.post.id}/create_comment`
           let response = await axios.post(url, {
             content: this.comment
           })
-          const currentComment = response.data.data
-          Object.assign(currentComment, {
-            user: {
-              url: this.currentUser.url,
-              profile_photo_path: this.currentUser.profile_photo_path,
-              name: this.currentUser.name
-            },
-            sub_comments_count: 0
-          })
-          this.comments.push(currentComment)
-          this.comments_count += 1
-          this.comment = ''
+          this.comments[indexRawComment] = Object.assign(
+            this.comments[indexRawComment],
+            response.data.data
+          )
         } catch (err) {
           this.createError = true
         }
+        this.comment = ''
         this.loadingCreate = false
       }
     },
-    async onSubComment(comment) {
+    async onSubComment(comment, index) {
       if (this.subComment) {
-        this.loadingSubCreate = true
+        const rawComment = {
+          id: Math.random(),
+          content: this.comment,
+          created_at: moment.utc().format(),
+          updated_at: moment.utc().format(),
+          user: {
+            id: this.currentUser,
+            url: this.currentUser.url,
+            profile_photo_path: this.currentUser.profile_photo_path,
+            name: this.currentUser.name
+          }
+        }
+        const indexRawComment = this.comments[index].sub_comments.length
+        this.comments[index].sub_comments = [
+          ...this.comments[index].sub_comments,
+          rawComment
+        ]
+        if (this.page) {
+          this.post.comments_count += 1
+        } else {
+          this.$emit('onSubComment')
+        }
+        this.showId = comment.id
+        this.comments[index].sub_comments_count += 1
         try {
           let url = `/v1/user/post/comment/${comment.id}/create_sub_comment`
           let response = await axios.post(url, {
             content: this.subComment
           })
-          const currentComment = response.data.data
-          const index = this.comments.indexOf(comment)
-          Object.assign(currentComment, {
-            user: {
-              url: this.currentUser.url,
-              profile_photo_path: this.currentUser.profile_photo_path,
-              name: this.currentUser.name
-            }
-          })
-          this.comments[index].sub_comments.push(currentComment)
-          this.comments_count += 1
-          this.subComment = ''
+          this.comments[index].sub_comments[indexRawComment] = Object.assign(
+            this.comments[index].sub_comments[indexRawComment],
+            response.data.data
+          )
         } catch (err) {
-          console.log(err)
           this.createSubError = true
         }
-        this.loadingSubCreate = false
+        this.subComment = ''
       }
     },
     closeError() {

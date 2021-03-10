@@ -1,5 +1,5 @@
-import Cookies from 'js-cookie'
-export default function(context) {
+export default function({ store, redirect, app }) {
   // Add the userAgent property to the context
-  if (context.store.getters['user/isLoggedIn']) return context.redirect('/')
+  const isLoggedIn = store.getters['user/isLoggedIn']
+  if (isLoggedIn) return redirect(app.localePath('/'))
 }

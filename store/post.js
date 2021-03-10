@@ -125,6 +125,9 @@ const mutations = {
     state.posts[indexPost].isLiked = false
     state.posts[indexPost].likes_count -= 1
   },
+  COMMENTED_POST: function(state, indexPost) {
+    state.posts[indexPost].comments_count += 1
+  },
   RESET: function(state) {
     const s = initialState()
     Object.keys(s).forEach(key => {

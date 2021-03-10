@@ -79,6 +79,8 @@
           :key="post.creadted"
           :post="post"
           @onLike="onLike(index, post)"
+          @onSubComment="onComment(index, post)"
+          @onComment="onComment(index, post)"
         ></post-component>
       </div>
       <div v-else>Not have</div>
@@ -232,6 +234,9 @@ export default {
       }
       let url = `/v1/user/post/${this.posts[index].id}/handle_like`
       await axios.post(url)
+    },
+    onComment(index, post) {
+      this.$store.commit('post/COMMENTED_POST', index)
     }
   }
 }

@@ -1,5 +1,5 @@
 <template>
-  <div @mouseover="onMouseOver" @mouseleave="onMouseLeave">
+  <div class="base-name-link">
     <nuxt-link
       v-if="!image"
       :to="
@@ -16,7 +16,9 @@
       custom
       tag="a"
     >
-      {{ user.name }}
+      <span @mouseover="onMouseOver" @mouseleave="onMouseLeave">
+        {{ user.name }}
+      </span>
     </nuxt-link>
     <v-btn
       v-else
@@ -29,7 +31,12 @@
       class="text-capitalize"
       icon
     >
-      <v-avatar class="avatar-outlined" size="40">
+      <v-avatar
+        class="avatar-outlined"
+        size="40"
+        @mouseover="onMouseOver"
+        @mouseleave="onMouseLeave"
+      >
         <img :src="user.profile_photo_path" :alt="user.name" />
       </v-avatar>
     </v-btn>
@@ -124,17 +131,14 @@ export default {
   },
   methods: {
     async onMouseOver() {
-      if (this.info) {
-        this.hover = true
-        return
-      }
+      this.hover = true
+      if (this.info) return
       try {
         const response = await axios.get(`/v1/user/${this.user.id}/get`)
         this.info = response.data.data
       } catch (err) {
         this.error = err.toString()
       }
-      this.hover = true
     },
     onMouseLeave() {
       this.hover = false
@@ -144,9 +148,12 @@ export default {
 </script>
 
 <style lang="scss">
-.card-user {
-  z-index: 999;
-  position: fixed;
-  transition: 0.5s ease-in-out;
+.base-name-link {
+  position: relative;
+  .card-user {
+    z-index: 999;
+    position: fixed;
+    transition: 0.5s;
+  }
 }
 </style>
