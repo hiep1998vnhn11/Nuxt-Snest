@@ -73,8 +73,8 @@
       <div>
         <div class="trending-card">
           <div class="box">
+            <h2>{{ $t('Trending') }}</h2>
             <div class="content">
-              <h2>{{ $t('Trending') }}</h2>
               <transition name="slide-fade">
                 <div>
                   <p
@@ -94,8 +94,8 @@
 
       <div class="suggestion-card">
         <div class="box">
+          <h2>{{ $t('Suggestions') }}</h2>
           <div class="content">
-            <h2>{{ $t('Suggestions') }}</h2>
             <transition name="slide-fade">
               <div>
                 <p
@@ -271,25 +271,25 @@ export default {
       transform: translateY(-10px);
       box-shadow: 0 40px 70px rgba(0, 0, 0, 0.5);
       .content {
-        h2 {
-          opacity: 0.8;
-          transform: translateY(calc(-155px + 50%));
-          font-size: 1.8rem;
-          transition: 0.5s ease-in-out;
-        }
+        display: flex;
       }
+      h2 {
+        opacity: 0.8;
+        transform: translateY(calc(-180px + 50%));
+        font-size: 1.8rem;
+        transition: 0.5s ease-in-out;
+      }
+    }
+    h2 {
+      position: absolute;
+      opacity: 0.2;
+      font-size: 3rem;
+      font-weight: 900;
+      transition: 0.5s ease-in-out;
     }
     .content {
       padding: 20px;
       text-align: center;
-      h2 {
-        position: absolute;
-        left: 20px;
-        opacity: 0.2;
-        font-size: 3rem;
-        font-weight: 900;
-        transition: 0.5s ease-in-out;
-      }
       h3 {
         font-size: 1.8rem;
         z-index: 1000;
@@ -326,26 +326,24 @@ export default {
       transition: 0.5s ease-in-out;
       transform: translateY(-10px);
       box-shadow: 0 40px 70px rgba(0, 0, 0, 0.5);
-      .content {
-        h2 {
-          opacity: 0.8;
-          transform: translateY(calc(-105px + 50%));
-          font-size: 1.8rem;
-          transition: 0.5s ease-in-out;
-        }
+      h2 {
+        opacity: 0.8;
+        transform: translateY(calc(-130px + 50%));
+        font-size: 1.8rem;
+        transition: 0.5s ease-in-out;
       }
+    }
+    h2 {
+      position: absolute;
+      opacity: 0.2;
+      font-size: 3rem;
+      font-weight: 900;
+      transition: 0.5s ease-in-out;
     }
     .content {
       padding: 20px;
       text-align: center;
-      h2 {
-        position: absolute;
-        left: 20px;
-        opacity: 0.2;
-        font-size: 3rem;
-        font-weight: 900;
-        transition: 0.5s ease-in-out;
-      }
+
       h3 {
         font-size: 1.225rem;
         z-index: 1000;

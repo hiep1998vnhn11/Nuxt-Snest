@@ -96,5 +96,9 @@ const messages = [
 
 ### Doing
 
+1. Typing user in message
+
+### Done
+
 1. USer param hiện đang chưa có ỉntersect
 2. Css friend param user
