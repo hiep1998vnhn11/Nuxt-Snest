@@ -81,7 +81,7 @@ export default {
         },
         light: {
           primary: '#1A5CFF',
-          secondary: colors.red.lighten4,
+          secondary: '#0084FF',
           accent: colors.indigo.base,
           background: colors.grey.lighten3,
           success: '#47C93A',

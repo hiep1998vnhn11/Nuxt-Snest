@@ -67,7 +67,7 @@
     </v-app-bar>
 
     <!-- bottom appbar -->
-    <v-footer app color="transparent" height="56" inset>
+    <v-footer app height="56" color="grey lighten-3" inset>
       <v-tooltip top>
         <template v-slot:activator="{ on, attrs }">
           <v-btn small icon text v-bind="attrs" class="ml-n3" v-on="on">
@@ -102,6 +102,8 @@
         rounded
         solo
         label="Aa"
+        @focus="onFocusTyping"
+        @blur="onBlurTyping"
         @keydown.enter.exact.prevent
         @keydown.enter.exact="onSendMessage"
         @keydown.enter.shift.exact="newLine"
@@ -206,7 +208,6 @@
             </v-list-item-icon>
           </v-list-item>
         </v-list-group>
-
         <v-list-group :value="false" prepend-icon="mdi-folder-image">
           <template v-slot:activator>
             <v-list-item-title v-text="$t('SharedPhoto')"></v-list-item-title>
@@ -214,29 +215,9 @@
         </v-list-group>
       </v-list>
     </v-navigation-drawer>
-    <div v-if="loading" class="text-center">
-      <v-progress-circular
-        :size="70"
-        :width="3"
-        color="purple"
-        indeterminate
-        class="mt-10"
-      ></v-progress-circular>
-    </div>
-    <div v-else class="message-container">
-      <!-- <observer @intersect="intersected" /> -->
-      <message-chat-row
-        v-for="(message, index) in messageReverse"
-        :key="`chat-row-${message.id}`"
-        :message="message"
-        :same="
-          messages[index + 1]
-            ? message.user_id !== messageReverse[index + 1].user_id
-            : true
-        "
-        class="d-flex align-end"
-        :user="thresh.participants"
-      />
+
+    <div class="message-container">
+      <message-list :loading="loading" />
     </div>
   </div>
   <div v-else>
@@ -296,7 +277,8 @@ export default {
         if (response.data.data)
           this.$store.commit('message/SET_THRESH', {
             id: this.$route.params.room_id,
-            participants: response.data.data
+            participants: response.data.data,
+            typing: false
           })
         await this.getMessageCard()
       } catch (err) {
@@ -315,6 +297,22 @@ export default {
     },
     convertInfo() {
       this.$emit('convert-info')
+    },
+    onFocusTyping() {
+      window.socket.emit('typingUser', {
+        userId: this.thresh.participants.id,
+        userName: this.thresh.participants.name,
+        roomId: this.thresh.id,
+        isTyping: true
+      })
+    },
+    onBlurTyping() {
+      window.socket.emit('typingUser', {
+        userId: this.thresh.participants.id,
+        userName: this.thresh.participants.name,
+        roomId: this.thresh.id,
+        isTyping: false
+      })
     },
     async onSendMessage() {
       if (this.text) {
@@ -367,7 +365,6 @@ export default {
 .message-container {
   overflow-y: hidden;
   padding: 5px;
-  padding-top: 15px;
   position: absolute;
   width: 100%;
   height: calc(100% - 64px);

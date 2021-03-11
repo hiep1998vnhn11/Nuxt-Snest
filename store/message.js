@@ -1,4 +1,5 @@
 import axios from 'axios'
+import moment from 'moment'
 
 const initialState = () => ({
   rooms: [],
@@ -27,12 +28,14 @@ const actions = {
     const response = await axios.post(`/v1/user/thresh/${user.id}/get`)
     if (response.data.data) {
       const thresh = Object.assign(response.data.data, {
-        participants: user
+        participants: user,
+        typing: false
       })
-      commit('SET_THRESH', response.data.data)
+      commit('SET_THRESH', thresh)
     } else {
       commit('SET_THRESH', {
-        participants: user
+        participants: user,
+        typing: false
       })
     }
   },
@@ -114,6 +117,14 @@ const actions = {
     } else {
       commit('SET_THRESH_CARD', null)
     }
+  },
+  async deleteMessage({ commit }, { messageId, messageIndex }) {
+    commit('DELETE_MESSAGE', messageIndex)
+    await axios.delete(`/v1/user/thresh/message/${messageId}/delete`)
+  },
+  async reverseMessage({ commit }, { messageId, messageIndex }) {
+    commit('REVERSE_MESSAGE', messageIndex)
+    await axios.patch(`/v1/user/thresh/message/${messageId}/reverse`)
   }
 }
 const mutations = {
@@ -153,6 +164,14 @@ const mutations = {
     state.messages = []
     state.pageMessage = 1
   },
+  DELETE_MESSAGE(state, messageIndex) {
+    state.messages[
+      state.messages.length - messageIndex - 1
+    ].deleted_at = moment.utc().format()
+  },
+  REVERSE_MESSAGE(state, messageIndex) {
+    state.messages[state.messages.length - messageIndex - 1].deleted_at = null
+  },
   /*
     When user received an message on socket server,
     params:
@@ -169,6 +188,9 @@ const mutations = {
     Object.keys(s).forEach(key => {
       state[key] = s[key]
     })
+  },
+  TYPING_USER: function(state, isTyping) {
+    state.thresh.typing = isTyping
   }
 }
 export default {

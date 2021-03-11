@@ -370,5 +370,8 @@ export default {
     'You only can report this personal page after choose one problem',
   'This is your personal page after your change':
     'This is your personal page after your change',
-  SeeAllFriend: 'See all friend'
+  SeeAllFriend: 'See all friend',
+  Actions: 'Actions',
+  YouUnsentAMessage: 'You unsent a message',
+  ThisMessageIsUnsent: 'This message is unsent'
 }
