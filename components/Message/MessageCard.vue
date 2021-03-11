@@ -7,8 +7,6 @@
     }"
     :ripple="false"
     height="450"
-    @keydown.esc="test"
-    @click="clickCard"
     v-if="currentUser"
   >
     <v-toolbar dense flat>
@@ -61,30 +59,22 @@
       </v-btn>
     </v-toolbar>
     <v-divider />
-    <v-card-text
-      class="message-card-text-component text--primary"
-      id="container"
-    >
+    <div class="message-card-text-component" id="container">
       <loading-component v-if="loading" />
       <div v-else-if="messages.length">
         <message-row
           v-for="(message, index) in reverseMessages"
-          :key="`message-${message.id}-${message.created_at}`"
+          :key="`message-${message.id}`"
           :message="message"
-          :same="
-            messages[index + 1]
-              ? message.user_id !== messages[index + 1].user_id
-              : true
-          "
+          :current="message.user_id == currentUser.id"
           :user="thresh.participants"
+          @deleteMessasge="onDeleteMessage(index, message.id)"
         />
         <v-fade-transition>
           <message-row
             v-if="thresh.typing"
-            :same="true"
-            :message="{ user_id: thresh.participants, content: 'Typing ...' }"
             :user="thresh.participants"
-            :typing="true"
+            :typing="thresh.typing"
           />
         </v-fade-transition>
       </div>
@@ -105,18 +95,28 @@
           {{ thresh.participants.name | onlyName }}
         </div>
       </div>
-    </v-card-text>
-    <v-card-actions>
-      <v-btn icon small>
-        <v-icon :color="selected ? 'primary' : ''">
-          mdi-plus-circle-outline
-        </v-icon>
-      </v-btn>
-      <v-btn icon small v-if="!text">
-        <v-icon :color="selected ? 'primary' : ''">
-          mdi-folder-multiple-image
-        </v-icon>
-      </v-btn>
+    </div>
+    <v-toolbar dense flat>
+      <v-tooltip top>
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn small icon text v-bind="attrs" v-on="on">
+            <v-icon :color="selected ? 'primary' : ''">
+              mdi-plus-circle-outline
+            </v-icon>
+          </v-btn>
+        </template>
+        <span>{{ $t('OpenMoreAction') }}</span>
+      </v-tooltip>
+      <v-tooltip top>
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn small icon text v-bind="attrs" v-on="on">
+            <v-icon :color="selected ? 'primary' : ''">
+              mdi-folder-multiple-image
+            </v-icon>
+          </v-btn>
+        </template>
+        <span>{{ $t('OpenMoreAction') }}</span>
+      </v-tooltip>
       <v-textarea
         label="Write anything ..."
         auto-grow
@@ -124,8 +124,7 @@
         solo
         rounded
         dense
-        full-width
-        class="mb-n7 ml-2 mr-2"
+        class="mb-n7 ml-2"
         v-model="text"
         ref="textInput"
         @blur="onBlurTyping"
@@ -133,17 +132,17 @@
         @keydown.enter.exact.prevent
         @keydown.enter.exact="onSendMessage"
         @keydown.enter.shift.exact="newLine"
+        @keydown.esc.exact="onCloseCard"
       ></v-textarea>
-      <v-btn icon small @click="onSendMessage">
+      <v-btn icon @click="onSendMessage">
         <v-icon :color="selected ? 'primary' : ''"> mdi-send </v-icon>
       </v-btn>
-    </v-card-actions>
+    </v-toolbar>
   </v-card>
 </template>
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
-import MessageRow from './MessageRow'
 import axios from 'axios'
 
 export default {
@@ -153,9 +152,6 @@ export default {
     reverseMessages() {
       return this.messages.slice().reverse()
     }
-  },
-  components: {
-    MessageRow
   },
   data() {
     return {
@@ -171,7 +167,8 @@ export default {
       'getMessageCard',
       'sendMessage',
       'setThreshCard',
-      'setDefaultMessage'
+      'setDefaultMessage',
+      'deleteMessage'
     ]),
     onClickOutsideWithConditional() {
       this.selected = false
@@ -181,6 +178,13 @@ export default {
     },
     onCloseCard() {
       this.$store.commit('message/SET_THRESH', null)
+    },
+    async onDeleteMessage(messageIndex, messageId) {
+      try {
+        await this.deleteMessage({ messageIndex, messageId })
+      } catch (err) {
+        this.$nuxt.error(err)
+      }
     },
     onFocusTyping() {
       window.socket.emit('typingUser', {
@@ -279,6 +283,7 @@ export default {
 .message-card-text-component {
   overflow-y: hidden;
   height: 350px;
+  padding: 5px;
   &:hover {
     overflow-y: auto;
   }

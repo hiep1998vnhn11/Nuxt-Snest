@@ -1,6 +1,8 @@
 import Vue from 'vue'
 import moment from 'moment'
 
+window.moment = moment
+
 moment.updateLocale('en', {
   relativeTime: {
     future: 'in %s',
@@ -29,6 +31,11 @@ Vue.filter('relativeTime', function(value, context) {
 Vue.filter('offlineTime', function(value, context) {
   if (!value) return 'null'
   else return moment.utc(value).fromNow(true)
+})
+
+Vue.filter('messageTime', function(value, context) {
+  if (!value) return 'just a second'
+  return moment(value).calendar()
 })
 
 Vue.filter('onlyName', function(username) {

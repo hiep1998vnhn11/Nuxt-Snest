@@ -1,4 +1,5 @@
 import axios from 'axios'
+import moment from 'moment'
 
 const initialState = () => ({
   rooms: [],
@@ -116,6 +117,10 @@ const actions = {
     } else {
       commit('SET_THRESH_CARD', null)
     }
+  },
+  async deleteMessage({ commit }, { messageId, messageIndex }) {
+    commit('DELETE_MESSAGE', messageIndex)
+    await axios.delete(`/v1/user/thresh/message/${messageId}/delete`)
   }
 }
 const mutations = {
@@ -154,6 +159,11 @@ const mutations = {
   SET_DEFAULT_MESSAGE: function(state) {
     state.messages = []
     state.pageMessage = 1
+  },
+  DELETE_MESSAGE(state, messageIndex) {
+    state.messages[
+      state.messages.length - messageIndex - 1
+    ].deleted_at = moment.utc().format()
   },
   /*
     When user received an message on socket server,
