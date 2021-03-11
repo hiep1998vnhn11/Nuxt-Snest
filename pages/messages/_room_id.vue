@@ -217,20 +217,7 @@
     </v-navigation-drawer>
 
     <div class="message-container">
-      <loading-component v-if="loading" />
-      <div v-else-if="messageReverse.length">
-        <message-row
-          v-for="message in messageReverse"
-          :key="`message-${message.id}`"
-          :message="message"
-          :current="message.user_id == currentUser.id"
-          :user="thresh.participants"
-        />
-      </div>
-      <!-- <observer @intersect="intersected" /> -->
-      <v-fade-transition>
-        <message-row :user="thresh.participants" :typing="thresh.typing" />
-      </v-fade-transition>
+      <message-list :loading="loading" />
     </div>
   </div>
   <div v-else>

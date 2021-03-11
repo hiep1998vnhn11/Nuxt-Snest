@@ -121,6 +121,10 @@ const actions = {
   async deleteMessage({ commit }, { messageId, messageIndex }) {
     commit('DELETE_MESSAGE', messageIndex)
     await axios.delete(`/v1/user/thresh/message/${messageId}/delete`)
+  },
+  async reverseMessage({ commit }, { messageId, messageIndex }) {
+    commit('REVERSE_MESSAGE', messageIndex)
+    await axios.patch(`/v1/user/thresh/message/${messageId}/reverse`)
   }
 }
 const mutations = {
@@ -164,6 +168,9 @@ const mutations = {
     state.messages[
       state.messages.length - messageIndex - 1
     ].deleted_at = moment.utc().format()
+  },
+  REVERSE_MESSAGE(state, messageIndex) {
+    state.messages[state.messages.length - messageIndex - 1].deleted_at = null
   },
   /*
     When user received an message on socket server,

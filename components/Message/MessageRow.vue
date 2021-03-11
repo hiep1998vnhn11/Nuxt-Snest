@@ -17,8 +17,23 @@
       <v-slide-x-transition>
         <div v-if="select" flat class="chat-row-actions-menu">
           <v-card class="elevation-20 py-1 px-3" rounded="lg">
-            <v-btn text @click="onDeleteMessage" class="text-capitalize" small>
+            <v-btn
+              v-if="!isDeleted"
+              text
+              @click="onDeleteMessage"
+              class="text-capitalize"
+              small
+            >
               {{ $t('Remove') }}
+            </v-btn>
+            <v-btn
+              v-else
+              text
+              @click="onReverseMessage"
+              class="text-capitalize"
+              small
+            >
+              {{ $t('Reverse') }}
             </v-btn>
           </v-card>
         </div>
@@ -61,7 +76,7 @@
             v-bind="attrs"
             v-on="on"
           >
-            <div v-if="idDeleted" class="text-caption font-italic">
+            <div v-if="isDeleted" class="text-caption font-italic">
               {{
                 current ? $t('YouUnsentAMessage') : $t('ThisMessageIsUnsent')
               }}
@@ -118,7 +133,12 @@ export default {
   },
   methods: {
     onDeleteMessage() {
-      this.$emit('deleteMessasge', this.message.id)
+      this.select = false
+      this.$emit('deleteMessasge')
+    },
+    onReverseMessage() {
+      this.select = false
+      this.$emit('reverseMessage')
     }
   },
   created() {},
@@ -129,7 +149,7 @@ export default {
   },
   computed: {
     ...mapGetters('user', ['currentUser']),
-    idDeleted() {
+    isDeleted() {
       return this.message.deleted_at !== null
     }
   }
