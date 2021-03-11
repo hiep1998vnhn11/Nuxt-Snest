@@ -27,12 +27,14 @@ const actions = {
     const response = await axios.post(`/v1/user/thresh/${user.id}/get`)
     if (response.data.data) {
       const thresh = Object.assign(response.data.data, {
-        participants: user
+        participants: user,
+        typing: false
       })
-      commit('SET_THRESH', response.data.data)
+      commit('SET_THRESH', thresh)
     } else {
       commit('SET_THRESH', {
-        participants: user
+        participants: user,
+        typing: false
       })
     }
   },
@@ -169,6 +171,9 @@ const mutations = {
     Object.keys(s).forEach(key => {
       state[key] = s[key]
     })
+  },
+  TYPING_USER: function(state, isTyping) {
+    state.thresh.typing = isTyping
   }
 }
 export default {

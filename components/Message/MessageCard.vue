@@ -78,6 +78,15 @@
           "
           :user="thresh.participants"
         />
+        <v-fade-transition>
+          <message-row
+            v-if="thresh.typing"
+            :same="true"
+            :message="{ user_id: thresh.participants, content: 'Typing ...' }"
+            :user="thresh.participants"
+            :typing="true"
+          />
+        </v-fade-transition>
       </div>
       <div v-else class="text-center">
         <div>
@@ -119,6 +128,8 @@
         class="mb-n7 ml-2 mr-2"
         v-model="text"
         ref="textInput"
+        @blur="onBlurTyping"
+        @focus="onFocusTyping"
         @keydown.enter.exact.prevent
         @keydown.enter.exact="onSendMessage"
         @keydown.enter.shift.exact="newLine"
@@ -170,6 +181,22 @@ export default {
     },
     onCloseCard() {
       this.$store.commit('message/SET_THRESH', null)
+    },
+    onFocusTyping() {
+      window.socket.emit('typingUser', {
+        userId: this.thresh.participants.id,
+        userName: this.thresh.participants.name,
+        roomId: this.thresh.id,
+        isTyping: true
+      })
+    },
+    onBlurTyping() {
+      window.socket.emit('typingUser', {
+        userId: this.thresh.participants.id,
+        userName: this.thresh.participants.name,
+        roomId: this.thresh.id,
+        isTyping: false
+      })
     },
     async fetchData() {
       this.loading = true

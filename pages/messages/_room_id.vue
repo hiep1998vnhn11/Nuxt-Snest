@@ -102,6 +102,8 @@
         rounded
         solo
         label="Aa"
+        @focus="onFocusTyping"
+        @blur="onBlurTyping"
         @keydown.enter.exact.prevent
         @keydown.enter.exact="onSendMessage"
         @keydown.enter.shift.exact="newLine"
@@ -237,6 +239,15 @@
         class="d-flex align-end"
         :user="thresh.participants"
       />
+      <v-fade-transition>
+        <message-row
+          v-if="thresh.typing"
+          :same="true"
+          :message="{ user_id: thresh.participants, content: 'Typing ...' }"
+          :user="thresh.participants"
+          :typing="true"
+        />
+      </v-fade-transition>
     </div>
   </div>
   <div v-else>
@@ -296,7 +307,8 @@ export default {
         if (response.data.data)
           this.$store.commit('message/SET_THRESH', {
             id: this.$route.params.room_id,
-            participants: response.data.data
+            participants: response.data.data,
+            typing: false
           })
         await this.getMessageCard()
       } catch (err) {
@@ -315,6 +327,22 @@ export default {
     },
     convertInfo() {
       this.$emit('convert-info')
+    },
+    onFocusTyping() {
+      window.socket.emit('typingUser', {
+        userId: this.thresh.participants.id,
+        userName: this.thresh.participants.name,
+        roomId: this.thresh.id,
+        isTyping: true
+      })
+    },
+    onBlurTyping() {
+      window.socket.emit('typingUser', {
+        userId: this.thresh.participants.id,
+        userName: this.thresh.participants.name,
+        roomId: this.thresh.id,
+        isTyping: false
+      })
     },
     async onSendMessage() {
       if (this.text) {

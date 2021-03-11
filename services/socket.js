@@ -20,6 +20,15 @@ const socketService = {
       }
     )
 
+    window.socket.on('typing', ({ roomId, isTyping }) => {
+      console.log('typing')
+      if (
+        Number(context.store.getters['message/thresh'].id) === Number(roomId)
+      ) {
+        context.store.commit('message/TYPING_USER', isTyping)
+      }
+    })
+
     // An user had requested a friend request
     window.socket.on('responseAddFriend', data => {
       context.store.commit('notification/ADD_NOTIFICATION', data, {
