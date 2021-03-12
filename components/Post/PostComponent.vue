@@ -1,9 +1,5 @@
 <template>
-  <v-card
-    :class="`mx-auto rounded-lg elevation-${elevation} hover-up`"
-    @mouseover="hover = true"
-    @mouseleave="hover = false"
-  >
+  <v-card :class="`mx-auto hover-up`" flat>
     <v-list-item>
       <v-list-item-avatar>
         <base-name-link image :user="post.user" />
@@ -308,10 +304,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('user', ['currentUser', 'isLoggedIn']),
-    elevation() {
-      return this.hover ? 24 : 3
-    }
+    ...mapGetters('user', ['currentUser', 'isLoggedIn'])
   },
   methods: {
     ...mapActions('post', ['deletePost', 'createPost']),
