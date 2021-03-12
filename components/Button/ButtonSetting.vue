@@ -288,7 +288,7 @@ export default {
       await this.logout()
       this.clearAllState()
       window.socket.disconnect()
-      this.$router.push('/login')
+      this.$router.push(this.localePath('index'))
     }
   }
 }

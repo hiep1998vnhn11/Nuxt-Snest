@@ -1,17 +1,9 @@
 <template>
-  <v-app dark class="main-container">
+  <v-app dark>
     <nuxt />
   </v-app>
 </template>
 <script>
-export default {
-  data() {
-    return {}
-  },
-  methods: {},
-  created() {},
-  mounted() {},
-  computed: {}
-}
+export default {}
 </script>
 <style scoped></style>

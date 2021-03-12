@@ -65,6 +65,8 @@
 </template>
 <script>
 import { mapGetters } from 'vuex'
+import socketService from '@/services/socket'
+
 export default {
   data() {
     const _this = this
@@ -86,8 +88,6 @@ export default {
   computed: {
     ...mapGetters('user', ['isLoggedIn'])
   },
-  middleware: 'guest',
-  layout: 'login',
   methods: {
     async onLogin() {
       if (!this.password || !this.email) {
@@ -98,18 +98,20 @@ export default {
       this.loading = true
       this.error = null
       try {
-        await this.$store.dispatch(
-          'user/login',
-          {
-            email: this.email,
-            password: this.password
-          },
-          { root: true }
-        )
-        this.$router.push('/')
+        await this.$store.dispatch('user/login', {
+          email: this.email,
+          password: this.password
+        })
+        if (
+          this.$store.getters['user/isLoggedIn'] &&
+          !this.$store.getters['user/currentUser'] &&
+          (!window.socket || window.socket.disconnected)
+        ) {
+          await this.$store.dispatch('user/getUser')
+          socketService.connectSocket(this.$store)
+        }
       } catch (err) {
-        this.error = err.response
-        this.loginError = true
+        this.$nuxt.error(err)
       }
       this.loading = false
     }
@@ -135,14 +137,19 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .login-body {
+  position: fixed;
+  z-index: 9999;
+  top: 0px;
+  right: 0px;
+  left: 0px;
+  bottom: 0px;
   display: flex;
   justify-content: center;
   align-items: center;
   min-height: 100vh;
   background: #1f1f1f;
-
   .login-card {
     position: relative;
     width: 400px;

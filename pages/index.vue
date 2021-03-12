@@ -6,11 +6,10 @@
     <nuxt-child />
   </div>
   <div v-else>
-    <login-page />
+    <auth-login />
   </div>
 </template>
 <script>
-import LoginPage from './login/index'
 import { mapGetters } from 'vuex'
 export default {
   data() {
@@ -23,9 +22,6 @@ export default {
   computed: {
     ...mapGetters('message', ['thresh']),
     ...mapGetters('user', ['isLoggedIn'])
-  },
-  components: {
-    LoginPage
   }
 }
 </script>
