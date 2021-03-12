@@ -1,5 +1,6 @@
 <template>
   <div class="login-body">
+    <loading-component v-if="loading" />
     <div class="login-card">
       <h1>
         {{ $t('Login') }}
