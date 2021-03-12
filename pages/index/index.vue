@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="isLoggedIn">
     <!-- sidebar left -->
     <v-navigation-drawer
       v-model="drawer"
@@ -133,6 +133,7 @@
       type="card"
     ></v-skeleton-loader>
   </div>
+  <auth-login v-else></auth-login>
 </template>
 
 <script>
@@ -147,7 +148,7 @@ export default {
   },
   computed: {
     ...mapGetters('post', ['posts']),
-    ...mapGetters('user', ['currentUser', 'friends']),
+    ...mapGetters('user', ['currentUser', 'friends', 'isLoggedIn']),
     ...mapGetters('app', ['trending'])
   },
   data() {

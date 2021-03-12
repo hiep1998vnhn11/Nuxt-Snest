@@ -1,12 +1,9 @@
 <template>
-  <div v-if="isLoggedIn">
+  <div>
     <transition name="fade">
       <message-card v-if="thresh" />
     </transition>
     <nuxt-child />
-  </div>
-  <div v-else>
-    <auth-login />
   </div>
 </template>
 <script>

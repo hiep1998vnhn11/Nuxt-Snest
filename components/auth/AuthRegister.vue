@@ -2,9 +2,10 @@
   <v-dialog v-model="dialog" max-width="500">
     <template v-slot:activator="{ on, attrs }">
       <v-btn
-        class="text-capitalize text-h6"
+        class="text-capitalize white=-text"
+        outlined
+        rounded
         block
-        large
         color="success"
         dark
         v-bind="attrs"

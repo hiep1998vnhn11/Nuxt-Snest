@@ -1,24 +1,10 @@
 <template>
   <div class="login-body">
-    <div class="login-card" :loading="loading">
+    <div class="login-card">
+      <h1>
+        {{ $t('Login') }}
+      </h1>
       <v-container>
-        <v-alert
-          :value="registerSuccess"
-          transition="scale-transition"
-          type="success"
-          height="50"
-        >
-          Register Successfully! Please login
-        </v-alert>
-        <v-alert
-          v-if="error"
-          :value="loginError"
-          transition="scale-transition"
-          type="error"
-          height="50"
-        >
-          {{ error.data.message }}
-        </v-alert>
         <v-form ref="form" v-model="valid" lazy-validation>
           <v-text-field
             class="login-input"
@@ -40,26 +26,29 @@
             @keyup.enter="onLogin"
           ></v-text-field>
         </v-form>
+        {{ $t('common.forgotPassword') }}
       </v-container>
-      <v-row class="mx-auto">
-        <v-col cols="6">
-          <v-btn
-            color="primary"
-            class="text-h6 text-capitalize"
-            block
-            large
-            @click="onLogin"
-          >
-            {{ $t('common.login') }}
-          </v-btn>
-        </v-col>
-        <v-col cols="6">
-          <auth-register @success="registerSuccess = true" class="mx-auto" />
-        </v-col>
-        <v-col no-gutters>
-          {{ $t('common.forgotPassword') }}
-        </v-col>
-      </v-row>
+      <div>
+        <v-btn
+          color="primary"
+          class="text-capitalize mb-3"
+          block
+          outlined
+          rounded
+          @click="onLogin"
+        >
+          {{ $t('common.login') }}
+        </v-btn>
+        <auth-register class="mx-auto" />
+      </div>
+      <div class="mt-3">
+        <v-avatar size="50" class="mr-1">
+          <img src="~/assets/icons/facebook.png" />
+        </v-avatar>
+        <v-avatar size="50" class="ml-1">
+          <img src="~/assets/icons/google-icon.webp" />
+        </v-avatar>
+      </div>
     </div>
   </div>
 </template>
@@ -115,24 +104,6 @@ export default {
       }
       this.loading = false
     }
-  },
-  watch: {
-    registerSuccess: function() {
-      if (this.registerSuccess === true) {
-        const vm = this
-        setTimeout(function() {
-          vm.registerSuccess = false
-        }, 2000)
-      }
-    },
-    loginError: function() {
-      if (this.loginError === true) {
-        const vm = this
-        setTimeout(function() {
-          vm.registerSuccess = false
-        }, 2000)
-      }
-    }
   }
 }
 </script>
@@ -149,21 +120,25 @@ export default {
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background: #1f1f1f;
+  background: linear-gradient(60deg, #1a5cff, #f904fe);
   .login-card {
     position: relative;
+    padding: 20px;
     width: 400px;
-    height: 300px;
     border-radius: 15px;
     box-shadow: 20px 20px 50px rgba(0, 0, 0, 0.5);
     background: rgba(255, 255, 255, 0.1);
     overflow: hidden;
+    text-align: center;
     // display: flex;
     // justify-content: center;
     // align-items: center;
     border-top: 1px solid rgba(255, 255, 255, 0.5);
     border-left: 1px solid rgba(255, 255, 255, 0.5);
     // backdrop-filter: blur(5px);
+    h1 {
+      font-weight: 6rem;
+    }
   }
 }
 </style>
