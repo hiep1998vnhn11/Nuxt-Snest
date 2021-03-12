@@ -1,13 +1,16 @@
 <template>
-  <div>
+  <div v-if="isLoggedIn">
     <transition name="fade">
       <message-card v-if="thresh" />
     </transition>
     <nuxt-child />
   </div>
+  <div v-else>
+    <login-page />
+  </div>
 </template>
 <script>
-import axios from 'axios'
+import LoginPage from './login/index'
 import { mapGetters } from 'vuex'
 export default {
   data() {
@@ -18,7 +21,11 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('message', ['thresh'])
+    ...mapGetters('message', ['thresh']),
+    ...mapGetters('user', ['isLoggedIn'])
+  },
+  components: {
+    LoginPage
   }
 }
 </script>

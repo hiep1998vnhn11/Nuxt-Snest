@@ -140,7 +140,6 @@ import { mapActions, mapGetters } from 'vuex'
 import axios from 'axios'
 export default {
   props: ['loading_user'],
-  middleware: 'auth',
   head() {
     return {
       title: 'Home'
