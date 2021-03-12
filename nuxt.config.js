@@ -1,8 +1,16 @@
 import colors from 'vuetify/es5/util/colors'
+import path from 'path'
+import fs from 'fs'
 
 export default {
   // Disable server-side rendering: https://go.nuxtjs.dev/ssr-mode
   ssr: false,
+  server: {
+    https: {
+      key: fs.readFileSync(path.resolve(__dirname, 'localhost.key')),
+      cert: fs.readFileSync(path.resolve(__dirname, 'localhost.crt'))
+    }
+  },
 
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
@@ -16,7 +24,15 @@ export default {
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
       { hid: 'description', name: 'description', content: '' }
     ],
-    link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }]
+    link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
+    script: [
+      {
+        async: true,
+        defer: true,
+        crossorigin: 'anonymous',
+        src: 'https://connect.facebook.net/en_US/sdk.js'
+      }
+    ]
   },
 
   // Global CSS: https://go.nuxtjs.dev/config-css

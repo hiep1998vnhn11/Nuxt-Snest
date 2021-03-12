@@ -43,12 +43,16 @@
         <auth-register class="mx-auto" />
       </div>
       <div class="mt-3">
-        <v-avatar size="50" class="mr-1">
-          <img src="~/assets/icons/facebook.png" />
-        </v-avatar>
-        <v-avatar size="50" class="ml-1">
-          <img src="~/assets/icons/google-icon.webp" />
-        </v-avatar>
+        <v-btn icon text outlined x-large class="mr-1" @click="onLoginFacebook">
+          <v-avatar size="50">
+            <img src="~/assets/icons/facebook.png" />
+          </v-avatar>
+        </v-btn>
+        <v-btn icon x-large class="mr-1">
+          <v-avatar size="50">
+            <img src="~/assets/icons/google-icon.webp" />
+          </v-avatar>
+        </v-btn>
       </div>
     </div>
   </div>
@@ -104,7 +108,59 @@ export default {
         this.$nuxt.error(err)
       }
       this.loading = false
+    },
+    onLoginFacebook() {
+      FB.login(function(response) {
+        console.log(response)
+        if (response.authResponse) {
+          console.log('Welcome!  Fetching your information.... ')
+          FB.api('/me', function(response) {
+            console.log(response)
+          })
+        } else {
+          console.log('User cancelled login or did not fully authorize.')
+        }
+      })
+    },
+    statusChangeCallback(response) {
+      // Called with the results from FB.getLoginStatus().
+      console.log('statusChangeCallback')
+      console.log(response) // The current login status of the person.
+      if (response.status === 'connected') {
+        // Logged into your webpage and Facebook.
+        testAPI()
+      } else {
+        // Not logged into your webpage or we are unable to tell.
+        document.getElementById('status').innerHTML =
+          'Please log ' + 'into this webpage.'
+      }
+    },
+
+    checkLoginState() {
+      // Called when a person is finished with the Login Button.
+      FB.getLoginStatus(function(response) {
+        // See the onlogin handler
+        statusChangeCallback(response)
+      })
+    },
+
+    testAPI() {
+      // Testing Graph API after login.  See statusChangeCallback() for when this call is made.
+      console.log('Welcome!  Fetching your information.... ')
+      FB.api('/me', function(response) {
+        console.log('Successful login for: ' + response.name)
+        document.getElementById('status').innerHTML =
+          'Thanks for logging in, ' + response.name + '!'
+      })
     }
+  },
+  mounted() {
+    FB.init({
+      appId: '3899193280168062',
+      autoLogAppEvents: true,
+      xfbml: true,
+      version: 'v10.0'
+    })
   }
 }
 </script>

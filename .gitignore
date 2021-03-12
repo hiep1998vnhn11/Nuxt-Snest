@@ -88,3 +88,7 @@ sw.*
 
 # Vim swap files
 *.swp
+
+#key and crt
+localhost.crt
+localhost.key
