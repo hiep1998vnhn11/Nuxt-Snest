@@ -156,10 +156,10 @@ export default {
   },
   mounted() {
     FB.init({
-      appId: '3899193280168062',
+      appId: process.env.NUXT_ENV_FACEBOOK_APP_ID,
       autoLogAppEvents: true,
       xfbml: true,
-      version: 'v10.0'
+      version: process.env.NUXT_ENV_FACEBOOK_APP_VERSION
     })
   }
 }
