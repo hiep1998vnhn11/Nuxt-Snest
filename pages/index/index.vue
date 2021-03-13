@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="isLoggedIn">
     <!-- sidebar left -->
     <v-navigation-drawer
       v-model="drawer"
@@ -133,6 +133,7 @@
       type="card"
     ></v-skeleton-loader>
   </div>
+  <auth-login v-else></auth-login>
 </template>
 
 <script>
@@ -140,7 +141,6 @@ import { mapActions, mapGetters } from 'vuex'
 import axios from 'axios'
 export default {
   props: ['loading_user'],
-  middleware: 'auth',
   head() {
     return {
       title: 'Home'
@@ -148,7 +148,7 @@ export default {
   },
   computed: {
     ...mapGetters('post', ['posts']),
-    ...mapGetters('user', ['currentUser', 'friends']),
+    ...mapGetters('user', ['currentUser', 'friends', 'isLoggedIn']),
     ...mapGetters('app', ['trending'])
   },
   data() {
@@ -161,7 +161,7 @@ export default {
     }
   },
   mounted() {
-    if (!this.friends.length) this.fetchFriend()
+    if (!this.friends.length && this.isLoggedIn) this.fetchFriend()
     this.fetchTrending()
   },
   methods: {

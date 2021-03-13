@@ -37,7 +37,7 @@ export default {
     blocked: 'Blocked by Admin',
     writeSt: 'Write something ...',
     thinkSt: "What's do you thinking ...",
-    post: 'Post this article',
+    post: 'Post',
     content: 'Content',
     add: 'Add to post...',
     image: 'Image',
@@ -373,5 +373,9 @@ export default {
   SeeAllFriend: 'See all friend',
   Actions: 'Actions',
   YouUnsentAMessage: 'You unsent a message',
-  ThisMessageIsUnsent: 'This message is unsent'
+  ThisMessageIsUnsent: 'This message is unsent',
+  Login: 'Login',
+  OK: 'OK',
+  ContinueWith: 'Continue with',
+  Welcome: 'Welcome'
 }

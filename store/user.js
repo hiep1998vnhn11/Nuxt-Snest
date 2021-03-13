@@ -36,12 +36,19 @@ const actions = {
     })
     const token = response.data.access_token
     Cookies.set('access_token', token, { expires: 1 })
-    // state.setHeader()
-    // const userResponse = await axios.post('/auth/me')
-    // commit('SET_CURRENT_USER', userResponse.data.data)
-    // const friendResponse = await axios.post('/v1/user/friend/get')
-    // commit('SET_FRIENDS', friendResponse.data.data)
     commit('SET_ACCESS_TOKEN', token)
+  },
+
+  async loginFacebook({ commit, state }, access_token) {
+    const response = await axios.post('/auth/facebook/login', {
+      access_token
+    })
+    const token = response.data.access_token
+    Cookies.set('access_token', token, { expires: 1 })
+    commit('SET_ACCESS_TOKEN', token)
+    state.setHeader()
+    const responseUser = await axios.post('/auth/me')
+    commit('SET_CURRENT_USER', responseUser.data.data)
   },
   async getUser({ commit, state }) {
     state.setHeader()
@@ -50,6 +57,11 @@ const actions = {
   },
   async logout(context) {
     if (context.getters.isLoggedIn) {
+      FB.getLoginStatus(async response => {
+        if (response.status === 'connected') {
+          await FB.logout()
+        }
+      })
       await axios.post('/auth/logout')
       Cookies.remove('access_token')
     }
@@ -67,6 +79,14 @@ const actions = {
     const url = '/v1/user/friend/get'
     const response = await axios.post(url)
     context.commit('SET_FRIENDS', response.data.data)
+  },
+  async refreshToken({ commit, state }) {
+    state.setHeader()
+    const url = '/auth/token/refresh'
+    const response = await axios.post(url)
+    const token = response.data.access_token
+    Cookies.set('access_token', token, { expires: 1 })
+    commit('SET_ACCESS_TOKEN', token)
   }
 }
 

@@ -2,9 +2,10 @@
   <v-dialog v-model="dialog" max-width="500">
     <template v-slot:activator="{ on, attrs }">
       <v-btn
-        class="text-capitalize text-h6"
+        class="text-capitalize white=-text"
+        outlined
+        rounded
         block
-        large
         color="success"
         dark
         v-bind="attrs"
@@ -13,16 +14,17 @@
         {{ $t('common.register') }}
       </v-btn>
     </template>
-    <v-card :loading="loading">
+    <v-card rounded="lg" outlined>
+      <loading-component v-if="loading" />
       <v-card-title>
+        <v-spacer />
         {{ $t('common.register') }}
         <v-spacer></v-spacer>
         <v-btn icon @click="dialog = false">
           <v-icon color="dark">mdi-close</v-icon>
         </v-btn>
       </v-card-title>
-      <v-divider class="mx-4"></v-divider>
-      <v-container>
+      <v-container class="px-6">
         <v-form ref="form" v-model="valid" lazy-validation>
           <v-text-field
             v-model="email"
@@ -68,21 +70,21 @@
               <v-date-picker v-model="birthDay" scrollable>
                 <v-spacer></v-spacer>
                 <v-btn text color="primary" @click="birthDayDialog = false">
-                  Cancel
+                  {{ $t('Cancel') }}
                 </v-btn>
                 <v-btn
                   text
                   color="primary"
                   @click="$refs.dialog.save(birthDay)"
                 >
-                  OK
+                  {{ $t('OK') }}
                 </v-btn>
               </v-date-picker>
             </v-dialog>
-            <v-row>
-              <v-col cols="3">
+            <v-row align="center">
+              <span class="mr-5">
                 {{ $t('user.message.register.gender') }}
-              </v-col>
+              </span>
               <v-radio-group v-model="gender" :rules="genderRules" row>
                 <v-radio
                   :label="$t('user.message.register.male')"
@@ -99,13 +101,15 @@
               </v-radio-group>
             </v-row>
           </div>
-          <v-divider class="mx-4"></v-divider>
         </v-form>
         <br />
         <v-btn
           color="success"
-          class="text-h6 text-capitalize"
+          class="text-capitalize"
           :disabled="!valid"
+          outlined
+          block
+          rounded
           @click="onRegister"
         >
           {{ $t('common.register') }}

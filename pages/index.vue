@@ -7,7 +7,6 @@
   </div>
 </template>
 <script>
-import axios from 'axios'
 import { mapGetters } from 'vuex'
 export default {
   data() {
@@ -18,7 +17,8 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('message', ['thresh'])
+    ...mapGetters('message', ['thresh']),
+    ...mapGetters('user', ['isLoggedIn'])
   }
 }
 </script>

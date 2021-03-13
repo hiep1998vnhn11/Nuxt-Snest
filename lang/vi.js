@@ -1,4 +1,7 @@
 export default {
+  'Group chat': 'Nhóm Chat',
+  Chat: 'Chat',
+  'Create a new group': 'Tạo mới nhóm chat',
   common: {
     select_lang: 'Ngôn ngữ',
     login: 'Đăng nhập',
@@ -12,15 +15,20 @@ export default {
     user: 'Người dùng',
     go_home: 'Đến trang chủ',
     go_app: 'Đến ứng dụng',
-    notification: 'Thông báo'
+    notification: 'Thông báo',
+    forgotPassword: 'Quên mật khẩu?',
+    message: 'Tin nhắn',
+    create: 'Tạo mới',
+    friend: 'Bạn bè',
+    more: 'Thêm',
+    option: 'Option',
+    setting: 'Cài đặt'
   },
-
   action: {
     like: 'Thích',
     comment: 'Bình luận',
     share: 'Chia sẻ'
   },
-
   create_post: {
     private: 'Chỉ mình tôi',
     privacy: 'Quyền riêng tư',
@@ -29,15 +37,26 @@ export default {
     blocked: 'Bị chặn bởi người quản trị',
     writeSt: 'Hãy viết gì đó ...',
     thinkSt: 'Bạn đang nghĩ gì ...',
-    post: 'Đăng bài này'
+    post: 'Đăng',
+    content: 'Nội dung',
+    add: 'Thêm vào bài viết này...',
+    image: 'Hình ảnh',
+    uploadImg: 'Tải lên hình ảnh hoặc video',
+    selectPrivacy: 'Hãy chọn quyền riêng tư của bài viết',
+    whoSeen: 'Những ai có thể thấy bài viết này của bạn?',
+    seenPublic:
+      'Bài viết này sẽ hiển thị trên bản tin, trên dòng thời gian của bạn, và cả trên trang tìm kiếm',
+    seenPrivate:
+      'Chỉ mình bạn mới có thể xem bài viết này. Nó sẽ không hiển thị trên dòng thời gian của bạn!',
+    seenFriend:
+      'Chỉ bạn và những người bạn của bạn có thể xem bài viết này. Nó sẽ hiển thị trên dòng thời gian của bạn!',
+    seenBlocked: 'Bài viết này đã bị chặn'
   },
-
   count: {
     likes: 'Đã like',
     comments: 'Bình luận',
     share: 'Đã chia sẻ'
   },
-
   layout: {
     home: 'Trang chủ',
     history: 'Lịch sử',
@@ -47,7 +66,6 @@ export default {
     my_profile: 'Thông tin cá nhân',
     about: 'Về ứng dụng web này'
   },
-
   user: {
     message: {
       require: {
@@ -59,26 +77,307 @@ export default {
           'Xác nhận mật khẩu thất bại. Hãy kiểm tra và thử lại!',
         all: 'Hãy điền đẩy đủ thông tin'
       },
-
       login: {
         success: 'Đăng nhập thành công!',
-        wrong: 'Email hoặc mật khẩu không đúng! Hãy kiểm tra và thử lại',
+        wrong:
+          'Email hoặc mật khẩu bạn nhập vào không đúng! Hãy kiểm tra và thử lại',
         fail: 'Xin lỗi! Có điều gì đó không ổn, hãy thử lại sau'
       },
-
       register: {
         success:
           'Đăng ký thành công! Để đảm bảo lần kết nối này được an toàn, hãy đăng nhập',
         email_fail:
           'Đăng ký thất bại! Email này đã được đăng ký, hãy dùng email khác và thử lại',
-        fail: 'Xin lỗi! Có điều gì đó không ổn, hãy thử lại sau'
+        fail: 'Xin lỗi! Có điều gì đó không ổn, hãy thử lại sau',
+        birthday: 'Ngày sinh:',
+        gender: 'Giới tính:',
+        male: 'Nam',
+        female: 'Nữ',
+        other: 'Khác :)'
       }
     }
   },
-
   admin: {
     message: {
       create_confirm: ''
     }
-  }
+  },
+  home: 'Trang chủ',
+  signin: 'Đăng nhập',
+  signout: 'Đăng xuất',
+  category: 'Thể loại',
+  'Pub Name:': 'Pub Name:',
+  'Evaluation:': 'Evaluation:',
+  'Address:': 'Địa chỉ:',
+  'Phone Number:': 'Số điện thoại:',
+  'Email:': 'Email:',
+  Introduce: 'Giới thiệu bản thân',
+  'Business Hours:': 'Business Hours',
+  Save: 'Lưu',
+  'Manage your profile information for account security':
+    'Manage your profile information for account security',
+  'Your Profile': 'Thông tin cá nhân của bạn',
+  'Phone number': 'Số điện thoại',
+  Name: 'Tên',
+  Email: 'Email',
+  Profile: 'Thông tin cá nhân',
+  'Form create pub': 'Form create Pub',
+  Preview: 'Xem trước',
+  Cancel: 'Huỷ',
+  'Accept our Terms': 'Chấp nhận điều khoản của chúng tôi',
+  'Youtube video path': 'Youtube video path',
+  'Google map path': 'Google map path',
+  'Home photo': 'Home photo',
+  'Pick an photo': 'Chọn một hình ảnh',
+  Submit: 'Gửi đi',
+  Description: 'Đoạn miêu tả',
+  Address: 'Địa chỉ',
+  'create a new pub': 'Create a new pub',
+  About: 'Về chúng tôi',
+  'Main email': 'Email chính',
+  Write: 'Viết',
+  Upload: 'Tải lên',
+  'Choose your image': 'Chọn ảnh của bạn',
+  'Write review for': 'Viết review về',
+  Review: 'Review',
+  Content: 'Nội dung',
+  Search: 'Tìm kiếm',
+  Neighborhood: 'Hàng xóm',
+  New: 'Mới',
+  'Recommend for you': 'Được đề xuất cho bạn',
+  Participle: 'Tham gia ngay!',
+  'Enjoy your meal with Nekoringo': 'Enjoy your meal with Nekoringo',
+  Highlight: 'Highlight',
+  'Write an review': 'Write an review',
+  'Please login to write Review!': 'Please login to write Review!',
+  NoResultFor: 'Không có kết quả cho:',
+  Friend: 'Bạn bè',
+  Clear: 'Xoá',
+  Done: 'Xong',
+  Posts: 'Bài viết',
+  All: 'Tất cả',
+  profile: {
+    Posts: 'Bài viết',
+    About: 'Giới thiệu',
+    Friends: 'Bạn bè',
+    Photos: 'Ảnh',
+    More: 'Xem thêm',
+    EditProfile: 'Chỉnh sửa trang cá nhân',
+    EditCoverPhoto: 'Chỉnh sửa ảnh bìa',
+    AddFriend: 'Kết bạn',
+    Archive: 'Kho lưu trữ',
+    Videos: 'Videos',
+    CheckIns: 'Check in',
+    Likes: 'Lượt thích',
+    Event: 'Sự kiện',
+    Image: 'Ảnh',
+    EditPrivacy: 'Sửa quyền riêng tư',
+    FriendsList: 'Danh sách bạn bè',
+    WhoSeeYourFriend: 'Những ai có thể xem danh sách bạn bè của bạn',
+    FriendPrivacyCaption:
+      'Lưu ý: Bạn bè của bạn kiểm soát người có thể xem mối quan hệ bạn bè của họ trên Dòng thời gian của chính họ. Nếu mọi người có thể xem mối quan hệ bạn bè của bạn trên dòng thời gian khác, họ cũng có thể xem trong Bảng tin, phần tìm kiếm và những nơi khác trên Facebook. Nếu bạn đặt tùy chọn này thành Chỉ mình tôi, chỉ bạn mới có thể xem danh sách bạn bè đầy đủ của mình trên dòng thời gian. Còn người khác sẽ chỉ nhìn thấy bạn chung.',
+    AllFriends: 'Tất cả bạn bè',
+    RecentlyAdded: 'Đã thêm gần đây',
+    Birthdays: 'Sinh nhật',
+    Work: 'Công việc',
+    College: 'Trường học',
+    CurrentCity: 'Tình/Thành phố hiện tại',
+    Favorite: 'Yêu thích',
+    Unfriend: 'Huỷ kết bạn',
+    MutualFriends: 'Bạn chung',
+    HaveNoFriend: 'Bạn chưa có người bạn nào',
+    Filters: 'Bộ lọc',
+    ManagePosts: 'Quản lý bài viết của bạn',
+    ListView: 'Xem theo danh sách',
+    GridView: 'Chế độ xem lưới',
+    UseFilters:
+      'Dùng bộ lọc để tìm những bài viết trong dòng thời gian của bạn',
+    UseFiltersCaption:
+      'Mọi người vẫn nhìn thấy dòng thời gian của bạn như bình thường.',
+    PostFilters: 'Bộ lọc bài viết',
+    GoTo: 'Đi đến:',
+    Privacy: 'Quyền riêng tư',
+    Intro: 'Giới thiệu',
+    WentTo: 'Đi đến',
+    LivesIn: 'Đang sông tại',
+    From: 'Đến từ'
+  },
+  month: {
+    '1': 'Tháng 1',
+    '2': 'Tháng 2',
+    '3': 'Tháng 3',
+    '4': 'Tháng 4',
+    '5': 'Tháng 5',
+    '6': 'Tháng 6',
+    '7': 'Tháng 7',
+    '8': 'Tháng 8',
+    '9': 'Tháng 9',
+    '10': 'Tháng 10',
+    '11': 'Tháng 11',
+    '12': 'Tháng 12'
+  },
+  Rule: {
+    NameRequired: 'Tên là bắt buộc',
+    NameShort: 'Tên quá ngắn, cần phải chứa ít nhất 4 ký tự',
+    NameLong: 'Tên quá dài, tên không thể chứa hơn 60 ký tự',
+    EmailRequired: 'Email là bắt buộc!',
+    EmailNotValid: 'Email Không hợp lệ!',
+    EmailLong: 'Email quá dài!',
+    PasswordShort: 'Mật khẩu quá ngắn, hãy chọn mật khẩu khác!',
+    PasswordLong: 'Mật khẩu quá dài, hãy chọn mật khẩu khác!',
+    PasswordRequired: 'Mật khẩu là bắt buộc!',
+    PasswordNotValid:
+      'Mật khẩu nhất thiết phải chứa ít nhất 1 số, 1 ký tự viết hoa và 1 ký tự đặc biệt'
+  },
+  Home: 'Trang chủ',
+  Watch: 'Watch',
+  Game: 'Trò chơi',
+  Store: 'Cửa hàng',
+  NotificationSetting: 'Cài đặt thông báo',
+  FriendCancel: 'Từ chối',
+  FriendAccept: 'Chấp nhận',
+  Group: 'Nhóm',
+  'has just sent you a friend invitation': 'vừa gửi cho bạn lời mời kết bạn!',
+  NewMessage: 'Tin nhắn mới',
+  'To:': 'Đến:',
+  FriendOnMessage: 'Các bạn là bạn',
+  'Write something with': 'Viết điều gì đó cho',
+  Message: 'Tin nhắn',
+  Password: 'Mật khẩu',
+  'and you are friend now!': 'và bạn hiện đang là bạn bè!',
+  ConversationInformation: 'Ngăn thồng tin đoạn hội thoại',
+  StartVideoCall: 'Bắt đầu cuộc gọi video',
+  StartVoiceCall: 'Bắt đầu cuộc gọi thoại',
+  'Active Now': 'Đang hoạt động',
+  OpenMoreAction: 'Mở nhiều hoạt động hơn',
+  AttachPhotoVideo: 'Đính kèm ảnh hoặc video',
+  ChooseSticker: 'Chọn Sticker',
+  SendLike: 'Gửi một like',
+  Active: 'Hoạt động',
+  SeeAllInMessage: 'Xem tất cả trong tin nhắn',
+  SearchYourFriendToChatWithThem: 'Tìm kiếm bạn bè để nhắn tin với họ',
+  Friends: 'Bạn bè',
+  'Sorry, your search not match any result!':
+    'Xin lỗi, từ khoá bạn tìm không khớp với bất kỳ kết quả nào!',
+  SharedPhoto: 'Chia sẻ hình ảnh',
+  'Privacy&Support': 'Quyền riêng tư và trợ giúp',
+  CustomizeChat: 'Tuỳ chỉnh đoạn Chat của bạn',
+  SomethingWentWrong: 'Có điều gì đó khồng đúng ...',
+  BlockUser: 'Chặn người này',
+  IgnoreMessage: 'Bỏ qua tin nhắn',
+  MuteConversation: 'Tắt tiếng đoạn hôi thoại này',
+  ChangeEmoji: 'Thay đổi biểu tượng cảm xúc',
+  ChangeTheme: 'Thay đổi chủ đề',
+  You: 'Bạn',
+  NotAnyResultForSearchKey: 'Không có kết quả tìm kiếm nào cho từ khoá',
+  Online: 'Online',
+  Contact: 'Liên hệ',
+  Groups: 'Nhóm',
+  Avatar: 'Avatar',
+  Edit: 'Sửa',
+  BackgroundImage: 'Ảnh bìa',
+  Story: 'Story',
+  CustomizeYourIntro: 'Tuỳ chỉnh phần giới thiệu',
+  'Delete this post': 'Xoá bài viết này',
+  'Delete post': 'Xoá',
+  'Are you sure to delete this post?':
+    'Bạn có chắc muốn xoá bài viết này không?',
+  SearchYourAccount: 'Tìm kiếm tài khoản của bạn',
+  ResetYourPassword: 'Reset mật khẩu của bạn',
+  Next: 'Tiếp',
+  Continue: 'Tiếp tục',
+  'NotYou?': 'Không phải bạn?',
+  ResetReceivePassword:
+    'Bạn chọn phương thức nào để nhận mã tìm lại mật khẩu của bạn?',
+  SendViaEmail: 'Gửi qua email',
+  SendViaSMS: 'Gửi qua SMS',
+  PleaseEnterYourEmailToSearchAccount:
+    'Hãy điền địa chỉ email của bạn để tìm kiếm tài khoản',
+  IdentifyYourAccount: 'Khám phá tài khoản của bạn',
+  AccountMatchYourSearch: 'Tài khoản phú hợp với tìm kiếm',
+  ThisIsMyAccount: 'Đây là tài khoản của tôi',
+  Back: 'Trở lại',
+  PleaseEnterYourCorrectEmail: 'Hãy điền đúng địa chỉ email của bạn',
+  'Send a feedback to SNESt': 'Gửi phản hồi cho Snest',
+  'Contribute to the new version': 'Đóng góp cho ',
+  'Contribute to the new version of this application':
+    'Contribute to the new version of this application',
+  'Have an error?': 'Have an error?',
+  'Please tell us about this error': 'Please tell us about this error',
+  'Send a feedback': 'Send a feedback',
+  'Contribute to improving this application':
+    'Contribute to improving this application',
+  Display: 'Display',
+  Logout: 'Logout',
+  Shortcuts: 'Shortcuts',
+  'Home.SearchResult': 'Search result',
+  'Home.SearchNoResult': 'No result found!',
+  RecentSearches: 'Recent searches',
+  SearchFor: 'Search for',
+  People: 'People',
+  'Setting.Display.Darkmode':
+    'Adjust the appearance of Facebook to reduce glare and give your eyes a break.',
+  'Display&Accessibility': 'Display & Accessibility',
+  DarkMode: 'Dark mode',
+  Trending: 'Trending',
+  WriteAComment: 'Write a comment...',
+  Contacts: 'Contacts',
+  Infomation: 'Information',
+  AddFriend: 'Add friend',
+  Suggestions: 'Suggestions',
+  Reply: 'Reply',
+  EditCoverPhoto: 'Edit cover photo',
+  'Select cover photo': 'Select cover photo',
+  Upload: 'Upload',
+  Remove: 'Remove',
+  'Upload your cover photo': 'Upload your cover photo',
+  'Preview on your personal page': 'Preview on your personal page',
+  '(To upload background, you must preview first!)':
+    '(To upload background, you must preview first!)',
+  Cancel: 'Cancel',
+  'Remove this change?': 'Remove this change?',
+  'Are you sure about discard this change?':
+    'Are you sure about discard this change?',
+  Agree: 'Agree',
+  'Remove cover photo': 'Remove cover photo',
+  'Are you sure about remove your cover photo?':
+    'Are you sure about remove your cover photo?',
+  'Create your story': 'Create your story',
+  Change: 'Change',
+  Save: 'Save',
+  Chat: 'Chat',
+  'You had blocked this user': 'You had blocked this user',
+  'You had been blocked': 'You had been blocked',
+  'Cancel invitation': 'Cancel invitation',
+  'Accept invitation friend': 'Accept invitation friend',
+  'View mode': 'View mode',
+  'Search on this personal page': 'Search on this personal page',
+  'Update your avatar': 'Update your avatar',
+  'Create frame': 'Create frame',
+  'Upload image to change your avatar': 'Upload image to change your avatar',
+  'Select your image to upload:': 'Select your image to upload:',
+  'Preview in your personal page': 'Preview in your personal page',
+  'Preview your personal page before your change':
+    'Preview your personal page before your change',
+  'Remove this change?': 'Remove this change?',
+  'Are you sure about discard this change?':
+    'Are you sure about discard this change?',
+  'Report this personal page': 'Report this personal page',
+  'Setting your time line': 'Setting your time line',
+  'Block this user': 'Block this user',
+  'Report this user': 'Report this user',
+  'Please choose the problem you had seen':
+    'Please choose the problem you had seen',
+  'You only can report this personal page after choose one problem':
+    'You only can report this personal page after choose one problem',
+  'This is your personal page after your change':
+    'This is your personal page after your change',
+  SeeAllFriend: 'See all friend',
+  Actions: 'Actions',
+  YouUnsentAMessage: 'You unsent a message',
+  ThisMessageIsUnsent: 'This message is unsent',
+  Login: 'Login',
+  OK: 'OK',
+  ContinueWith: 'Continue with',
+  Welcome: 'Welcome'
 }
