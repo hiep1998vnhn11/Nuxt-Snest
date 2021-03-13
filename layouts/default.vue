@@ -31,14 +31,8 @@
       <button-setting v-if="currentUser" />
     </v-app-bar>
     <v-slide-x-reverse-transition>
-      <notifications type="velocity">
-        <template slot="body" slot-scope="props">
-          <toast-notification
-            :title="props.item.title"
-            :content="props.item.text"
-            @onClose="props.close"
-          />
-        </template>
+      <notifications>
+        
       </notifications>
     </v-slide-x-reverse-transition>
     <v-main ref="main">
