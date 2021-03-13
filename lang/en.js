@@ -37,7 +37,7 @@ export default {
     blocked: 'Blocked by Admin',
     writeSt: 'Write something ...',
     thinkSt: "What's do you thinking ...",
-    post: 'Post this article',
+    post: 'Post',
     content: 'Content',
     add: 'Add to post...',
     image: 'Image',
