@@ -31,6 +31,11 @@ export default {
         defer: true,
         crossorigin: 'anonymous',
         src: 'https://connect.facebook.net/en_US/sdk.js'
+      },
+      {
+        async: true,
+        defer: true,
+        src: 'https://apis.google.com/js/platform.js'
       }
     ]
   },

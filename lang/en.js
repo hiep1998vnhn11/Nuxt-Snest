@@ -373,5 +373,9 @@ export default {
   SeeAllFriend: 'See all friend',
   Actions: 'Actions',
   YouUnsentAMessage: 'You unsent a message',
-  ThisMessageIsUnsent: 'This message is unsent'
+  ThisMessageIsUnsent: 'This message is unsent',
+  Login: 'Login',
+  OK: 'OK',
+  ContinueWith: 'Continue with',
+  Welcome: 'Welcome'
 }

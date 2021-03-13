@@ -2,6 +2,7 @@ import { io } from 'socket.io-client'
 
 const socketService = {
   connectSocket(store) {
+    return
     window.socket = io(process.env.NUXT_ENV_SOCKET_URL)
     window.socket.emit('login', store.getters['user/currentUser'].id)
     // window.socket.emit('join', {

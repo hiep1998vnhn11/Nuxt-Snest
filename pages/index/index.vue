@@ -161,7 +161,7 @@ export default {
     }
   },
   mounted() {
-    if (!this.friends.length) this.fetchFriend()
+    if (!this.friends.length && this.isLoggedIn) this.fetchFriend()
     this.fetchTrending()
   },
   methods: {

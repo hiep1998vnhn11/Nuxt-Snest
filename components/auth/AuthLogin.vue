@@ -1,7 +1,12 @@
 <template>
   <div class="login-body">
     <loading-component v-if="loading" />
+
     <div class="login-card">
+      <loading-component
+        v-if="facebook.loading && facebook.user"
+        :text="`${$t('Welcome')} ${facebook.user}`"
+      />
       <h1>
         {{ $t('Login') }}
       </h1>
@@ -43,7 +48,16 @@
         <auth-register class="mx-auto" />
       </div>
       <div class="mt-3">
-        <v-btn icon text outlined x-large class="mr-1" @click="onLoginFacebook">
+        <v-btn
+          :loading="facebook.loggingIn"
+          :disabled="facebook.loggingIn || !!facebook.user"
+          icon
+          text
+          outlined
+          x-large
+          class="mr-1"
+          @click="onLoginFacebook"
+        >
           <v-avatar size="50">
             <img src="~/assets/icons/facebook.png" />
           </v-avatar>
@@ -54,6 +68,22 @@
           </v-avatar>
         </v-btn>
       </div>
+      <v-btn
+        v-if="facebook.user && facebook.accessToken"
+        color="primary"
+        class="text-capitalize mt-3"
+        block
+        outlined
+        rounded
+        @click="onContinueFacebook"
+      >
+        <v-spacer />
+        {{ $t('ContinueWith') }} {{ facebook.user }}
+        <v-spacer />
+        <v-avatar size="35" class="mr-n4">
+          <img :src="facebook.picture" />
+        </v-avatar>
+      </v-btn>
     </div>
   </div>
 </template>
@@ -76,7 +106,14 @@ export default {
       registerSuccess: false,
       loading: false,
       error: null,
-      loginError: false
+      loginError: false,
+      facebook: {
+        loggingIn: false,
+        loading: false,
+        user: false,
+        accessToken: null,
+        picture: null
+      }
     }
   },
   computed: {
@@ -109,45 +146,91 @@ export default {
       }
       this.loading = false
     },
-    onLoginFacebook() {
-      FB.login(function(response) {
-        console.log(response)
-        if (response.authResponse) {
-          console.log('Welcome!  Fetching your information.... ')
-          FB.api('/me', function(response) {
-            console.log(response)
+    async onLoginFacebook() {
+      this.facebook.loggingIn = true
+      const _this = this
+      FB.getLoginStatus(async function(response) {
+        if (response.status === 'connected') {
+          FB.api('/me', { fields: 'picture,name' }, function(response) {
+            _this.facebook.user = response.name
+            _this.facebook.picture = response.picture.data.url
           })
+          _this.facebook.accessToken = response.authResponse.accessToken
+          _this.facebook.loggingIn = false
         } else {
-          console.log('User cancelled login or did not fully authorize.')
+          FB.login(
+            async function(response) {
+              if (response.authResponse) {
+                FB.api('/me', { fields: 'picture,name' }, function(response) {
+                  console.log(response)
+                  _this.facebook.user = response.name
+                  _this.facebook.picture = response.picture.data.url
+                })
+                _this.facebook.accessToken = response.authResponse.accessToken
+                _this.facebook.loggingIn = false
+              }
+            },
+            {
+              scope:
+                'public_profile,email,user_gender,user_link,user_location,user_birthday',
+              return_scopes: true
+            }
+          )
         }
       })
     },
+    async onContinueFacebook() {
+      if (!this.facebook.accessToken) return
+      this.facebook.loading = true
+      try {
+        await this.$store.dispatch(
+          'user/loginFacebook',
+          this.facebook.accessToken
+        )
+        if (!window.socket || window.socket.disconnected) {
+          socketService.connectSocket(this.$store)
+        }
+      } catch (err) {
+        this.$nuxt.error(err)
+      }
+      this.facebook.loading = false
+    },
     statusChangeCallback(response) {
       // Called with the results from FB.getLoginStatus().
-      console.log('statusChangeCallback')
-      console.log(response) // The current login status of the person.
+      // The current login status of the person.
       if (response.status === 'connected') {
         // Logged into your webpage and Facebook.
-        testAPI()
+        console.log(response)
       } else {
         // Not logged into your webpage or we are unable to tell.
-        document.getElementById('status').innerHTML =
-          'Please log ' + 'into this webpage.'
+        console.log(response)
+        console.log('failed!')
       }
     },
-
     checkLoginState() {
+      const store = this.$store
       // Called when a person is finished with the Login Button.
-      FB.getLoginStatus(function(response) {
-        // See the onlogin handler
-        statusChangeCallback(response)
-      })
+      try {
+        FB.getLoginStatus(async function(response) {
+          // See the onlogin handler
+          if (response.status === 'connected') {
+            await store.dispatch(
+              'user/loginFacebook',
+              response.authResponse.accessToken
+            )
+            socketService.connectSocket(this.$store)
+          } else {
+            console.log('please login')
+          }
+        })
+      } catch (err) {
+        this.$nuxt.error(err)
+      }
     },
-
     testAPI() {
       // Testing Graph API after login.  See statusChangeCallback() for when this call is made.
       console.log('Welcome!  Fetching your information.... ')
-      FB.api('/me', function(response) {
+      FB.api('me?fields=id,name,email,link,birthday', function(response) {
         console.log('Successful login for: ' + response.name)
         document.getElementById('status').innerHTML =
           'Thanks for logging in, ' + response.name + '!'
