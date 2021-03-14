@@ -377,5 +377,10 @@ export default {
   Login: 'Login',
   OK: 'OK',
   ContinueWith: 'Continue with',
-  Welcome: 'Welcome'
+  Welcome: 'Welcome',
+  EndCall: 'End this call',
+  OpenChat: 'Open your Chat',
+  TurnOnCamera: 'Turn camera on',
+  CloseChat: 'Close your Chat',
+  TurnOffCamera: 'Turn camera off'
 }

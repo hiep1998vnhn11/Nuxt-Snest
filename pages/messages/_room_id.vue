@@ -42,7 +42,15 @@
       </v-tooltip>
       <v-tooltip bottom>
         <template v-slot:activator="{ on, attrs }">
-          <v-btn small icon text v-bind="attrs" class="ml-3" v-on="on">
+          <v-btn
+            small
+            icon
+            text
+            v-bind="attrs"
+            class="ml-3"
+            v-on="on"
+            @click="createNewPrivateCall"
+          >
             <v-icon color="primary">mdi-video</v-icon>
           </v-btn>
         </template>
@@ -228,6 +236,7 @@
 <script>
 import { mapActions, mapGetters } from 'vuex'
 import axios from 'axios'
+import { v4 as uuidV4 } from 'uuid'
 
 export default {
   data() {
@@ -356,6 +365,51 @@ export default {
     },
     newLine() {
       console.log('new line')
+    },
+    createNewCall() {
+      const call_id = v4()
+      window.socket.emit('create-call', {
+        call_id,
+        user_id: this.currentUser.id
+      })
+      window.socket.on('create-call-success', () => {
+        this.$route.push(
+          this.localePath({
+            name: 'call-call_id',
+            params: {
+              call_id
+            }
+          })
+        )
+      })
+    },
+    createNewPrivateCall(userId) {
+      const call_id = '300fde64-2533-4e02-a165-61c010edd77a'
+      this.$router.push(
+        this.localePath({
+          name: 'call-call_id',
+          params: { call_id },
+          query: {
+            video: true,
+            type: 'private',
+            audio: true
+          }
+        })
+      )
+      //call with userId
+      // if (this.thresh.participants.online_status) const call_id = v4()
+      window.socket.emit('create-private-call', {
+        call_id,
+        user_id: userId
+      })
+      this.$route.push(
+        this.localePath({
+          name: 'call-call_id',
+          params: {
+            call_id
+          }
+        })
+      )
     }
   }
 }

@@ -1,16 +1,88 @@
 <template>
   <div class="call-container">
-    <v-btn icon text large @click="myVideo = !myVideo">
-      <v-icon>mdi-camera</v-icon>
-    </v-btn>
-    {{ peers }}
+    <message-card v-if="chat" />
     <div ref="video-call" class="video-call">
-      <video ref="video-me" class="my-video"></video>
+      <!-- <video ref="video-me" class="my-video"></video> -->
+      <video ref="video-me" autoplay playsinline class="my-video"></video>
       <video ref="video-guest" class="other-video"></video>
       <video ref="video-host" class="other-video"></video>
     </div>
     <div v-if="removed">
       This call was removed!
+    </div>
+    <div class="call-actions">
+      <div class="call-action-chat">
+        <v-tooltip top>
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn
+              class="grey lighten-3"
+              color="dark"
+              icon
+              x-large
+              v-bind="attrs"
+              v-on="on"
+              @click="chat = !chat"
+            >
+              <v-icon>
+                {{ chat ? 'mdi-chat-remove-outline' : 'mdi-chat-outline' }}
+              </v-icon>
+            </v-btn>
+          </template>
+          <span>{{ chat ? $t('CloseChat') : $t('OpenChat') }}</span>
+        </v-tooltip>
+      </div>
+
+      <v-tooltip top>
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn
+            v-bind="attrs"
+            v-on="on"
+            icon
+            text
+            class="grey lighten-3"
+            color="dark"
+            x-large
+            @click="changeVideo"
+          >
+            <v-icon>{{ video ? 'mdi-camcorder' : 'mdi-camcorder-off' }}</v-icon>
+          </v-btn>
+        </template>
+        <span>{{ video ? $t('TurnOffCamera') : $t('TurnOnCamera') }}</span>
+      </v-tooltip>
+      <v-tooltip top>
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn
+            v-bind="attrs"
+            v-on="on"
+            icon
+            width="70"
+            height="70"
+            class="danger mx-3"
+            @click="onTurnOffCall"
+          >
+            <v-icon>mdi-phone-cancel</v-icon>
+          </v-btn>
+        </template>
+        <span>{{ $t('EndCall') }}</span>
+      </v-tooltip>
+      <v-tooltip top>
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn
+            class="grey lighten-3"
+            color="dark"
+            v-bind="attrs"
+            v-on="on"
+            icon
+            x-large
+            @click="changeAudio"
+          >
+            <v-icon>
+              {{ audio ? 'mdi-microphone' : 'mdi-microphone-off' }}
+            </v-icon>
+          </v-btn>
+        </template>
+        <span> {{ audio ? 'TurnOffMicro' : 'TurnOnMicro' }} </span>
+      </v-tooltip>
     </div>
   </div>
 </template>
@@ -30,7 +102,12 @@ export default {
       peers: {},
       peer: null,
       myPeer: null,
-      removed: false
+      removed: false,
+      calling: true,
+      answer: false,
+      video: true,
+      audio: true,
+      chat: false
     }
   },
   methods: {
@@ -58,7 +135,6 @@ export default {
           vm.peer.on('call', call => {
             call.answer(stream)
             const hostVideo = vm.$refs['video-host']
-            hostVideo.muted = true
             call.on('stream', userVideoStream => {
               vm.addVideoStream(hostVideo, userVideoStream)
             })
@@ -80,7 +156,6 @@ export default {
       const call = this.peer.call(userPeerId, stream)
       this.peers[userPeerId] = stream
       const guestVideo = this.$refs['video-guest']
-      guestVideo.muted = true
       call.on('stream', userVideoStream => {
         vm.addVideoStream(guestVideo, userVideoStream)
       })
@@ -107,7 +182,29 @@ export default {
       this.peer.on('connection', conn => {
         console.log(conn)
       })
-    }
+    },
+    stopStreamedVideo(videoElem) {
+      const stream = videoElem.srcObject
+      const tracks = stream.getTracks()
+      console.log(tracks)
+      // tracks.forEach(function(track) {
+      //   track.stop()
+      // })
+      // videoElem.srcObject = null
+    },
+    changeVideo() {
+      //change video is enable or not
+      this.video = !this.video
+      const myVideoTrack = this.$refs['video-me'].srcObject.getVideoTracks()
+      myVideoTrack[0].enabled = this.video
+    },
+    changeAudio() {
+      //change video is enable or not
+      this.audio = !this.audio
+      const myAudioTrack = this.$refs['video-me'].srcObject.getAudioTracks()
+      myAudioTrack[0].enabled = this.audio
+    },
+    onTurnOffCall() {}
   },
   mounted() {
     this.createPeer()
@@ -143,12 +240,38 @@ export default {
     padding: 20px;
     justify-content: center;
     align-items: center;
-    background: red;
-    .my-video {
-      width: 300px;
-    }
+    height: 100%;
     .other-video {
-      width: 500px;
+      position: absolute;
+      align-items: center;
+      max-height: 100%;
+      max-width: 100%;
+      height: 100%;
+      z-index: 1;
+    }
+    .my-video {
+      position: absolute;
+      top: 2%;
+      right: 2%;
+      width: 300px;
+      border-radius: 15px;
+      border: thin 1px;
+      z-index: 100;
+    }
+  }
+
+  .call-actions {
+    position: absolute;
+    width: 100%;
+    bottom: 0px;
+    display: flex;
+    padding: 40px;
+    z-index: 99;
+    justify-content: center;
+    align-items: center;
+    .call-action-chat {
+      position: absolute;
+      left: 40px;
     }
   }
 }
