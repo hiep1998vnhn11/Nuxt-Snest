@@ -42,7 +42,15 @@
       </v-tooltip>
       <v-tooltip bottom>
         <template v-slot:activator="{ on, attrs }">
-          <v-btn small icon text v-bind="attrs" class="ml-3" v-on="on">
+          <v-btn
+            small
+            icon
+            text
+            v-bind="attrs"
+            class="ml-3"
+            v-on="on"
+            @click="createNewPrivateCall"
+          >
             <v-icon color="primary">mdi-video</v-icon>
           </v-btn>
         </template>
@@ -228,6 +236,7 @@
 <script>
 import { mapActions, mapGetters } from 'vuex'
 import axios from 'axios'
+import { v4 as uuidv4 } from 'uuid'
 
 export default {
   data() {
@@ -356,6 +365,61 @@ export default {
     },
     newLine() {
       console.log('new line')
+    },
+    createNewCall() {
+      const call_id = v4()
+      window.socket.emit('create-call', {
+        call_id,
+        user_id: this.currentUser.id,
+        user: this.currentUser
+      })
+      window.socket.on('create-call-success', () => {
+        this.$route.push(
+          this.localePath({
+            name: 'call-call_id',
+            params: {
+              call_id
+            }
+          })
+        )
+      })
+    },
+    createNewPrivateCall() {
+      const call_id = uuidv4()
+      window.socket.emit('create-call', {
+        call_id,
+        user_id: this.currentUser.id,
+        user: this.currentUser
+      })
+      this.$router.push(
+        this.localePath({
+          name: 'call-call_id',
+          params: { call_id },
+          query: {
+            video: true,
+            type: 'private',
+            audio: true
+          }
+        })
+      )
+      this.$store.commit('message/SET_CALLING_USER', {
+        call_id,
+        user: this.thresh.participants
+      })
+      //call with userId
+      //   // if (this.thresh.participants.online_status) const call_id = v4()
+      //   window.socket.emit('create-private-call', {
+      //     call_id,
+      //     user_id: userId
+      //   })
+      //   this.$router.push(
+      //     this.localePath({
+      //       name: 'call-call_id',
+      //       params: {
+      //         call_id
+      //       }
+      //     })
+      //   )
     }
   }
 }

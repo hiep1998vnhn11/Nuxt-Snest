@@ -30,19 +30,9 @@
       <button-notification v-if="currentUser" />
       <button-setting v-if="currentUser" />
     </v-app-bar>
-    <v-slide-x-reverse-transition>
-      <notifications type="velocity">
-        <template slot="body" slot-scope="props">
-          <toast-notification
-            :title="props.item.title"
-            :content="props.item.text"
-            @onClose="props.close"
-          />
-        </template>
-      </notifications>
-    </v-slide-x-reverse-transition>
     <v-main ref="main">
       <v-container>
+        <loading-calling />
         <nuxt />
       </v-container>
     </v-main>
@@ -76,9 +66,9 @@ export default {
   },
   computed: {
     ...mapGetters('user', ['currentUser']),
-    ...mapGetters('message', ['thresh']),
+    ...mapGetters('message', ['thresh', 'callingUser']),
     messageIcon() {
-      return this.$route.name === 'Home'
+      return this.$route.name === 'index'
         ? 'mdi-pencil-circle-outline'
         : 'mdi-account-multiple-outline'
     },

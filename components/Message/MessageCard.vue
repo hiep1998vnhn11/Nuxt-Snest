@@ -45,7 +45,7 @@
       </v-btn>
 
       <v-spacer />
-      <v-btn icon small class="mr-2">
+      <v-btn icon small class="mr-2" @click="createNewPrivateCall">
         <v-icon :color="selected ? 'primary' : ''">mdi-video</v-icon>
       </v-btn>
       <v-btn icon small class="mr-2">
@@ -110,6 +110,7 @@
 <script>
 import { mapGetters, mapActions } from 'vuex'
 import axios from 'axios'
+import { v4 as uuidv4 } from 'uuid'
 
 export default {
   computed: {
@@ -136,6 +137,29 @@ export default {
       'setDefaultMessage',
       'deleteMessage'
     ]),
+    createNewPrivateCall() {
+      const call_id = uuidv4()
+      window.socket.emit('create-call', {
+        call_id,
+        user_id: this.currentUser.id,
+        user: this.currentUser
+      })
+      this.$router.push(
+        this.localePath({
+          name: 'call-call_id',
+          params: { call_id },
+          query: {
+            video: true,
+            type: 'private',
+            audio: true
+          }
+        })
+      )
+      this.$store.commit('message/SET_CALLING_USER', {
+        call_id,
+        user: this.thresh.participants
+      })
+    },
     onClickOutsideWithConditional() {
       this.selected = false
     },

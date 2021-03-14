@@ -150,7 +150,7 @@ export default {
   computed: {
     ...mapGetters('user', ['currentUser']),
     isDeleted() {
-      return this.message.deleted_at !== null
+      return this.message.deleted_at
     }
   }
 }

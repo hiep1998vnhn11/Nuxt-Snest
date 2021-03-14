@@ -5,12 +5,12 @@ import fs from 'fs'
 export default {
   // Disable server-side rendering: https://go.nuxtjs.dev/ssr-mode
   ssr: false,
-  server: {
-    https: {
-      key: fs.readFileSync(path.resolve(__dirname, 'localhost.key')),
-      cert: fs.readFileSync(path.resolve(__dirname, 'localhost.crt'))
-    }
-  },
+  // server: {
+  //   https: {
+  //     key: fs.readFileSync(path.resolve(__dirname, 'localhost.key')),
+  //     cert: fs.readFileSync(path.resolve(__dirname, 'localhost.crt'))
+  //   }
+  // },
 
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
@@ -36,6 +36,10 @@ export default {
         async: true,
         defer: true,
         src: 'https://apis.google.com/js/platform.js'
+      },
+      {
+        defer: true,
+        src: 'https://unpkg.com/peerjs@1.3.1/dist/peerjs.min.js'
       }
     ]
   },

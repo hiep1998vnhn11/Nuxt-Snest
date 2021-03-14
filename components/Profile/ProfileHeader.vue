@@ -220,6 +220,7 @@
               icon
               text
               class="ml-2 mt-3"
+              @click="onMessageUser"
             >
               <v-icon>mdi-facebook-messenger</v-icon>
             </v-btn>
@@ -442,7 +443,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 import axios from 'axios'
 import { VueAvatar } from 'vue-avatar-editor-improved'
 
@@ -495,6 +496,14 @@ export default {
     ...mapGetters('user', ['currentUser'])
   },
   methods: {
+    ...mapActions('message', ['getThreshByUser']),
+    async onMessageUser() {
+      try {
+        await this.getThreshByUser(this.user)
+      } catch (err) {
+        this.$nuxt.error(this.user)
+      }
+    },
     onRemoveChange() {
       this.file = this.image = this.avatarPreviewSrc = null
       this.dialog = this.changeAvatarDialog = this.$refs.vueavatar = this.avatarPreview = this.uploadAvatarDialog = false

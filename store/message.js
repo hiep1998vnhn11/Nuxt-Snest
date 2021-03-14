@@ -6,21 +6,24 @@ const initialState = () => ({
   messages: [],
   pageMessage: 1,
   thresh: null,
-  messageCards: []
+  messageCards: [],
+  calling: null
 })
 const state = () => ({
   rooms: [],
   messages: [],
   pageMessage: 1,
   thresh: null,
-  messageCards: []
+  messageCards: [],
+  calling: null
 })
 
 const getters = {
   rooms: state => state.rooms,
   messages: state => state.messages,
   messageCards: state => state.messageCards,
-  thresh: state => state.thresh
+  thresh: state => state.thresh,
+  calling: state => state.calling
 }
 const actions = {
   //Get thresh by userId
@@ -191,6 +194,9 @@ const mutations = {
   },
   TYPING_USER: function(state, isTyping) {
     state.thresh.typing = isTyping
+  },
+  SET_CALLING_USER: function(state, calling) {
+    state.calling = calling
   }
 }
 export default {

@@ -2,7 +2,6 @@ import { io } from 'socket.io-client'
 
 const socketService = {
   connectSocket(store) {
-    return
     window.socket = io(process.env.NUXT_ENV_SOCKET_URL)
     window.socket.emit('login', store.getters['user/currentUser'].id)
     // window.socket.emit('join', {
@@ -38,6 +37,10 @@ const socketService = {
     // An user had accepted a friend request
     window.socket.on('acceptFriendNotification', data => {
       console.log(data)
+    })
+
+    window.socket.on('people-calling', calling => {
+      store.commit('message/SET_CALLING_USER', calling)
     })
 
     // An user had logged in
