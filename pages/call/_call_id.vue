@@ -3,10 +3,14 @@
     <v-btn icon text large @click="myVideo = !myVideo">
       <v-icon>mdi-camera</v-icon>
     </v-btn>
+    {{ peers }}
     <div ref="video-call" class="video-call">
-      <video v-show="myVideo" ref="my-video" class="my-video"></video>
-      <video v-if="guestVideo" ref="guest-video" class="my-video"></video>
-      <video v-if="hostVideo" ref="host-video" class="my-video"></video>
+      <video ref="video-me" class="my-video"></video>
+      <video ref="video-guest" class="other-video"></video>
+      <video ref="video-host" class="other-video"></video>
+    </div>
+    <div v-if="removed">
+      This call was removed!
     </div>
   </div>
 </template>
@@ -21,7 +25,12 @@ export default {
       myVideo: true,
       guestVideo: false,
       hostVideo: false,
-      peer: null
+      connections: [],
+      remotePeer: [],
+      peers: {},
+      peer: null,
+      myPeer: null,
+      removed: false
     }
   },
   methods: {
@@ -29,7 +38,14 @@ export default {
       window.socket.on('call_not_found', call_id => {
         this.$router.push(this.localePath({ name: 'test' }))
       })
-      const myVideo = this.$refs['my-video']
+      window.socket.on('user-leave', ({ user_id, peer_id }) => {
+        console.log(`an user ${user_id} has left the ${peer_id}`)
+        if (this.peers[peer_id]) this.peers[peer_id].close()
+      })
+      window.socket.on('remove-call', () => {
+        this.removed = true
+      })
+      const myVideo = this.$refs['video-me']
       myVideo.muted = true
       const vm = this
       navigator.mediaDevices
@@ -41,8 +57,7 @@ export default {
           vm.addVideoStream(myVideo, stream)
           vm.peer.on('call', call => {
             call.answer(stream)
-            vm.hostVideo = true
-            const hostVideo = vm.$refs['host-video']
+            const hostVideo = vm.$refs['video-host']
             hostVideo.muted = true
             call.on('stream', userVideoStream => {
               vm.addVideoStream(hostVideo, userVideoStream)
@@ -50,11 +65,9 @@ export default {
           })
           window.socket.on('user-join', ({ user_id, peer_id }) => {
             console.log(`an user had connected ${peer_id} ${user_id}`)
-            this.connectToNewUser(peer_id, stream)
+            vm.connectToNewUser(peer_id, stream)
           })
         })
-      // if (!this.currentUser || !window.socket || window.socket.disconnected)
-      //   return
     },
     addVideoStream(video, stream) {
       video.srcObject = stream
@@ -62,11 +75,11 @@ export default {
         video.play()
       })
     },
-    connectToNewUser(userId, stream) {
+    connectToNewUser(userPeerId, stream) {
       const vm = this
-      const call = this.peer.call(userId, stream)
-      this.guestVideo = true
-      const guestVideo = this.$refs['guest-video']
+      const call = this.peer.call(userPeerId, stream)
+      this.peers[userPeerId] = stream
+      const guestVideo = this.$refs['video-guest']
       guestVideo.muted = true
       call.on('stream', userVideoStream => {
         vm.addVideoStream(guestVideo, userVideoStream)
@@ -75,26 +88,42 @@ export default {
         guestVideo.remove()
         vm.guestVideo = false
       })
+    },
+    createPeer() {
+      this.peer = new Peer(undefined, {
+        host: process.env.NUXT_ENV_PEER_HOST,
+        port: process.env.NUXT_ENV_PEER_PORT
+      })
+      //local peer id
+      this.peer.on('open', id => {
+        this.remotePeer.push(id)
+        this.myPeer = id
+        window.socket.emit('join-call', {
+          call_id: this.$route.params.call_id,
+          user_id: this.currentUser.id,
+          peer_id: id
+        })
+      })
+      this.peer.on('connection', conn => {
+        console.log(conn)
+      })
     }
   },
-  created() {},
   mounted() {
-    this.peer = new Peer(undefined, {
-      host: '/',
-      port: '8081'
-    })
+    this.createPeer()
     this.connect()
-
-    this.peer.on('open', id => {
-      window.socket.emit('join-call', {
-        call_id: this.$route.params.call_id,
-        user_id: this.currentUser.id,
-        peer_id: id
-      })
-    })
   },
   computed: {
     ...mapGetters('user', ['currentUser'])
+  },
+  watch: {
+    $route() {
+      window.socket.emit('remove-call', {
+        user_id: this.currentUser.id,
+        call_id: this.$route.params.call_id,
+        peer_id: this.myPeer
+      })
+    }
   }
 }
 </script>
@@ -117,6 +146,9 @@ export default {
     background: red;
     .my-video {
       width: 300px;
+    }
+    .other-video {
+      width: 500px;
     }
   }
 }
