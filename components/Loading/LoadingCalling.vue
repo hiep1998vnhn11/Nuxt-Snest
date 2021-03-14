@@ -60,12 +60,24 @@ export default {
       )
     },
     onRefuseCalling() {
+      window.socket.emit('refuse-call', {
+        call_id: this.calling.call_id,
+        user_id: this.calling.user.id
+      })
       this.$store.commit('message/SET_CALLING_USER', null)
     }
   },
   computed: {
     ...mapGetters('message', ['calling']),
     ...mapGetters('user', ['currentUser'])
+  },
+  mounted() {
+    window.socket.on('people-cancel-call', call_id => {
+      console.log(`calcel call ${call_id}`)
+      if (this.calling && this.calling.call_id === call_id) {
+        this.$store.commit('message/SET_CALLING_USER', null)
+      }
+    })
   }
 }
 </script>

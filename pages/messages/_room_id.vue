@@ -384,7 +384,7 @@ export default {
         )
       })
     },
-    createNewPrivateCall(userId) {
+    createNewPrivateCall() {
       const call_id = uuidv4()
       window.socket.emit('create-call', {
         call_id,

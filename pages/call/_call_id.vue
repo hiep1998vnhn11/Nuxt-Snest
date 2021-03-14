@@ -21,15 +21,18 @@
             <img :src="calling.user.profile_photo_path" />
           </v-avatar>
           <h2>{{ calling.user.name }}</h2>
-          <div class="calling-text-icon" v-if="isCalling && !removed">
+          <div class="calling-text-icon" v-if="isCalling">
             <span class="white--text">{{ $t('Calling') }}</span>
             <div class="spinner">
               <div class="double-bounce1"></div>
               <div class="double-bounce2"></div>
             </div>
           </div>
-          <h2 v-else>
+          <h2 v-else-if="removed">
             {{ $t('Call was canceled! Recall now!') }}
+          </h2>
+          <h2 v-else>
+            {{ calling.user.name }} {{ $t('RefuseYourCallYouWantReCall') }}
           </h2>
         </div>
       </div>
@@ -76,7 +79,7 @@
         <span>{{ video ? $t('TurnOffCamera') : $t('TurnOnCamera') }}</span>
       </v-tooltip>
 
-      <v-tooltip top v-if="!removed">
+      <v-tooltip top v-if="isCalling">
         <template v-slot:activator="{ on, attrs }">
           <v-btn
             v-bind="attrs"
@@ -147,6 +150,7 @@ export default {
       peer: null,
       myPeer: null,
       removed: false,
+      isRefuse: false,
       isCalling: true,
       answer: false,
       video: true,
@@ -156,6 +160,7 @@ export default {
   },
   beforeRouteLeave(to, from, next) {
     window.socket.emit('remove-call', this.$route.params.call_id)
+    this.$store.commit('message/SET_CALLING_USER', null)
     return next()
   },
   methods: {
@@ -171,6 +176,13 @@ export default {
       window.socket.on('remove-call', () => {
         this.$router.push('/')
       })
+      window.socket.on('people-refuse-call', ({ user_id, call_id }) => {
+        if (call_id === this.$route.params.call_id) {
+          this.isRefuse = true
+          this.isCalling = false
+        }
+      })
+
       const myVideo = this.$refs['video-me']
       myVideo.muted = true
       const vm = this
@@ -246,11 +258,16 @@ export default {
     },
     onTurnOffCall() {
       window.socket.emit('end-call', {
-        user_id: this.currentUser.id,
+        user_id: this.calling.user.id,
         call_id: this.$route.params.call_id,
         peer_id: this.myPeer
       })
+      window.socket.emit('cancel-call', {
+        user_id: this.calling.user.id,
+        call_id: this.calling.call_id
+      })
       this.$refs['video-host'].remove()
+      this.isCalling = false
       this.removed = true
     },
     onTurnOnBackCall() {
