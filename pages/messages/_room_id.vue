@@ -236,7 +236,7 @@
 <script>
 import { mapActions, mapGetters } from 'vuex'
 import axios from 'axios'
-import { v4 as uuidV4 } from 'uuid'
+import { v4 as uuidv4 } from 'uuid'
 
 export default {
   data() {
@@ -370,7 +370,8 @@ export default {
       const call_id = v4()
       window.socket.emit('create-call', {
         call_id,
-        user_id: this.currentUser.id
+        user_id: this.currentUser.id,
+        user: this.currentUser
       })
       window.socket.on('create-call-success', () => {
         this.$route.push(
@@ -384,7 +385,12 @@ export default {
       })
     },
     createNewPrivateCall(userId) {
-      const call_id = '300fde64-2533-4e02-a165-61c010edd77a'
+      const call_id = uuidv4()
+      window.socket.emit('create-call', {
+        call_id,
+        user_id: this.currentUser.id,
+        user: this.currentUser
+      })
       this.$router.push(
         this.localePath({
           name: 'call-call_id',
@@ -397,19 +403,19 @@ export default {
         })
       )
       //call with userId
-      // if (this.thresh.participants.online_status) const call_id = v4()
-      window.socket.emit('create-private-call', {
-        call_id,
-        user_id: userId
-      })
-      this.$route.push(
-        this.localePath({
-          name: 'call-call_id',
-          params: {
-            call_id
-          }
-        })
-      )
+      //   // if (this.thresh.participants.online_status) const call_id = v4()
+      //   window.socket.emit('create-private-call', {
+      //     call_id,
+      //     user_id: userId
+      //   })
+      //   this.$router.push(
+      //     this.localePath({
+      //       name: 'call-call_id',
+      //       params: {
+      //         call_id
+      //       }
+      //     })
+      //   )
     }
   }
 }

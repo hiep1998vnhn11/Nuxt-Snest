@@ -1,14 +1,40 @@
 <template>
   <div class="call-container">
+    <v-btn
+      v-if="removed"
+      class="button-return-back"
+      icon
+      large
+      text
+      @click="onReturnBack"
+    >
+      <v-icon>mdi-arrow-left</v-icon>
+    </v-btn>
     <message-card v-if="chat" />
     <div ref="video-call" class="video-call">
       <!-- <video ref="video-me" class="my-video"></video> -->
       <video ref="video-me" autoplay playsinline class="my-video"></video>
-      <video ref="video-guest" class="other-video"></video>
-      <video ref="video-host" class="other-video"></video>
-    </div>
-    <div v-if="removed">
-      This call was removed!
+      <!-- Calling temblade -->
+      <div class="calling-container">
+        <div class="calling-card text-center">
+          <v-avatar size="120" class="avatar-outlined">
+            <img :src="thresh.participants.profile_photo_path" />
+          </v-avatar>
+          <h2>{{ thresh.participants.name }}</h2>
+          <div class="calling-text-icon" v-if="calling && !removed">
+            <span class="white--text">{{ $t('Calling') }}</span>
+            <div class="spinner">
+              <div class="double-bounce1"></div>
+              <div class="double-bounce2"></div>
+            </div>
+          </div>
+          <h2 v-else>
+            {{ $t('Call was canceled! Recall now!') }}
+          </h2>
+        </div>
+      </div>
+      <video ref="video-guest" class="other-video" v-if="!removed"></video>
+      <video ref="video-host" class="other-video" v-if="!removed"></video>
     </div>
     <div class="call-actions">
       <div class="call-action-chat">
@@ -49,7 +75,8 @@
         </template>
         <span>{{ video ? $t('TurnOffCamera') : $t('TurnOnCamera') }}</span>
       </v-tooltip>
-      <v-tooltip top>
+
+      <v-tooltip top v-if="!removed">
         <template v-slot:activator="{ on, attrs }">
           <v-btn
             v-bind="attrs"
@@ -65,6 +92,23 @@
         </template>
         <span>{{ $t('EndCall') }}</span>
       </v-tooltip>
+      <v-tooltip top v-else>
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn
+            v-bind="attrs"
+            v-on="on"
+            icon
+            width="70"
+            height="70"
+            class="success mx-3"
+            @click="onTurnOnBackCall"
+          >
+            <v-icon>mdi-phone</v-icon>
+          </v-btn>
+        </template>
+        <span>{{ $t('ReCall') }}</span>
+      </v-tooltip>
+
       <v-tooltip top>
         <template v-slot:activator="{ on, attrs }">
           <v-btn
@@ -99,7 +143,7 @@ export default {
       hostVideo: false,
       connections: [],
       remotePeer: [],
-      peers: {},
+      peers: [],
       peer: null,
       myPeer: null,
       removed: false,
@@ -110,17 +154,22 @@ export default {
       chat: false
     }
   },
+  beforeRouteLeave(to, from, next) {
+    window.socket.emit('remove-call', this.$route.params.call_id)
+    return next()
+  },
   methods: {
     connect() {
       window.socket.on('call_not_found', call_id => {
-        this.$router.push(this.localePath({ name: 'test' }))
+        this.$router.push(this.localePath({ name: 'index' }))
       })
       window.socket.on('user-leave', ({ user_id, peer_id }) => {
         console.log(`an user ${user_id} has left the ${peer_id}`)
-        if (this.peers[peer_id]) this.peers[peer_id].close()
+        const peerLeave = this.peers.find(peer => peer.peer_id === peer_id)
+        if (peerLeave && peerLeave.call) peerLeave.call.close()
       })
       window.socket.on('remove-call', () => {
-        this.removed = true
+        this.$router.push('/')
       })
       const myVideo = this.$refs['video-me']
       myVideo.muted = true
@@ -154,7 +203,7 @@ export default {
     connectToNewUser(userPeerId, stream) {
       const vm = this
       const call = this.peer.call(userPeerId, stream)
-      this.peers[userPeerId] = stream
+      this.peers.push({ peer_id: userPeerId, call })
       const guestVideo = this.$refs['video-guest']
       call.on('stream', userVideoStream => {
         vm.addVideoStream(guestVideo, userVideoStream)
@@ -183,15 +232,6 @@ export default {
         console.log(conn)
       })
     },
-    stopStreamedVideo(videoElem) {
-      const stream = videoElem.srcObject
-      const tracks = stream.getTracks()
-      console.log(tracks)
-      // tracks.forEach(function(track) {
-      //   track.stop()
-      // })
-      // videoElem.srcObject = null
-    },
     changeVideo() {
       //change video is enable or not
       this.video = !this.video
@@ -204,23 +244,45 @@ export default {
       const myAudioTrack = this.$refs['video-me'].srcObject.getAudioTracks()
       myAudioTrack[0].enabled = this.audio
     },
-    onTurnOffCall() {}
+    onTurnOffCall() {
+      window.socket.emit('end-call', {
+        user_id: this.currentUser.id,
+        call_id: this.$route.params.call_id,
+        peer_id: this.myPeer
+      })
+      this.$refs['video-host'].remove()
+      this.removed = true
+    },
+    onTurnOnBackCall() {
+      const user = {
+        id: this.currentUser.id,
+        profile_photo_path: this.currentUser.profile_photo_path,
+        name: this.currentUser.name
+      }
+      window.socket.emit('calling', {
+        user_id: this.thresh.participants.id,
+        user
+      })
+      this.removed = false
+      this.calling = true
+    },
+    onReturnBack() {
+      const myTrack = this.$refs['video-me'].srcObject.getTracks()
+      if (myTrack) {
+        myTrack.forEach(track => {
+          track.stop()
+        })
+      }
+      this.$router.push('/')
+    }
   },
   mounted() {
     this.createPeer()
     this.connect()
   },
   computed: {
-    ...mapGetters('user', ['currentUser'])
-  },
-  watch: {
-    $route() {
-      window.socket.emit('remove-call', {
-        user_id: this.currentUser.id,
-        call_id: this.$route.params.call_id,
-        peer_id: this.myPeer
-      })
-    }
+    ...mapGetters('user', ['currentUser']),
+    ...mapGetters('message', ['thresh'])
   }
 }
 </script>
@@ -234,6 +296,12 @@ export default {
   bottom: 0px;
   background: linear-gradient(60deg, #1a5cff, #f904fe);
 
+  .button-return-back {
+    position: absolute;
+    top: 2%;
+    left: 2%;
+    z-index: 1002;
+  }
   .video-call {
     position: relative;
     display: flex;
@@ -247,7 +315,7 @@ export default {
       max-height: 100%;
       max-width: 100%;
       height: 100%;
-      z-index: 1;
+      z-index: 2;
     }
     .my-video {
       position: absolute;
@@ -257,6 +325,88 @@ export default {
       border-radius: 15px;
       border: thin 1px;
       z-index: 100;
+    }
+    .calling-container {
+      position: absolute;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      align-items: center;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.3);
+      z-index: 1;
+
+      .calling-card {
+        .calling-avatar-container {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+
+        .calling-text-icon {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+      }
+
+      @-webkit-keyframes sk-bounce {
+        0%,
+        100% {
+          -webkit-transform: scale(0);
+        }
+        50% {
+          -webkit-transform: scale(1);
+        }
+      }
+      @keyframes sk-bounce {
+        0%,
+        100% {
+          transform: scale(0);
+          -webkit-transform: scale(0);
+        }
+        50% {
+          transform: scale(1);
+          -webkit-transform: scale(1);
+        }
+      }
+      h2 {
+        color: white;
+        font-size: 2rem;
+      }
+      .spinner {
+        width: 40px;
+        height: 40px;
+        position: relative;
+        margin: 20px;
+      }
+      .double-bounce1 {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        background-color: #333;
+        opacity: 0.6;
+        position: absolute;
+        top: 0;
+        left: 0;
+        -webkit-animation: sk-bounce 2s infinite ease-in-out;
+        animation: sk-bounce 2s infinite ease-in-out;
+      }
+      .double-bounce2 {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        background-color: #333;
+        opacity: 0.6;
+        position: absolute;
+        top: 0;
+        left: 0;
+        -webkit-animation: sk-bounce 2s infinite ease-in-out;
+        animation: sk-bounce 2s infinite ease-in-out;
+        -webkit-animation-delay: -1s;
+        animation-delay: -1s;
+      }
     }
   }
 

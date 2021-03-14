@@ -382,5 +382,10 @@ export default {
   OpenChat: 'Open your Chat',
   TurnOnCamera: 'Turn camera on',
   CloseChat: 'Close your Chat',
-  TurnOffCamera: 'Turn camera off'
+  TurnOffCamera: 'Turn camera off',
+  Reverse: 'Reverse',
+  'Do you want to reverse this message?':
+    'Do you want to reverse this message?',
+  'Who do you want to remove this message for?':
+    'Who do you want to remove this message for?'
 }

@@ -3,30 +3,34 @@
     <v-btn @click="generateUuidV4">
       Test
     </v-btn>
+    {{ peers }}
+    <div v-for="(index, peer) in peers" :key="index">
+      {{ index }} : {{ peer }}
+    </div>
   </div>
 </template>
 <script>
 import { v4 as uuidv4 } from 'uuid'
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 export default {
   data() {
-    return {}
+    return {
+      peers: []
+    }
   },
   methods: {
+    ...mapActions('socket', ['pushPeers']),
     generateUuidV4() {
-      const callId = uuidv4()
-      window.socket.emit('create-call', {
-        call_id: callId,
-        user_id: this.currentUser.id
+      this.peers.push({
+        peer_id: uuidv4(),
+        stream: uuidv4()
       })
-      this.$router.push(
-        this.localePath({ name: 'call-call_id', params: { call_id: callId } })
-      )
     }
   },
   created() {},
   mounted() {},
   computed: {
+    // ...mapGetters('socket', ['peers']),
     ...mapGetters('user', ['currentUser'])
   }
 }
