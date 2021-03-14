@@ -18,10 +18,10 @@
       <div class="calling-container">
         <div class="calling-card text-center">
           <v-avatar size="120" class="avatar-outlined">
-            <img :src="thresh.participants.profile_photo_path" />
+            <img :src="calling.user.profile_photo_path" />
           </v-avatar>
-          <h2>{{ thresh.participants.name }}</h2>
-          <div class="calling-text-icon" v-if="calling && !removed">
+          <h2>{{ calling.user.name }}</h2>
+          <div class="calling-text-icon" v-if="isCalling && !removed">
             <span class="white--text">{{ $t('Calling') }}</span>
             <div class="spinner">
               <div class="double-bounce1"></div>
@@ -147,7 +147,7 @@ export default {
       peer: null,
       myPeer: null,
       removed: false,
-      calling: true,
+      isCalling: true,
       answer: false,
       video: true,
       audio: true,
@@ -260,11 +260,12 @@ export default {
         name: this.currentUser.name
       }
       window.socket.emit('calling', {
-        user_id: this.thresh.participants.id,
-        user
+        user_id: this.calling.user.id,
+        user,
+        call_id: this.$route.params.call_id
       })
       this.removed = false
-      this.calling = true
+      this.isCalling = true
     },
     onReturnBack() {
       const myTrack = this.$refs['video-me'].srcObject.getTracks()
@@ -273,6 +274,7 @@ export default {
           track.stop()
         })
       }
+      this.$store.commit('message/SET_CALLING_USER', null)
       this.$router.push('/')
     }
   },
@@ -282,7 +284,7 @@ export default {
   },
   computed: {
     ...mapGetters('user', ['currentUser']),
-    ...mapGetters('message', ['thresh'])
+    ...mapGetters('message', ['thresh', 'calling'])
   }
 }
 </script>

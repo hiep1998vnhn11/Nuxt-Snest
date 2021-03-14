@@ -402,6 +402,10 @@ export default {
           }
         })
       )
+      this.$store.commit('message/SET_CALLING_USER', {
+        call_id,
+        user: this.thresh.participants
+      })
       //call with userId
       //   // if (this.thresh.participants.online_status) const call_id = v4()
       //   window.socket.emit('create-private-call', {

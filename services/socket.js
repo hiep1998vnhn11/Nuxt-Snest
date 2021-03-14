@@ -39,6 +39,10 @@ const socketService = {
       console.log(data)
     })
 
+    window.socket.on('people-calling', calling => {
+      store.commit('message/SET_CALLING_USER', calling)
+    })
+
     // An user had logged in
     window.socket.on('userLoggedIn', userId => {
       store.commit('user/USER_LOGGED_IN', userId, {

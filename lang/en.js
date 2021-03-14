@@ -387,5 +387,11 @@ export default {
   'Do you want to reverse this message?':
     'Do you want to reverse this message?',
   'Who do you want to remove this message for?':
-    'Who do you want to remove this message for?'
+    'Who do you want to remove this message for?',
+  IncomingCall: 'Incoming call',
+  CallWillStartAfterYouAnswer: 'Call will start after you answer',
+  IsCallingYou: 'Is calling you',
+  CallWillStartAfterYouAnswer: 'The call will start after you click "Answer"',
+  Refuse: 'Refuse',
+  Answer: 'Answer'
 }
