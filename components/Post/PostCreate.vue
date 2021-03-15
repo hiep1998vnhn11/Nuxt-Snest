@@ -20,16 +20,23 @@
           elevation="0"
           block
         >
-          {{ $t('create_post.writeSt') }}
+          {{ content ? content : $t('create_post.writeSt') | shortenContent }}
         </v-btn>
       </div>
     </div>
     <v-divider class="mx-4"></v-divider>
-    <v-row class="pa-3">
-      <v-col cols="6"> </v-col>
-      <v-col cols="6">
+    <v-row no-gutters class="pa-3">
+      <v-col cols="4"> </v-col>
+
+      <v-col cols="4">
         <v-btn class="text-capitalize" block rounded-lg text>
-          <v-icon class="mr-2">mdi-image-multiple</v-icon>
+          <v-icon class="mr-2" color="success">mdi-image-multiple</v-icon>
+          {{ $t('create_post.uploadImg') }}
+        </v-btn></v-col
+      >
+      <v-col cols="4">
+        <v-btn class="text-capitalize" block rounded-lg text>
+          <v-icon class="mr-2" color="warning">mdi-image-multiple</v-icon>
           {{ $t('create_post.uploadImg') }}
         </v-btn>
       </v-col>
@@ -49,6 +56,7 @@
       v-if="!loading"
       :dialog="dialog"
       @close-dialog="dialog = false"
+      @update-content="onUpdateContent"
     ></post-create-dialog>
   </v-card>
 </template>
@@ -68,7 +76,8 @@ export default {
       addImage: false,
       selectPrivacy: false,
       dialog: false,
-      hover: false
+      hover: false,
+      content: ''
     }
   },
   computed: {
@@ -76,6 +85,16 @@ export default {
       return this.hover ? '24' : '3'
     },
     ...mapGetters('user', ['currentUser'])
+  },
+  methods: {
+    onUpdateContent(e) {
+      this.content = e
+    }
+  },
+  filters: {
+    shortenContent(value) {
+      return value.length < 50 ? value : value.substring(0, 50) + ' ...'
+    }
   }
 }
 </script>

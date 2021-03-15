@@ -393,5 +393,6 @@ export default {
   IsCallingYou: 'Is calling you',
   CallWillStartAfterYouAnswer: 'The call will start after you click "Answer"',
   Refuse: 'Refuse',
-  Answer: 'Answer'
+  Answer: 'Answer',
+  RemoveImage: 'Remove this image from current post'
 }

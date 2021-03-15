@@ -120,6 +120,7 @@ export default {
 html {
   overflow-y: hidden;
   height: 100%;
+  font-family: inherit;
   &:hover {
     overflow-y: auto;
   }
@@ -141,6 +142,7 @@ html {
 
 .overflow-scroll-y {
   overflow-y: auto;
+  overflow-x: hidden;
   &:hover {
     overflow-y: auto;
   }
