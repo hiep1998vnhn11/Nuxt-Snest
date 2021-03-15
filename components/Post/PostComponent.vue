@@ -1,20 +1,19 @@
 <template>
   <v-card :class="`mx-auto hover-up`" flat>
-    <v-list-item>
-      <v-list-item-avatar>
+    <div class="post-component-header">
+      <v-avatar size="45" class="ml-1 mr-3">
         <base-name-link image :user="post.user" />
-      </v-list-item-avatar>
-      <v-list-item-content>
-        <v-list-item>
-          <base-name-link :user="post.user" />
-          <v-spacer></v-spacer>
-        </v-list-item>
-        <v-list-item-subtitle>
+      </v-avatar>
+      <div class="post-component-header-name">
+        <base-name-link :user="post.user" />
+        <span class="text-caption">
           {{ post.created_at | relativeTime }}
-        </v-list-item-subtitle>
-      </v-list-item-content>
-      <button-option-post v-if="!!this.currentUser" :post="post" />
-    </v-list-item>
+        </span>
+      </div>
+      <div class="post-component-header-option">
+        <button-option-post v-if="!!this.currentUser" :post="post" />
+      </div>
+    </div>
 
     <!-- post content -->
     <v-container>
@@ -32,26 +31,80 @@
 
     <!-- post like and comment count -->
     <v-toolbar flat>
-      <v-tooltip top max-width="200" min-width="200" offset-overflow>
-        <template color="grey" v-slot:activator="{ on, attrs }">
-          <v-btn
-            class="text-capitalize rounded-lg"
-            text
-            @click="onLike"
-            :ripple="false"
-            outlined
-            v-bind="attrs"
-            v-on="on"
-          >
-            <v-icon v-if="!post.isLiked">mdi-heart-outline</v-icon>
-            <v-icon v-else color="colorRed">mdi-heart</v-icon>
-            <span class="ml-3">
-              {{ post.likes_count }}
-            </span>
-          </v-btn>
-        </template>
-        {{ post.likes }}
-      </v-tooltip>
+      <div
+        class="post-component-emoji-container"
+        @mouseenter="hoverLike = true"
+        @mouseleave="hoverLike = false"
+      >
+        <v-fade-transition>
+          <div v-if="hoverLike">
+            <emoji-group @onClick="onClickLike" />
+          </div>
+        </v-fade-transition>
+
+        <v-btn
+          class="text-capitalize rounded-lg"
+          text
+          @click="onLike"
+          :ripple="false"
+          outlined
+        >
+          <v-fade-transition>
+            <img
+              v-if="post.likeStatus === 0"
+              width="25"
+              height="25"
+              src="@/assets/icons/reaction/like-outlined.png"
+            />
+            <img
+              v-else-if="post.likeStatus === 1"
+              width="25"
+              height="25"
+              src="@/assets/icons/reaction/like.png"
+            />
+            <img
+              v-else-if="post.likeStatus === 2"
+              width="25"
+              height="25"
+              src="@/assets/icons/reaction/love.svg"
+            />
+            <img
+              v-else-if="post.likeStatus === 3"
+              width="25"
+              height="25"
+              src="@/assets/icons/reaction/haha.svg"
+            />
+            <img
+              v-else-if="post.likeStatus === 4"
+              width="25"
+              height="25"
+              src="@/assets/icons/reaction/care.svg"
+            />
+            <img
+              v-else-if="post.likeStatus === 5"
+              width="25"
+              height="25"
+              src="@/assets/icons/reaction/wow.svg"
+            />
+            <img
+              v-else-if="post.likeStatus === 6"
+              width="25"
+              height="25"
+              src="@/assets/icons/reaction/sad.svg"
+            />
+            <img
+              v-else-if="post.likeStatus === 7"
+              width="25"
+              height="25"
+              src="@/assets/icons/reaction/angry.svg"
+            />
+          </v-fade-transition>
+          <span class="ml-3">
+            {{ post.likes_count }}
+          </span>
+        </v-btn>
+      </div>
+
       <v-btn
         class="text-capitalize rounded-lg ml-3 primary"
         outlined
@@ -280,7 +333,7 @@ import { mapGetters, mapActions } from 'vuex'
 import axios from 'axios'
 import moment from 'moment'
 export default {
-  props: ['post', 'page'],
+  props: ['post', 'page', 'index'],
   data: () => {
     return {
       hover: false,
@@ -300,7 +353,9 @@ export default {
       loadingSubCreate: false,
       showId: 0,
       write: false,
-      subComment: ''
+      subComment: '',
+      hoverLike: false,
+      iconTest: 0
     }
   },
   computed: {
@@ -308,6 +363,29 @@ export default {
   },
   methods: {
     ...mapActions('post', ['deletePost', 'createPost']),
+    async onClickLike(e) {
+      // e is status of reaction [1...7]
+      this.hoverLike = false
+      if (this.page) {
+        if (!this.currentUser) return
+        const likeStatus = this.post.likeStatus
+        this.post.likeStatus = this.post.likeStatus == e ? 0 : e
+        if (this.post.likeStatus === 0 && likeStatus !== 0) {
+          this.post.likes_count -= 1
+        } else if (this.post.likeStatus !== 0 && likeStatus === 0)
+          this.post.likes_count += 1
+        let url = `/v1/user/post/${this.post.id}/handle_like`
+        await axios.post(url, {
+          status: e
+        })
+      } else {
+        this.$emit('onLike', {
+          post: this.post,
+          status: e,
+          index: this.index
+        })
+      }
+    },
     async getComment() {
       this.comments = null
       if (this.showComment) {
@@ -449,19 +527,7 @@ export default {
       })
     },
     async onLike() {
-      if (this.page) {
-        if (!this.currentUser) return
-        this.post.isLiked = !this.post.isLiked
-        if (!this.post.isLiked) {
-          this.post.likes_count -= 1
-        } else this.post.likes_count += 1
-        let url = `/v1/user/post/${this.post.id}/handle_like`
-        await axios.post(url, {
-          status: 1
-        })
-      } else {
-        this.$emit('onLike', this.post)
-      }
+      await this.onClickLike(1)
     }
   },
   watch: {
@@ -472,13 +538,13 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .z-index-4 {
   z-index: 4;
 }
 .fixed {
   position: fixed;
-  z-index: 999;
+  z-index: 6;
   left: 50%;
 }
 
@@ -488,5 +554,31 @@ export default {
 
 .absolute {
   position: absolute;
+}
+
+.post-component-emoji-container {
+  .post-emoji-container {
+    display: none;
+    opacity: 0;
+    transition: opacity 1s ease-out;
+  }
+
+  &:hover {
+    .post-emoji-container {
+      display: block;
+      opacity: 1;
+      transition: opacity 2s linear;
+    }
+  }
+}
+
+.post-component-header {
+  display: flex;
+  align-items: center;
+  padding: 5px;
+  .post-component-header-option {
+    position: absolute;
+    right: 15px;
+  }
 }
 </style>

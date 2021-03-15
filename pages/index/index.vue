@@ -118,9 +118,10 @@
       <post-component
         class="mt-3"
         v-for="(post, index) in posts"
-        :key="post.creadted"
+        :key="`post-component-feed-${index}`"
         :post="post"
-        @onLike="onLike(index, post)"
+        :index="index"
+        @onLike="onLike"
         @onSubComment="onComment(index, post)"
         @onComment="onComment(index, post)"
       ></post-component>
@@ -210,15 +211,12 @@ export default {
     intersected() {
       this.fetchData()
     },
-    async onLike(index, post) {
-      if (!post.isLiked) {
-        this.$store.commit('post/LIKE_POST', index)
-      } else {
-        this.$store.commit('post/UNLIKE_POST', index)
-      }
-      let url = `/v1/user/post/${this.posts[index].id}/handle_like`
+    async onLike(e) {
+      console.log(e)
+      this.$store.commit('post/LIKE_POST', e)
+      let url = `/v1/user/post/${e.post.id}/handle_like`
       await axios.post(url, {
-        status: 1
+        status: e.status
       })
     },
     onComment(index, post) {

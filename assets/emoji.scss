@@ -13,6 +13,9 @@ $emoji-text-color: #000;
   align-items: center;
   border: 1px solid rgba(0, 0, 0, 0.2);
   border-radius: 9999px;
+  z-index: 100;
+  top: calc(-100% + 10px);
+  left: 0;
 }
 
 .emoji {

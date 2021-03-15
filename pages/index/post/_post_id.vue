@@ -1,5 +1,5 @@
 <template>
-  <post-component :post="post" page class="mt-1"></post-component>
+  <post-component :post="post" :page="true" class="mt-1"></post-component>
 </template>
 
 <script>
