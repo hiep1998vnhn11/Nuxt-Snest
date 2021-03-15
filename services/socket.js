@@ -34,6 +34,15 @@ const socketService = {
       })
     })
 
+    window.socket.on('people-cancel-call', call_id => {
+      if (
+        store.getters['message/calling'] &&
+        store.getters['message/calling'].call_id === call_id
+      ) {
+        store.commit('message/SET_CALLING_USER', null)
+      }
+    })
+
     // An user had accepted a friend request
     window.socket.on('acceptFriendNotification', data => {
       console.log(data)

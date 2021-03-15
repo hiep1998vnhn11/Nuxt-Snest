@@ -70,14 +70,6 @@ export default {
   computed: {
     ...mapGetters('message', ['calling']),
     ...mapGetters('user', ['currentUser'])
-  },
-  mounted() {
-    window.socket.on('people-cancel-call', call_id => {
-      console.log(`calcel call ${call_id}`)
-      if (this.calling && this.calling.call_id === call_id) {
-        this.$store.commit('message/SET_CALLING_USER', null)
-      }
-    })
   }
 }
 </script>

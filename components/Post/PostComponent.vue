@@ -450,16 +450,15 @@ export default {
     },
     async onLike() {
       if (this.page) {
-        if (!this.currentUser) {
-          console.log('handleLike failed!')
-          return
-        }
+        if (!this.currentUser) return
         this.post.isLiked = !this.post.isLiked
         if (!this.post.isLiked) {
           this.post.likes_count -= 1
         } else this.post.likes_count += 1
         let url = `/v1/user/post/${this.post.id}/handle_like`
-        await axios.post(url)
+        await axios.post(url, {
+          status: 1
+        })
       } else {
         this.$emit('onLike', this.post)
       }

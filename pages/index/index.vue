@@ -217,7 +217,9 @@ export default {
         this.$store.commit('post/UNLIKE_POST', index)
       }
       let url = `/v1/user/post/${this.posts[index].id}/handle_like`
-      await axios.post(url)
+      await axios.post(url, {
+        status: 1
+      })
     },
     onComment(index, post) {
       this.$store.commit('post/COMMENTED_POST', index)
