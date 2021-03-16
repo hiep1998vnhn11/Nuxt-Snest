@@ -16,8 +16,11 @@
     </div>
 
     <!-- post content -->
-    <v-container>
+    <v-container v-if="post">
       {{ post.content }}
+      <div v-if="comments.length">
+        {{ comments[0] }}
+      </div>
       <v-row v-if="post.images.length" class="pa-5">
         <v-img
           class="ma-1"
@@ -28,6 +31,12 @@
         ></v-img>
       </v-row>
     </v-container>
+    <div class="px-5">
+      <v-avatar size="20">
+        <img src="@/assets/icons/reaction/like.svg" />
+      </v-avatar>
+      {{ post.liked_count }}
+    </div>
 
     <!-- post like and comment count -->
     <v-toolbar flat>
@@ -51,56 +60,56 @@
         >
           <v-fade-transition>
             <img
-              v-if="post.likeStatus === 0"
+              v-if="!post.like_status || post.like_status.status === 0"
               width="25"
               height="25"
               src="@/assets/icons/reaction/like-outlined.png"
             />
             <img
-              v-else-if="post.likeStatus === 1"
+              v-else-if="post.like_status.status === 1"
               width="25"
               height="25"
               src="@/assets/icons/reaction/like.png"
             />
             <img
-              v-else-if="post.likeStatus === 2"
+              v-else-if="post.like_status.status === 2"
               width="25"
               height="25"
               src="@/assets/icons/reaction/love.svg"
             />
             <img
-              v-else-if="post.likeStatus === 3"
+              v-else-if="post.like_status.status === 3"
               width="25"
               height="25"
               src="@/assets/icons/reaction/haha.svg"
             />
             <img
-              v-else-if="post.likeStatus === 4"
+              v-else-if="post.like_status.status === 4"
               width="25"
               height="25"
               src="@/assets/icons/reaction/care.svg"
             />
             <img
-              v-else-if="post.likeStatus === 5"
+              v-else-if="post.like_status.status === 5"
               width="25"
               height="25"
               src="@/assets/icons/reaction/wow.svg"
             />
             <img
-              v-else-if="post.likeStatus === 6"
+              v-else-if="post.like_status.status === 6"
               width="25"
               height="25"
               src="@/assets/icons/reaction/sad.svg"
             />
             <img
-              v-else-if="post.likeStatus === 7"
+              v-else-if="post.like_status.status === 7"
               width="25"
               height="25"
               src="@/assets/icons/reaction/angry.svg"
             />
           </v-fade-transition>
-          <span class="ml-3">
-            {{ post.likes_count }}
+          <span class="ml-3" :class="`${reactionColor}--text`">
+            {{ reactionName }}
           </span>
         </v-btn>
       </div>
@@ -218,7 +227,7 @@ export default {
       comment: '',
       deleteDialog: false,
       isLike: false,
-      comments: null,
+      comments: [],
       notFound: false,
       collapseOnScroll: true,
       error: null,
@@ -235,7 +244,39 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('user', ['currentUser', 'isLoggedIn'])
+    ...mapGetters('user', ['currentUser', 'isLoggedIn']),
+    reactionName() {
+      if (!this.post.like_status) return this.$t('Like')
+      switch (this.post.like_status.status) {
+        case 2:
+          return this.$t('Love')
+        case 3:
+          return this.$t('Haha')
+        case 4:
+          return this.$t('Yay')
+        case 5:
+          return this.$t('Wow')
+        case 6:
+          return this.$t('Sad')
+        case 7:
+          return this.$t('Angry')
+        default:
+          return this.$t('Like')
+      }
+    },
+    reactionColor() {
+      if (!this.post.like_status) return 'grey'
+      switch (this.post.like_status.status) {
+        case 0:
+          return 'grey'
+        case 1:
+          return 'primary'
+        case 2:
+          return 'red'
+        default:
+          return 'orange'
+      }
+    }
   },
   methods: {
     ...mapActions('post', ['deletePost', 'createPost']),
@@ -244,12 +285,19 @@ export default {
       this.hoverLike = false
       if (this.page) {
         if (!this.currentUser) return
-        const likeStatus = this.post.likeStatus
-        this.post.likeStatus = this.post.likeStatus == e ? 0 : e
-        if (this.post.likeStatus === 0 && likeStatus !== 0) {
-          this.post.likes_count -= 1
-        } else if (this.post.likeStatus !== 0 && likeStatus === 0)
-          this.post.likes_count += 1
+        if (this.post.like_status) {
+          const likeStatus = this.post.like_status.status
+          this.post.like_status.status = likeStatus === e ? 0 : e
+          if (this.post.like_status.status === 0 && likeStatus !== 0) {
+            this.post.liked_count -= 1
+          } else if (this.post.like_status.status !== 0 && likeStatus === 0)
+            this.post.liked_count += 1
+        } else {
+          this.post.like_status = {
+            status: e
+          }
+          if (e > 0) this.post.liked_count += 1
+        }
         let url = `/v1/user/post/${this.post.id}/handle_like`
         await axios.post(url, {
           status: e
@@ -263,7 +311,8 @@ export default {
       }
     },
     async getComment() {
-      this.comments = null
+      if (!this.showComment) return
+      this.comments = []
       if (this.showComment) {
         this.error = null
         this.loading = true
@@ -274,9 +323,7 @@ export default {
           this.loading = false
           this.comments = response.data.data
         } catch (err) {
-          console.log(err)
-          this.loading = false
-          this.error = err.toString()
+          this.$nuxt.error(err)
         }
       }
     },
@@ -400,8 +447,12 @@ export default {
         text: response.data.message
       })
     },
-    async onLike() {
-      await this.onClickLike(1)
+    onLike() {
+      if (!this.post.like_status || this.post.like_status.status === 0) {
+        this.onClickLike(1)
+      } else {
+        this.onClickLike(0)
+      }
     }
   },
   watch: {

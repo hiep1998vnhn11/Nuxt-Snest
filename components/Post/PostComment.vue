@@ -1,6 +1,5 @@
 <template>
   <v-row justify="space-around" no-gutters>
-    {{ comment.likes }}
     <div>
       <base-name-link image :user="comment.user" class="mr-2" />
     </div>
@@ -10,8 +9,18 @@
       >
         <v-row class="pa-3">
           <base-name-link :user="comment.user"></base-name-link>
+          <div
+            class="comment-reaction-chip text-caption"
+            v-if="comment.liked_count"
+          >
+            <v-avatar size="15">
+              <img src="@/assets/icons/reaction/like.svg" />
+            </v-avatar>
+            {{ comment.liked_count }}
+          </div>
         </v-row>
         {{ comment.content }}
+        {{ comment }}
       </v-card>
       <div class="text-caption flex">
         <div
@@ -25,13 +34,14 @@
             </div>
           </v-fade-transition>
           <v-btn
-            @click="show = true"
+            @click="onLike()"
             class="text-capitalize"
+            :class="`${reactionColor}--text`"
             text
             :ripple="false"
             x-small
           >
-            like
+            {{ reactionName }}
           </v-btn>
         </div>
         <v-btn
@@ -107,6 +117,7 @@
   </v-row>
 </template>
 <script>
+import axios from 'axios'
 export default {
   props: ['comment', 'index', 'currentUser', 'isLoggedIn'],
   data() {
@@ -129,11 +140,71 @@ export default {
     },
     upload() {
       this.comment.content = 1
+    },
+    async onClickLike(e) {
+      if (!this.currentUser) return
+      if (this.comment.like_status) {
+        const likeStatus = this.comment.like_status.status
+        this.comment.like_status.status = likeStatus === e ? 0 : e
+        if (this.comment.like_status.status === 0 && likeStatus !== 0) {
+          this.comment.liked_count -= 1
+        } else if (this.comment.like_status.status !== 0 && likeStatus === 0)
+          this.comment.liked_count += 1
+      } else {
+        this.comment.like_status = {
+          status: e
+        }
+        if (e > 0) this.comment.liked_count += 1
+      }
+      let url = `/v1/user/post/comment/${this.comment.id}/handle_like`
+      await axios.post(url, {
+        status: e
+      })
+    },
+    onLike() {
+      if (!this.comment.like_status || this.comment.like_status.status === 0) {
+        this.onClickLike(1)
+      } else {
+        this.onClickLike(0)
+      }
     }
   },
   created() {},
   mounted() {},
-  computed: {}
+  computed: {
+    reactionName() {
+      if (!this.comment.like_status) return this.$t('Like')
+      switch (this.comment.like_status.status) {
+        case 2:
+          return this.$t('Love')
+        case 3:
+          return this.$t('Haha')
+        case 4:
+          return this.$t('Yay')
+        case 5:
+          return this.$t('Wow')
+        case 6:
+          return this.$t('Sad')
+        case 7:
+          return this.$t('Angry')
+        default:
+          return this.$t('Like')
+      }
+    },
+    reactionColor() {
+      if (!this.comment.like_status) return 'dark'
+      switch (this.comment.like_status.status) {
+        case 0:
+          return 'dark'
+        case 1:
+          return 'primary'
+        case 2:
+          return 'red'
+        default:
+          return 'orange'
+      }
+    }
+  }
 }
 </script>
 <style lang="scss" scoped>
@@ -159,5 +230,15 @@ export default {
       transition: opacity 2s linear;
     }
   }
+}
+
+.comment-reaction-chip {
+  position: absolute;
+  padding: 0 3px;
+  background: white;
+  z-index: 2;
+  border-radius: 9999px;
+  right: 5px;
+  top: -5px;
 }
 </style>
