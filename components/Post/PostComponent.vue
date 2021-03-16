@@ -488,15 +488,16 @@ export default {
     top: -40px;
     left: 0px;
     opacity: 0;
-    transition: opacity 1s ease-out;
+    transition: opacity 1s;
     transform: scale(0.4);
+    transition-delay: 2s;
   }
 
   &:hover {
     .post-emoji-container {
       display: block;
       opacity: 1;
-      transition: opacity 2s linear;
+      transition-delay: 2s;
     }
   }
 }

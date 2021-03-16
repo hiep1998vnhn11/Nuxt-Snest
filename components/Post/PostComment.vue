@@ -1,27 +1,27 @@
 <template>
-  <v-row justify="space-around" no-gutters>
-    <div>
-      <base-name-link image :user="comment.user" class="mr-2" />
+  <v-row no-gutters>
+    <div class="comment-avatar-container">
+      <base-name-link image :user="comment.user" />
     </div>
-    <v-col>
-      <v-card
-        class="rounded-lg text-body-1 pl-2 py-1 elevation-0 grey lighten-4"
+    <div class="comment-card-container">
+      <div
+        flat
+        class="px-2 grey lighten-3 comment-card mx-auto my-1"
+        min-width="20%"
+        max-width="100%"
       >
-        <v-row class="pa-3">
-          <base-name-link :user="comment.user"></base-name-link>
-          <div
-            class="comment-reaction-chip text-caption"
-            v-if="comment.liked_count"
-          >
-            <v-avatar size="15">
-              <img src="@/assets/icons/reaction/like.svg" />
-            </v-avatar>
-            {{ comment.liked_count }}
-          </div>
-        </v-row>
+        <base-name-link :user="comment.user"></base-name-link>
         {{ comment.content }}
-        {{ comment }}
-      </v-card>
+        <div
+          class="comment-reaction-chip text-caption"
+          v-if="comment.liked_count"
+        >
+          <v-avatar size="15">
+            <img src="@/assets/icons/reaction/like.svg" />
+          </v-avatar>
+          {{ comment.liked_count }}
+        </div>
+      </div>
       <div class="text-caption flex">
         <div
           class="comment-component-emoji-container"
@@ -61,29 +61,49 @@
           {{ comment.sub_comments_count }} {{ $t('Reply') }}
         </a>
         <v-row
-          justify="space-around"
           no-gutters
           v-for="sub_comment in comment.sub_comments"
           :key="sub_comment.id"
           v-show="show"
         >
-          <div>
+          <div class="comment-avatar-container">
             <base-name-link image :user="sub_comment.user" class="mr-2" />
           </div>
-          <v-col>
-            <v-card class="rounded-lg pl-2 elevation-0 grey lighten-4">
+          <div class="comment-card-container">
+            <div class="grey lighten-3 comment-card">
               <base-name-link :user="sub_comment.user"></base-name-link>
               {{ sub_comment.content }}
-            </v-card>
-            <div class="text-caption ml-3">
+            </div>
+            <div class="text-caption flex">
+              <div
+                class="comment-component-emoji-container"
+                @mouseenter="hoverLike = true"
+                @mouseleave="hoverLike = false"
+              >
+                <v-fade-transition>
+                  <div v-if="hoverLike" class="comment-emoji-container">
+                    <emoji-group @onClick="onClickSubLike" />
+                  </div>
+                </v-fade-transition>
+                <v-btn
+                  @click="onSubLike"
+                  class="text-capitalize"
+                  :class="`${reactionColor}--text`"
+                  text
+                  :ripple="false"
+                  x-small
+                >
+                  {{ reactionName }}
+                </v-btn>
+              </div>
               {{ sub_comment.created_at | relativeTime }}
             </div>
-          </v-col>
+          </div>
         </v-row>
       </div>
       <v-expand-transition>
         <div v-if="show">
-          <v-app-bar color="white" elevation="0" bottom v-if="isLoggedIn">
+          <v-toolbar dense flat bottom v-if="isLoggedIn">
             <v-avatar class="avatar-outlined mr-4" size="30">
               <img
                 :src="currentUser.profile_photo_path"
@@ -110,10 +130,10 @@
             <v-btn class="ml-3" small icon text outlined @click="onSubComment">
               <v-icon size="15">mdi-send</v-icon>
             </v-btn>
-          </v-app-bar>
+          </v-toolbar>
         </div>
       </v-expand-transition>
-    </v-col>
+    </div>
   </v-row>
 </template>
 <script>
@@ -142,6 +162,7 @@ export default {
       this.comment.content = 1
     },
     async onClickLike(e) {
+      this.hover = false
       if (!this.currentUser) return
       if (this.comment.like_status) {
         const likeStatus = this.comment.like_status.status
@@ -166,6 +187,16 @@ export default {
         this.onClickLike(1)
       } else {
         this.onClickLike(0)
+      }
+    },
+    onClickSubLike(e) {
+      this.hoverLike = false
+    },
+    onSubLike() {
+      if (!this.comment.like_status || this.comment.like_status.status === 0) {
+        this.onClickSubLike(1)
+      } else {
+        this.onClickSubLike(0)
       }
     }
   },
@@ -232,13 +263,32 @@ export default {
   }
 }
 
-.comment-reaction-chip {
-  position: absolute;
-  padding: 0 3px;
-  background: white;
-  z-index: 2;
-  border-radius: 9999px;
-  right: 5px;
-  top: -5px;
+.comment-avatar-container {
+  display: flex;
+  position: relative;
+  justify-content: center;
+  width: 50px;
+  padding: 10px;
+}
+
+.comment-card-container {
+  position: relative;
+  width: calc(100% - 50px);
+  .comment-card {
+    position: relative;
+    border-radius: 15px;
+    max-width: 100%;
+    min-width: 100px;
+    .comment-reaction-chip {
+      position: absolute;
+      z-index: 2;
+      background: white;
+      border: 1px solid rgba(0, 0, 0, 0.1);
+      right: 10px;
+      top: -5px;
+      border-radius: 999px;
+      padding: 0 3px;
+    }
+  }
 }
 </style>
