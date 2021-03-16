@@ -390,5 +390,11 @@ export default {
   CallWillStartAfterYouAnswer: 'The call will start after you click "Answer"',
   Refuse: 'Refuse',
   Answer: 'Answer',
-  RemoveImage: 'Remove this image from current post'
+  RemoveImage: 'Remove this image from current post',
+  Like: 'Like',
+  Love: 'Love',
+  Haha: 'Haha',
+  Yay: 'Yay',
+  Sad: 'Sad',
+  Angry: 'Angry'
 }

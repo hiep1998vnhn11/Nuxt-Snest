@@ -33,7 +33,7 @@
     >
       <v-avatar
         class="avatar-outlined"
-        size="40"
+        :size="size"
         @mouseover="onMouseOver"
         @mouseleave="onMouseLeave"
       >
@@ -117,6 +117,10 @@ export default {
     image: {
       type: Boolean,
       default: false
+    },
+    size: {
+      type: Number,
+      default: 40
     }
   },
   computed: {

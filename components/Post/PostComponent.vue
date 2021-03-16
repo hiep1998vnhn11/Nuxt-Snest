@@ -18,9 +18,7 @@
     <!-- post content -->
     <v-container v-if="post">
       {{ post.content }}
-      <div v-if="comments.length">
-        {{ comments[0] }}
-      </div>
+      <div v-if="comments.length"></div>
       <v-row v-if="post.images.length" class="pa-5">
         <v-img
           class="ma-1"

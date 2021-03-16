@@ -57,9 +57,18 @@
       </div>
       <!-- sub comment count -->
       <div v-if="comment.sub_comments.length">
-        <a v-show="!show" class="text-caption" @click="show = true">
+        <a v-if="!show" class="text-caption" @click="show = true">
           {{ comment.sub_comments_count }} {{ $t('Reply') }}
         </a>
+        <a v-else class="text-caption" @click="show = false">
+          {{ $t('Hide') }}{{ comment.sub_comments_count }}
+        </a>
+        <post-sub-comment
+          v-for="sub_comment in comment.sub_comments"
+          :key="`comment-${comment.id}-sub-${sub_comment.id}`"
+          :sub_comment="sub_comment"
+          :currentUser="currentUser"
+        />
         <v-row
           no-gutters
           v-for="sub_comment in comment.sub_comments"
@@ -67,7 +76,12 @@
           v-show="show"
         >
           <div class="comment-avatar-container">
-            <base-name-link image :user="sub_comment.user" class="mr-2" />
+            <base-name-link
+              image
+              :size="30"
+              :user="sub_comment.user"
+              class="mr-2"
+            />
           </div>
           <div class="comment-card-container">
             <div class="grey lighten-3 comment-card">
@@ -162,7 +176,7 @@ export default {
       this.comment.content = 1
     },
     async onClickLike(e) {
-      this.hover = false
+      this.hoverLike = false
       if (!this.currentUser) return
       if (this.comment.like_status) {
         const likeStatus = this.comment.like_status.status
@@ -238,7 +252,7 @@ export default {
   }
 }
 </script>
-<style lang="scss" scoped>
+<style lang="scss">
 .flex {
   display: flex;
 }
