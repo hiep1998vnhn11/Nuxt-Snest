@@ -1,15 +1,6 @@
 <template>
-  <div class="text-center">
-    <div class="post-group-emoji">
-      <div class="post-emoji-group-container">
-        <div class="post-emoji-container">
-          <emoji-group />
-        </div>
-      </div>
-      <v-btn class="post-emoji-button">
-        Test
-      </v-btn>
-    </div>
+  <div class="post-group-emoji">
+    <emoji-group />
   </div>
 </template>
 <script>
@@ -43,6 +34,7 @@ export default {
     top: -70px;
     z-index: 9999;
     transition: 0.5s ease-in-out;
+    transform: scale(0.5);
   }
   &:hover {
     transition: 0.5s ease-in-out;

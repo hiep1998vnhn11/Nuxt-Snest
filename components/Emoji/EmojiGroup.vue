@@ -45,21 +45,6 @@
     </div>
   </div>
 </template>
-<script>
-export default {
-  data() {
-    return {}
-  },
-  methods: {
-    onClickLike() {
-      console.log('Liked!')
-    }
-  },
-  created() {},
-  mounted() {},
-  computed: {}
-}
-</script>
 <style lang="scss" scoped>
 @import '@/assets/emoji.scss';
 </style>

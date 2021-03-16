@@ -342,7 +342,6 @@ export default {
     'Are you sure about remove your cover photo?',
   'Create your story': 'Create your story',
   Change: 'Change',
-  Save: 'Save',
   Chat: 'Chat',
   'You had blocked this user': 'You had blocked this user',
   'You had been blocked': 'You had been blocked',
@@ -357,9 +356,6 @@ export default {
   'Preview in your personal page': 'Preview in your personal page',
   'Preview your personal page before your change':
     'Preview your personal page before your change',
-  'Remove this change?': 'Remove this change?',
-  'Are you sure about discard this change?':
-    'Are you sure about discard this change?',
   'Report this personal page': 'Report this personal page',
   'Setting your time line': 'Setting your time line',
   'Block this user': 'Block this user',
