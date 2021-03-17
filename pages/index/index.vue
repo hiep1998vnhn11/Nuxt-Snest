@@ -13,9 +13,20 @@
     >
       <template v-slot:prepend>
         <v-sheet class="text-center mt-3">
-          <v-avatar :size="64">
-            <v-img :src="currentUser.profile_photo_path" />
-          </v-avatar>
+          <router-link
+            tag="a"
+            :to="
+              localePath({
+                name: 'index-user-url',
+                params: { url: currentUser.url }
+              })
+            "
+          >
+            <v-avatar :size="64">
+              <v-img :src="currentUser.profile_photo_path" />
+            </v-avatar>
+          </router-link>
+
           <div class="font-weight-bold text-capitalize">
             {{ currentUser.name }}
           </div>
@@ -30,11 +41,11 @@
         <v-toolbar flat dense>
           {{ $t('Contacts') }}
           <v-spacer />
-          <v-btn icon text small>
-            <v-icon>mdi-magnify</v-icon>
+          <v-btn icon text small class="success">
+            <v-icon color="white">mdi-magnify</v-icon>
           </v-btn>
-          <v-btn icon text small class="ml-3">
-            <v-icon>mdi-dots-horizontal</v-icon>
+          <v-btn icon text small class="ml-3 success">
+            <v-icon color="white">mdi-dots-horizontal</v-icon>
           </v-btn>
         </v-toolbar>
         <v-container>
@@ -52,7 +63,7 @@
       <template v-slot:append>
         <v-divider class="mx-4" />
         <v-toolbar flat dense class="">
-          Privacy
+          {{ $t('Privacy') }}
         </v-toolbar>
       </template>
     </v-navigation-drawer>
@@ -260,7 +271,7 @@ export default {
     bottom: 1rem;
     background: #fff;
     border-radius: 15px;
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
     transition: 0.5%;
     display: flex;
     justify-content: center;
@@ -269,7 +280,7 @@ export default {
     &:hover {
       transition: 0.5s ease-in-out;
       transform: translateY(-10px);
-      box-shadow: 0 40px 70px rgba(0, 0, 0, 0.5);
+      box-shadow: 0 20px 35px rgba(0, 0, 0, 0.5);
       .content {
         display: flex;
       }
@@ -325,7 +336,7 @@ export default {
     &:hover {
       transition: 0.5s ease-in-out;
       transform: translateY(-10px);
-      box-shadow: 0 40px 70px rgba(0, 0, 0, 0.5);
+      box-shadow: 0 20px 35px rgba(0, 0, 0, 0.5);
       h2 {
         opacity: 0.8;
         transform: translateY(calc(-130px + 50%));

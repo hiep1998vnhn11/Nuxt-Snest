@@ -13,7 +13,9 @@
           :class="`mx-1 ${classes}`"
           @click="onClickButton"
         >
-          <v-icon v-bind="attrs" v-on="on">mdi-facebook-messenger</v-icon>
+          <v-icon v-bind="attrs" v-on="on">
+            mdi-facebook-messenger
+          </v-icon>
         </v-btn>
       </template>
       <span>{{ $t('common.message') }}</span>

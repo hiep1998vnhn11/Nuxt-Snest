@@ -8,26 +8,26 @@
       <search-card />
 
       <v-spacer />
+      <button-message
+        v-if="currentUser && $route.name && !$route.name.includes('messages')"
+      />
+      <button-notification v-if="currentUser" />
       <v-btn
         icon
         v-if="currentUser"
         small
-        class="mr-3"
         :to="
           localePath({
             name: 'index-user-url',
             params: { url: currentUser.url }
           })
         "
+        class="mx-3"
       >
-        <v-avatar size="35">
+        <v-avatar size="40">
           <img :src="currentUser.profile_photo_path" />
         </v-avatar>
       </v-btn>
-      <button-message
-        v-if="currentUser && $route.name && !$route.name.includes('messages')"
-      />
-      <button-notification v-if="currentUser" />
       <button-setting v-if="currentUser" />
     </v-app-bar>
     <v-main ref="main">
