@@ -8,21 +8,12 @@ const socketService = {
     //   userId: store.getters['user/currentUser'].id,
     //   roomId: 1
     // })
-    window.socket.on(
-      'receiptMessage',
-      ({ userId, roomId, message, userName }) => {
-        if (
-          Number(store.getters['message/thresh'].id) ===
-          Number(message.thresh_id)
-        ) {
-          store.commit('message/RECEIVED_MESSAGE', message)
-        }
-      }
-    )
 
     window.socket.on('typing', ({ roomId, isTyping }) => {
-      console.log('typing')
-      if (Number(store.getters['message/thresh'].id) === Number(roomId)) {
+      if (
+        store.getters['message/thresh'] &&
+        Number(store.getters['message/thresh'].id) === Number(roomId)
+      ) {
         store.commit('message/TYPING_USER', isTyping)
       }
     })

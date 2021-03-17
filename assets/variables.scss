@@ -24,28 +24,4 @@ $current-chat-color: #1F91EB;
 // border radius
 $btn-text-transform: none !default;
 $btn-letter-spacing: 0 !default;
-
-//notification variable
-.vue-notification {
-  padding: 10px;
-  margin: 0 5px 5px;
-  font-size: 12px;
-  color: #ffffff;
-  background: $colorPrimary;
-  border-left: 5px solid #187FE7;
-
-  &.warn {
-    background: $colorWarning;
-    border-left-color: #f48a06;
-  }
-
-  &.error {
-    background: $colorDanger;
-    border-left-color: #B82E24;
-  }
-
-  &.success {
-    background: $colorSuccess;
-    border-left-color: #42A85F;
-  }
-}
+@import './scss/notification.scss';

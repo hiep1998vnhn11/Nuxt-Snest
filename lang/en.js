@@ -396,5 +396,8 @@ export default {
   Haha: 'Haha',
   Yay: 'Yay',
   Sad: 'Sad',
-  Angry: 'Angry'
+  Angry: 'Angry',
+  Privacy: 'Privacy',
+  'sent you an message': 'sent you an message',
+  MessageNotification: 'Message notification'
 }

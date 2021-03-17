@@ -50,5 +50,5 @@ Vue.filter('reverse', function(value) {
 Vue.filter('shorterValue', function(value) {
   return value.toString().length < 50
     ? value.toString()
-    : value.toString.substring(0, 50) + ' ...'
+    : value.toString().substring(0, 50) + ' ...'
 })

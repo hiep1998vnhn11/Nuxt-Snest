@@ -221,7 +221,7 @@ export default {
               userId: this.thresh.participants.id,
               roomId: this.thresh.id,
               message: response.data.data,
-              userName: this.thresh.participants.name
+              user: this.currentUser
             })
           }
         } catch (err) {
