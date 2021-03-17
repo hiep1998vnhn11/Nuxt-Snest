@@ -50,6 +50,18 @@ const actions = {
     const responseUser = await axios.post('/auth/me')
     commit('SET_CURRENT_USER', responseUser.data.data)
   },
+  async loginGoogle({ commit, state }, id_token) {
+    const response = await axios.post('/auth/google/login', {
+      id_token
+    })
+    const token = response.data.access_token
+    Cookies.set('access_token', token, { expires: 1 })
+    commit('SET_ACCESS_TOKEN', token)
+    state.setHeader()
+    const responseUser = await axios.post('/auth/me')
+    commit('SET_CURRENT_USER', responseUser.data.data)
+  },
+
   async getUser({ commit, state }) {
     state.setHeader()
     const response = await axios.post('/auth/me')

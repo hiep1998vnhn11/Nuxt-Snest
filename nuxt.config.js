@@ -22,11 +22,7 @@ export default {
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { hid: 'description', name: 'description', content: '' },
-      {
-        name: 'google-signin-client_id',
-        content: process.env.NUXT_ENV_GOOGLE_CLIENT_ID
-      }
+      { hid: 'description', name: 'description', content: '' }
     ],
     link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
     script: [
@@ -39,7 +35,7 @@ export default {
       {
         async: true,
         defer: true,
-        src: 'https://apis.google.com/js/platform.js'
+        src: 'https://apis.google.com/js/client:platform.js?onload=start'
       },
       {
         defer: true,

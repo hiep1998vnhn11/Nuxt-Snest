@@ -7,6 +7,10 @@
         v-if="facebook.loading && facebook.user"
         :text="`${$t('Welcome')} ${facebook.user}`"
       />
+      <loading-component
+        v-if="google.loading && google.user"
+        :text="`${$t('Welcome')} ${google.user.name}`"
+      />
       <h1>
         {{ $t('Login') }}
       </h1>
@@ -62,13 +66,18 @@
             <img src="~/assets/icons/facebook.png" />
           </v-avatar>
         </v-btn>
-        <v-btn icon x-large class="mr-1">
+        <v-btn
+          :loading="google.loggingIn"
+          :disabled="google.loggingIn || !!google.user"
+          icon
+          x-large
+          class="mr-1"
+          @click="onSignInGoogle"
+        >
           <v-avatar size="50">
             <img src="~/assets/icons/google-icon.webp" />
           </v-avatar>
         </v-btn>
-
-        <div class="g-signin2" @data-onsuccess="onSignIn"></div>
       </div>
       <v-btn
         v-if="facebook.user && facebook.accessToken"
@@ -84,6 +93,22 @@
         <v-spacer />
         <v-avatar size="35" class="mr-n4">
           <img :src="facebook.picture" />
+        </v-avatar>
+      </v-btn>
+      <v-btn
+        v-if="google.user && google.id_token"
+        color="primary"
+        class="text-capitalize mt-3"
+        block
+        outlined
+        rounded
+        @click="onContinueGoogle"
+      >
+        <v-spacer />
+        {{ $t('ContinueWith') }} {{ google.user.name }}
+        <v-spacer />
+        <v-avatar size="35" class="mr-n4">
+          <img :src="google.user.profile_photo_path" />
         </v-avatar>
       </v-btn>
     </div>
@@ -115,7 +140,15 @@ export default {
         user: false,
         accessToken: null,
         picture: null
-      }
+      },
+      google: {
+        auth: null,
+        user: null,
+        loggingIn: false,
+        id_token: null,
+        loading: false
+      },
+      googleAuth: null
     }
   },
   computed: {
@@ -229,21 +262,55 @@ export default {
         this.$nuxt.error(err)
       }
     },
-    testAPI() {
-      // Testing Graph API after login.  See statusChangeCallback() for when this call is made.
-      console.log('Welcome!  Fetching your information.... ')
-      FB.api('me?fields=id,name,email,link,birthday', function(response) {
-        console.log('Successful login for: ' + response.name)
-        document.getElementById('status').innerHTML =
-          'Thanks for logging in, ' + response.name + '!'
-      })
+    async onSignInGoogle() {
+      // signInCallback defined in step 6.
+      this.google.loggingIn = true
+      try {
+        const googleUser = await this.google.auth.signIn()
+        const user = {
+          name: googleUser.getBasicProfile().getName(),
+          email: googleUser.getBasicProfile().getEmail(),
+          profile_photo_path: googleUser.getBasicProfile().getImageUrl()
+        }
+        this.google.user = user
+        this.google.id_token = googleUser.getAuthResponse().id_token
+      } catch (err) {
+        this.$nuxt.error(err)
+      }
+      this.google.loggingIn = false
     },
-    onSignIn(googleUser) {
-      var profile = googleUser.getBasicProfile()
-      console.log('ID: ' + profile.getId()) // Do not send to your backend! Use an ID token instead.
-      console.log('Name: ' + profile.getName())
-      console.log('Image URL: ' + profile.getImageUrl())
-      console.log('Email: ' + profile.getEmail()) // This is null if the 'email' scope is not present.
+    async onSignOutGoogle() {
+      if (this.google.user && this.google.id_token) {
+        try {
+          await this.google.getAuthInstance().disconnect()
+          this.google.user = this.google.id_token = null
+        } catch (err) {
+          thyis.$nuxt.error(err)
+        }
+      }
+    },
+    async onContinueGoogle() {
+      if (!this.google.id_token || !this.google.user) return
+      this.google.loading = true
+      try {
+        await this.$store.dispatch('user/loginGoogle', this.google.id_token)
+        if (!window.socket || window.socket.disconnected) {
+          socketService.connectSocket(this.$store)
+        }
+      } catch (err) {
+        this.$nuxt.error(err)
+      }
+      this.google.loading = false
+    },
+    startGoogleObject() {
+      const vm = this
+      gapi.load('auth2', function() {
+        vm.google.auth = gapi.auth2.init({
+          client_id: process.env.NUXT_ENV_GOOGLE_CLIENT_ID,
+          // Scopes to request in addition to 'profile' and 'email'
+          scope: 'profile email'
+        })
+      })
     }
   },
   mounted() {
@@ -253,6 +320,7 @@ export default {
       xfbml: true,
       version: process.env.NUXT_ENV_FACEBOOK_APP_VERSION
     })
+    this.startGoogleObject()
   }
 }
 </script>

@@ -144,7 +144,7 @@ export default {
   props: ['loading_user'],
   head() {
     return {
-      title: 'Home'
+      title: this.isLoggedIn ? 'Home' : 'Login'
     }
   },
   computed: {
