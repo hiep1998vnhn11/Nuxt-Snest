@@ -46,3 +46,9 @@ Vue.filter('onlyName', function(username) {
 Vue.filter('reverse', function(value) {
   return value.slice().reverse()
 })
+
+Vue.filter('shorterValue', function(value) {
+  return value.toString().length < 50
+    ? value.toString()
+    : value.toString.substring(0, 50) + ' ...'
+})

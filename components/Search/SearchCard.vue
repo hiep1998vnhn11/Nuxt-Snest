@@ -7,23 +7,29 @@
       closeConditional
     }"
     width="400"
-    :class="`elevation-${searchSelected ? 5 : 0} ml-n4`"
+    :class="`elevation-${searchSelected ? 5 : 0}`"
   >
-    <v-app-bar height="56" flat color="primary" class="text--white">
+    <div class="primary search-card-header">
       <v-text-field
+        style="border-radius: 15px;"
+        background-color="white"
         autocomplete="off"
         v-model="searchKey"
-        class="elevation-0 grey lighten-3 ml-2"
-        rounded
-        hide-details
+        flat
+        dense
+        solo
+        color="#000"
+        hide-details="auto"
         :label="$t('Search')"
         @focus="onFocusSearch"
       >
-        <template v-slot:prepend-inner class="mr-n2">
-          <v-icon class="ml-n4">mdi-magnify</v-icon>
+        <template v-slot:prepend-inner>
+          <v-btn x-small icon text class="success ml-n1 mt-n1">
+            <v-icon color="white">mdi-magnify</v-icon>
+          </v-btn>
         </template>
       </v-text-field>
-    </v-app-bar>
+    </div>
     <v-container v-if="searchSelected">
       <!-- Error temblade -->
       <div v-if="error">
@@ -116,7 +122,6 @@
           large
           block
           text
-          class="rounded-lg text-none primary--text"
           replace
           exact
           :to="
@@ -125,11 +130,12 @@
               query: { search_key: searchKey }
             })
           "
+          class="rounded-lg text-none primary--text"
         >
           <v-btn width="35" height="35" icon class="primary mr-3 ml-n1">
             <v-icon color="white">mdi-magnify</v-icon>
           </v-btn>
-          {{ $t('SearchFor') }} {{ searchKey }}
+          {{ $t('SearchFor') }} {{ searchKey | shorterValue }}
           <v-spacer />
         </v-btn>
       </div>
@@ -222,5 +228,13 @@ export default {
     right: 10px;
     transform: translateY(-50%);
   }
+}
+
+.search-card-header {
+  display: flex;
+  height: 56px;
+  padding: 5px 15px 5px;
+  justify-content: center;
+  align-items: center;
 }
 </style>

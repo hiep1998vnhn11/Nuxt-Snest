@@ -68,7 +68,6 @@
         </v-btn>
         <v-btn
           :loading="google.loggingIn"
-          :disabled="google.loggingIn || !!google.user"
           icon
           x-large
           class="mr-1"
@@ -230,6 +229,7 @@ export default {
       }
       this.facebook.loading = false
     },
+    async onLogoutFacebook() {},
     statusChangeCallback(response) {
       // Called with the results from FB.getLoginStatus().
       // The current login status of the person.
@@ -264,6 +264,9 @@ export default {
     },
     async onSignInGoogle() {
       // signInCallback defined in step 6.
+      if (this.google.user && this.google.id_token) {
+        return this.onSignOutGoogle()
+      }
       this.google.loggingIn = true
       try {
         const googleUser = await this.google.auth.signIn()
@@ -280,13 +283,11 @@ export default {
       this.google.loggingIn = false
     },
     async onSignOutGoogle() {
-      if (this.google.user && this.google.id_token) {
-        try {
-          await this.google.getAuthInstance().disconnect()
-          this.google.user = this.google.id_token = null
-        } catch (err) {
-          thyis.$nuxt.error(err)
-        }
+      try {
+        await this.google.auth.disconnect()
+        this.google.user = this.google.id_token = null
+      } catch (err) {
+        this.$nuxt.error(err)
       }
     },
     async onContinueGoogle() {

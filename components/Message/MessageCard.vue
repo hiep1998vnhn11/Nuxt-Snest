@@ -6,7 +6,7 @@
       closeConditional
     }"
     :ripple="false"
-    height="450"
+    height="448"
     v-if="currentUser"
   >
     <v-toolbar dense flat>
@@ -62,7 +62,7 @@
     <div class="message-card-text-component" id="container">
       <message-list :loading="loading" />
     </div>
-    <v-toolbar dense flat>
+    <div class="message-card-actions-component">
       <v-tooltip top>
         <template v-slot:activator="{ on, attrs }">
           <v-btn small icon text v-bind="attrs" v-on="on">
@@ -75,7 +75,7 @@
       </v-tooltip>
       <v-tooltip top>
         <template v-slot:activator="{ on, attrs }">
-          <v-btn small icon text v-bind="attrs" v-on="on">
+          <v-btn small class="mr-1" icon text v-bind="attrs" v-on="on">
             <v-icon :color="selected ? 'primary' : ''">
               mdi-folder-multiple-image
             </v-icon>
@@ -84,13 +84,17 @@
         <span>{{ $t('OpenMoreAction') }}</span>
       </v-tooltip>
       <v-textarea
-        label="Write anything ..."
-        auto-grow
-        rows="1"
-        solo
-        rounded
+        style="padding: 0; border-radius: 15px;"
+        color="rgba(0,0,0,0.2)"
         dense
-        class="mb-n7 ml-2"
+        flat
+        hide-details="auto"
+        full-width
+        outlined
+        label="Aa"
+        auto-grow
+        row-height="20"
+        rows="1"
         v-model="text"
         ref="textInput"
         @blur="onBlurTyping"
@@ -99,11 +103,14 @@
         @keydown.enter.exact="onSendMessage"
         @keydown.enter.shift.exact="newLine"
         @keydown.esc.exact="onCloseCard"
-      ></v-textarea>
-      <v-btn icon @click="onSendMessage">
-        <v-icon :color="selected ? 'primary' : ''"> mdi-send </v-icon>
-      </v-btn>
-    </v-toolbar>
+      >
+        <template v-slot:append>
+          <v-btn icon width="25" height="25" text class="ml-n2 mr-n2">
+            <v-icon size="25" color="success">mdi-arrow-up-circle</v-icon>
+          </v-btn>
+        </template>
+      </v-textarea>
+    </div>
   </v-card>
 </template>
 
@@ -232,6 +239,9 @@ export default {
     clickCard() {
       this.selected = true
       this.$refs.textInput.focus()
+    },
+    onFocusInput() {
+      console.log('test')
     }
   },
   mounted() {
@@ -286,9 +296,22 @@ export default {
   }
 }
 
+.message-card-actions-component {
+  position: absolute;
+  width: 100%;
+  bottom: 0px;
+  display: flex;
+  padding: 5px 10px 5px;
+  align-items: flex-end;
+  max-height: 50px;
+}
 .active-now-icon {
   position: fixed;
   left: -13px;
   top: 10px;
+}
+
+.message-text-field {
+  height: 100%;
 }
 </style>
