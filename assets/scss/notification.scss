@@ -67,11 +67,15 @@
       }
     }
   }
-
 }
 
 .call-group-notification {
-  position: relative;
+  position: fixed;
+  max-width: 400px;
+  max-height: 300px;
+  z-index: 9999;
+  bottom: 10px;
+  right: 10px;
   border-radius: 20px;
   border: 1px solid rgba(0, 0, 0, 0.2);
   cursor: pointer;
@@ -86,7 +90,7 @@
     left: 0;
     background: rgba(1, 1, 1, 0.4);
     text-align: center;
-    padding: 40px;
+    padding: 20px;
 
     .call-action-refuse {
       position: absolute;
@@ -102,6 +106,7 @@
 
     .call-actions {
       position: absolute;
+      display: flex;
       bottom: 10px;
       left: 50%;
       transform: translateX(-50%);

@@ -20,7 +20,7 @@
           <v-avatar size="120" class="avatar-outlined">
             <img :src="calling.user.profile_photo_path" />
           </v-avatar>
-          <h2>{{ calling.user.name }}</h2>
+          <h2 v-if="calling">{{ calling.user.name }}</h2>
           <div class="calling-text-icon" v-if="isCalling">
             <span class="white--text">{{ $t('Calling') }}</span>
             <div class="spinner">
@@ -135,6 +135,9 @@
 </template>
 <script>
 import { mapGetters } from 'vuex'
+import Peer from 'peerjs'
+window.Peer = Peer
+
 export default {
   middleware: 'checkV4',
   data() {
@@ -155,28 +158,36 @@ export default {
       answer: false,
       video: true,
       audio: true,
-      chat: false
+      chat: false,
+      stream: false
     }
   },
   beforeRouteLeave(to, from, next) {
+    if (this.peer && !this.peer.disconnected) this.peer.destroy()
+    if (this.stream) this.onCloseVideo()
+    if (this.calling) this.$store.commit('message/SET_CALLING_USER', null)
     window.socket.emit('remove-call', this.$route.params.call_id)
-    this.$store.commit('message/SET_CALLING_USER', null)
     return next()
   },
   methods: {
-    connect() {
+    async connect() {
       window.socket.on('call_not_found', call_id => {
         this.$router.push(this.localePath({ name: 'index' }))
       })
-      window.socket.on('user-leave', ({ user_id, peer_id }) => {
-        console.log(`an user ${user_id} has left the ${peer_id}`)
-        const peerLeave = this.peers.find(peer => peer.peer_id === peer_id)
-        if (peerLeave && peerLeave.call) peerLeave.call.close()
+      window.socket.on('user-leave', ({ user_id }) => {
+        const peerLeave = this.peers.find(peer => peer.peer_id === user_id)
+        if (peerLeave && peerLeave.call) {
+          peerLeave.call.close()
+          this.peers = this.peers.filter(
+            peer => peer.peer_id !== peerLeave.peer_id
+          )
+        }
       })
       window.socket.on('remove-call', () => {
-        this.$router.push('/')
+        // this.$router.push('/')
       })
       window.socket.on('people-refuse-call', ({ user_id, call_id }) => {
+        this.$store.commit('message/SET_CALLING_STATUS', 'refused')
         if (call_id === this.$route.params.call_id) {
           this.isRefuse = true
           this.isCalling = false
@@ -185,26 +196,22 @@ export default {
 
       const myVideo = this.$refs['video-me']
       myVideo.muted = true
-      const vm = this
-      navigator.mediaDevices
-        .getUserMedia({
-          video: true,
-          audio: true
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: true,
+        audio: true
+      })
+      this.addVideoStream(myVideo, stream)
+      this.peer.on('call', call => {
+        call.answer(stream)
+        const hostVideo = vm.$refs['video-host']
+        call.on('stream', userVideoStream => {
+          this.addVideoStream(hostVideo, userVideoStream)
         })
-        .then(stream => {
-          vm.addVideoStream(myVideo, stream)
-          vm.peer.on('call', call => {
-            call.answer(stream)
-            const hostVideo = vm.$refs['video-host']
-            call.on('stream', userVideoStream => {
-              vm.addVideoStream(hostVideo, userVideoStream)
-            })
-          })
-          window.socket.on('user-join', ({ user_id, peer_id }) => {
-            console.log(`an user had connected ${peer_id} ${user_id}`)
-            vm.connectToNewUser(peer_id, stream)
-          })
-        })
+      })
+      window.socket.on('user-join', ({ user_id, peer_id }) => {
+        console.log(`an user ${user_id} join this room with ${peer_id}`)
+        this.connectToNewUser(peer_id, stream)
+      })
     },
     addVideoStream(video, stream) {
       video.srcObject = stream
@@ -226,22 +233,31 @@ export default {
       })
     },
     createPeer() {
+      // tạo 1 peer với id đúng bằng user.id
+
+      if (this.peer && this.peer.disconnected) {
+        this.peer.reconnect()
+        return
+      }
       this.peer = new Peer(undefined, {
         host: process.env.NUXT_ENV_PEER_HOST,
         port: process.env.NUXT_ENV_PEER_PORT
       })
       //local peer id
       this.peer.on('open', id => {
+        // Sau khi peer open, push id của peer vào remotePeer
         this.remotePeer.push(id)
-        this.myPeer = id
         window.socket.emit('join-call', {
+          peer_id: id,
           call_id: this.$route.params.call_id,
-          user_id: this.currentUser.id,
-          peer_id: id
+          user_id: this.currentUser.id
         })
       })
       this.peer.on('connection', conn => {
         console.log(conn)
+      })
+      this.peer.on('error', err => {
+        this.$nuxt.error(err)
       })
     },
     changeVideo() {
@@ -256,7 +272,14 @@ export default {
       const myAudioTrack = this.$refs['video-me'].srcObject.getAudioTracks()
       myAudioTrack[0].enabled = this.audio
     },
+    onCloseVideo() {
+      this.stream.getTracks().forEach(track => {
+        track.stop()
+      })
+    },
+
     onTurnOffCall() {
+      this.peer.disconnect()
       window.socket.emit('end-call', {
         user_id: this.calling.user.id,
         call_id: this.$route.params.call_id,
@@ -271,6 +294,7 @@ export default {
       this.removed = true
     },
     onTurnOnBackCall() {
+      this.peer.reconnect()
       const user = {
         id: this.currentUser.id,
         profile_photo_path: this.currentUser.profile_photo_path,
@@ -281,17 +305,15 @@ export default {
         user,
         call_id: this.$route.params.call_id
       })
+      this.$store.commit('message/SET_CALLING_STATUS', 'calling')
       this.removed = false
       this.isCalling = true
     },
     onReturnBack() {
-      const myTrack = this.$refs['video-me'].srcObject.getTracks()
-      if (myTrack) {
-        myTrack.forEach(track => {
-          track.stop()
-        })
-      }
+      this.peer.destroy()
+      this.onCloseVideo()
       this.$store.commit('message/SET_CALLING_USER', null)
+      window.socket.emit('remove-call', this.$route.params.call_id)
       this.$router.push('/')
     }
   },

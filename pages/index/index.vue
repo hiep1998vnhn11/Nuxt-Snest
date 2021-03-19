@@ -14,7 +14,8 @@
       <template v-slot:prepend>
         <v-sheet class="text-center mt-3">
           <router-link
-            tag="a"
+            v-slot="{ href, navigate }"
+            custom
             :to="
               localePath({
                 name: 'index-user-url',
@@ -22,11 +23,12 @@
               })
             "
           >
-            <v-avatar :size="64">
-              <v-img :src="currentUser.profile_photo_path" />
-            </v-avatar>
+            <a :href="href" @click="navigate">
+              <v-avatar :size="64">
+                <v-img :src="currentUser.profile_photo_path" />
+              </v-avatar>
+            </a>
           </router-link>
-
           <div class="font-weight-bold text-capitalize">
             {{ currentUser.name }}
           </div>
