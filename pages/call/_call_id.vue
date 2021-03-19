@@ -20,7 +20,7 @@
           <v-avatar size="120" class="avatar-outlined">
             <img :src="calling.user.profile_photo_path" />
           </v-avatar>
-          <h2>{{ calling.user.name }}</h2>
+          <h2 v-if="calling">{{ calling.user.name }}</h2>
           <div class="calling-text-icon" v-if="isCalling">
             <span class="white--text">{{ $t('Calling') }}</span>
             <div class="spinner">
@@ -136,6 +136,7 @@
 <script>
 import { mapGetters } from 'vuex'
 import Peer from 'peerjs'
+window.Peer = Peer
 
 export default {
   middleware: 'checkV4',
@@ -157,17 +158,19 @@ export default {
       answer: false,
       video: true,
       audio: true,
-      chat: false
+      chat: false,
+      stream: false
     }
   },
   beforeRouteLeave(to, from, next) {
+    if (this.peer && !this.peer.disconnected) this.peer.destroy()
+    if (this.stream) this.onCloseVideo()
+    if (this.calling) this.$store.commit('message/SET_CALLING_USER', null)
     window.socket.emit('remove-call', this.$route.params.call_id)
-    this.$store.commit('message/SET_CALLING_USER', null)
-    this.peer.disconnect()
     return next()
   },
   methods: {
-    connect() {
+    async connect() {
       window.socket.on('call_not_found', call_id => {
         this.$router.push(this.localePath({ name: 'index' }))
       })
@@ -193,25 +196,22 @@ export default {
 
       const myVideo = this.$refs['video-me']
       myVideo.muted = true
-      const vm = this
-      navigator.mediaDevices
-        .getUserMedia({
-          video: true,
-          audio: true
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: true,
+        audio: true
+      })
+      this.addVideoStream(myVideo, stream)
+      this.peer.on('call', call => {
+        call.answer(stream)
+        const hostVideo = vm.$refs['video-host']
+        call.on('stream', userVideoStream => {
+          this.addVideoStream(hostVideo, userVideoStream)
         })
-        .then(stream => {
-          vm.addVideoStream(myVideo, stream)
-          vm.peer.on('call', call => {
-            call.answer(stream)
-            const hostVideo = vm.$refs['video-host']
-            call.on('stream', userVideoStream => {
-              vm.addVideoStream(hostVideo, userVideoStream)
-            })
-          })
-          window.socket.on('user-join', ({ user_id }) => {
-            vm.connectToNewUser(user_id, stream)
-          })
-        })
+      })
+      window.socket.on('user-join', ({ user_id, peer_id }) => {
+        console.log(`an user ${user_id} join this room with ${peer_id}`)
+        this.connectToNewUser(peer_id, stream)
+      })
     },
     addVideoStream(video, stream) {
       video.srcObject = stream
@@ -234,7 +234,12 @@ export default {
     },
     createPeer() {
       // tạo 1 peer với id đúng bằng user.id
-      this.peer = new Peer(this.currentUser.id, {
+
+      if (this.peer && this.peer.disconnected) {
+        this.peer.reconnect()
+        return
+      }
+      this.peer = new Peer(undefined, {
         host: process.env.NUXT_ENV_PEER_HOST,
         port: process.env.NUXT_ENV_PEER_PORT
       })
@@ -243,6 +248,7 @@ export default {
         // Sau khi peer open, push id của peer vào remotePeer
         this.remotePeer.push(id)
         window.socket.emit('join-call', {
+          peer_id: id,
           call_id: this.$route.params.call_id,
           user_id: this.currentUser.id
         })
@@ -266,6 +272,12 @@ export default {
       const myAudioTrack = this.$refs['video-me'].srcObject.getAudioTracks()
       myAudioTrack[0].enabled = this.audio
     },
+    onCloseVideo() {
+      this.stream.getTracks().forEach(track => {
+        track.stop()
+      })
+    },
+
     onTurnOffCall() {
       this.peer.disconnect()
       window.socket.emit('end-call', {
@@ -293,18 +305,15 @@ export default {
         user,
         call_id: this.$route.params.call_id
       })
-      console.log(this.calling.user.id)
+      this.$store.commit('message/SET_CALLING_STATUS', 'calling')
       this.removed = false
       this.isCalling = true
     },
     onReturnBack() {
-      const myTrack = this.$refs['video-me'].srcObject.getTracks()
-      if (myTrack) {
-        myTrack.forEach(track => {
-          track.stop()
-        })
-      }
+      this.peer.destroy()
+      this.onCloseVideo()
       this.$store.commit('message/SET_CALLING_USER', null)
+      window.socket.emit('remove-call', this.$route.params.call_id)
       this.$router.push('/')
     }
   },

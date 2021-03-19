@@ -1,7 +1,12 @@
 <template>
   <transition name="slide-fade">
     <div
-      v-if="calling && callingStatus && callingStatus !== 'answering'"
+      v-if="
+        !$route.name.includes('call-call_id') &&
+          calling &&
+          callingStatus &&
+          callingStatus !== 'answering'
+      "
       class="call-group-notification"
     >
       <v-img
@@ -61,7 +66,7 @@
                 v-on="on"
                 icon
                 x-large
-                class="success mx-5"
+                class="success mx-3"
                 @click="onAnswerCalling"
               >
                 <v-icon>mdi-phone</v-icon>
@@ -78,7 +83,7 @@
                 @click="onRefuseCalling"
                 icon
                 x-large
-                class="danger mx-5"
+                class="danger mx-3"
               >
                 <v-icon>mdi-close</v-icon>
               </v-btn>

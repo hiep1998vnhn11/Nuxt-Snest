@@ -15,6 +15,7 @@
         <v-sheet class="text-center mt-3">
           <router-link
             v-slot="{ href, navigate }"
+            custom
             :to="
               localePath({
                 name: 'index-user-url',
