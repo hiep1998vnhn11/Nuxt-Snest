@@ -8,14 +8,10 @@ $ yarn install
 
 # serve with hot reload at https://localhost:8080
 # if your want to run in https to demo login oauth with facebook or gmail
-$ openssl req -x509 -out localhost.crt -keyout localhost.key \
-  -newkey rsa:2048 -nodes -sha256 \
-  -subj '/CN=localhost' -extensions EXT -config <( \
-   printf "[dn]\nCN=localhost\n[req]\ndistinguished_name = dn\n[EXT]\nsubjectAltName=DNS:localhost\nkeyUsage=digitalSignature\nextendedKeyUsage=serverAuth")
 #or if you do not need this, you comment server property in nuxt.config.js
 #one more step:
 #if you're using chrome, please copy paste this to your chrome, enabled "Allow invalid certificates for resources loaded from localhost."
-$ chrome://flags/#allow-insecure-localhost
+#$ chrome://flags/#allow-insecure-localhost
 
 $ yarn dev
 
@@ -27,6 +23,26 @@ $ yarn start
 # generate static project
 $ yarn generate
 ```
+
+## Setup for https connection with oauth in localhost
+
+### Step 1: generate file
+
+```bash
+# This comment will generate 2 file: localhost.crt and localhost.key
+$ openssl req -x509 -out localhost.crt -keyout localhost.key \
+  -newkey rsa:2048 -nodes -sha256 \
+  -subj '/CN=localhost' -extensions EXT -config <( \
+   printf "[dn]\nCN=localhost\n[req]\ndistinguished_name = dn\n[EXT]\nsubjectAltName=DNS:localhost\nkeyUsage=digitalSignature\nextendedKeyUsage=serverAuth")
+```
+
+### Step 2: uncomment nuxt.config.js
+
+After generate 2 following file, uncomment the https property in nuxt.config.js file
+
+### Step 3: trust this https connection
+
+If you use google chrome, open the setting and search for SSL, open, and KeyChain access will open. Draw and drop the localhost.crt to this, double click to new field and select the trust, in line 1 change to always trust and close window.
 
 For detailed explanation on how things work, check out [Nuxt.js docs](https://nuxtjs.org).
 

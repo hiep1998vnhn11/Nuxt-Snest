@@ -14,8 +14,10 @@
         <h3>
           {{ error }}
         </h3>
-        <nuxt-link tag="a" :to="localePath('/')">
-          Back to Home page
+        <nuxt-link v-slot="{ href, navigate }" :to="localePath('/')">
+          <a :href="href" @click="navigate">
+            Back to Home page
+          </a>
         </nuxt-link>
       </div>
     </div>

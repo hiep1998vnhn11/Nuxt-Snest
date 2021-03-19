@@ -6,27 +6,29 @@
   </div>
 </template>
 <script>
+import { mapGetters } from 'vuex'
 export default {
   data() {
     return {}
   },
   methods: {
     test() {
-      this.$notify({
-        group: 'call',
-        text: {
-          user: {
-            profile_photo_path:
-              'https://www.intouchweekly.com/wp-content/uploads/2020/02/Eminem-Oscars-2020.jpg?w=1660',
-            name: 'Hiệp Trần'
-          }
+      const usercall = {
+        user: {
+          profile_photo_path:
+            'https://p.bigstockphoto.com/GeFvQkBbSLaMdpKXF1Zv_bigstock-Aerial-View-Of-Blue-Lakes-And--227291596.jpg',
+          name: 'Hiệp Trần'
         }
-      })
+      }
+      this.$store.commit('message/SET_CALLING_USER', usercall)
+      this.$store.commit('message/SET_CALLING_STATUS', 'calling')
     }
   },
   created() {},
   mounted() {},
-  computed: {}
+  computed: {
+    ...mapGetters('message', ['calling'])
+  }
 }
 </script>
 <style scoped></style>

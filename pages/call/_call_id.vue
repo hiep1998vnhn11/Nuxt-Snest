@@ -135,6 +135,8 @@
 </template>
 <script>
 import { mapGetters } from 'vuex'
+import Peer from 'peerjs'
+
 export default {
   middleware: 'checkV4',
   data() {
@@ -161,6 +163,7 @@ export default {
   beforeRouteLeave(to, from, next) {
     window.socket.emit('remove-call', this.$route.params.call_id)
     this.$store.commit('message/SET_CALLING_USER', null)
+    this.peer.disconnect()
     return next()
   },
   methods: {
@@ -168,15 +171,20 @@ export default {
       window.socket.on('call_not_found', call_id => {
         this.$router.push(this.localePath({ name: 'index' }))
       })
-      window.socket.on('user-leave', ({ user_id, peer_id }) => {
-        console.log(`an user ${user_id} has left the ${peer_id}`)
-        const peerLeave = this.peers.find(peer => peer.peer_id === peer_id)
-        if (peerLeave && peerLeave.call) peerLeave.call.close()
+      window.socket.on('user-leave', ({ user_id }) => {
+        const peerLeave = this.peers.find(peer => peer.peer_id === user_id)
+        if (peerLeave && peerLeave.call) {
+          peerLeave.call.close()
+          this.peers = this.peers.filter(
+            peer => peer.peer_id !== peerLeave.peer_id
+          )
+        }
       })
       window.socket.on('remove-call', () => {
-        this.$router.push('/')
+        // this.$router.push('/')
       })
       window.socket.on('people-refuse-call', ({ user_id, call_id }) => {
+        this.$store.commit('message/SET_CALLING_STATUS', 'refused')
         if (call_id === this.$route.params.call_id) {
           this.isRefuse = true
           this.isCalling = false
@@ -200,9 +208,8 @@ export default {
               vm.addVideoStream(hostVideo, userVideoStream)
             })
           })
-          window.socket.on('user-join', ({ user_id, peer_id }) => {
-            console.log(`an user had connected ${peer_id} ${user_id}`)
-            vm.connectToNewUser(peer_id, stream)
+          window.socket.on('user-join', ({ user_id }) => {
+            vm.connectToNewUser(user_id, stream)
           })
         })
     },
@@ -226,22 +233,25 @@ export default {
       })
     },
     createPeer() {
-      this.peer = new Peer(undefined, {
+      // tạo 1 peer với id đúng bằng user.id
+      this.peer = new Peer(this.currentUser.id, {
         host: process.env.NUXT_ENV_PEER_HOST,
         port: process.env.NUXT_ENV_PEER_PORT
       })
       //local peer id
       this.peer.on('open', id => {
+        // Sau khi peer open, push id của peer vào remotePeer
         this.remotePeer.push(id)
-        this.myPeer = id
         window.socket.emit('join-call', {
           call_id: this.$route.params.call_id,
-          user_id: this.currentUser.id,
-          peer_id: id
+          user_id: this.currentUser.id
         })
       })
       this.peer.on('connection', conn => {
         console.log(conn)
+      })
+      this.peer.on('error', err => {
+        this.$nuxt.error(err)
       })
     },
     changeVideo() {
@@ -257,6 +267,7 @@ export default {
       myAudioTrack[0].enabled = this.audio
     },
     onTurnOffCall() {
+      this.peer.disconnect()
       window.socket.emit('end-call', {
         user_id: this.calling.user.id,
         call_id: this.$route.params.call_id,
@@ -271,6 +282,7 @@ export default {
       this.removed = true
     },
     onTurnOnBackCall() {
+      this.peer.reconnect()
       const user = {
         id: this.currentUser.id,
         profile_photo_path: this.currentUser.profile_photo_path,
@@ -281,6 +293,7 @@ export default {
         user,
         call_id: this.$route.params.call_id
       })
+      console.log(this.calling.user.id)
       this.removed = false
       this.isCalling = true
     },

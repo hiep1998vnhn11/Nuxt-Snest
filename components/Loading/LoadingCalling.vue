@@ -1,57 +1,115 @@
 <template>
-  <div v-if="calling" class="calling-container">
-    <v-card width="500">
-      <v-card-title>
-        {{ $t('IncomingCall') }}
-        <v-spacer></v-spacer>
-        <v-btn class="grey lighten-3" icon text @click="onRefuseCalling">
-          <v-icon>mdi-close</v-icon>
-        </v-btn>
-      </v-card-title>
-      <v-container class="text-center">
-        <v-avatar size="100">
-          <img :src="calling.user.profile_photo_path" />
-        </v-avatar>
-        <div class="font-weight-bold">
-          {{ calling.user.name }} {{ $t('IsCallingYou') }}
+  <transition name="slide-fade">
+    <div
+      v-if="calling && callingStatus && callingStatus !== 'answering'"
+      class="call-group-notification"
+    >
+      <v-img
+        width="100%"
+        max-height="300px"
+        style="border-radius: 20px;"
+        :src="calling.user.profile_photo_path"
+      />
+
+      <div class="call-group-after">
+        <v-tooltip top v-if="callingStatus === 'calling'">
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn
+              class="call-action-refuse danger"
+              icon
+              small
+              v-bind="attrs"
+              v-on="on"
+              @click="onRefuseCalling"
+            >
+              <v-icon color="black">
+                mdi-phone-cancel
+              </v-icon>
+            </v-btn>
+          </template>
+          <span>{{ $t('RefuseCall') }}</span>
+        </v-tooltip>
+        <div class="call-content">
+          <v-avatar size="60" class="call-avatar">
+            <img :src="calling.user.profile_photo_path" />
+          </v-avatar>
+          <div class="white--text">
+            <strong>{{ calling.user.name }}</strong>
+            {{ $t('isCallingYou') }}
+          </div>
         </div>
-        <div class="text-caption">{{ $t('CallWillStartAfterYouAnswer') }}</div>
-      </v-container>
-      <v-card-actions>
-        <v-spacer />
-        <v-btn
-          text
-          class="danger--text text-capitalize"
-          @click="onRefuseCalling"
-        >
-          {{ $t('Refuse') }}
-        </v-btn>
-        <v-btn
-          text
-          class="primary--text text-capitalize"
-          :to="
-            localePath({
-              name: 'call-call_id',
-              params: { call_id: calling.call_id }
-            })
-          "
-        >
-          <v-icon class="mr-3">mdi-phone</v-icon>
-          {{ $t('Answer') }}
-        </v-btn>
-      </v-card-actions>
-    </v-card>
-  </div>
+        <div class="call-actions">
+          <v-tooltip top>
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn
+                v-bind="attrs"
+                v-on="on"
+                icon
+                text
+                class="dark"
+                color="white"
+              >
+                <v-icon>mdi-camcorder</v-icon>
+              </v-btn>
+            </template>
+            <span>{{ $t('TurnOnCamera') }}</span>
+          </v-tooltip>
+          <v-tooltip top v-if="callingStatus === 'calling'">
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn
+                v-bind="attrs"
+                v-on="on"
+                icon
+                x-large
+                class="success mx-5"
+                @click="onAnswerCalling"
+              >
+                <v-icon>mdi-phone</v-icon>
+              </v-btn>
+            </template>
+            <span>{{ $t('Answer') }}</span>
+          </v-tooltip>
+
+          <v-tooltip top v-else>
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn
+                v-bind="attrs"
+                v-on="on"
+                @click="onRefuseCalling"
+                icon
+                x-large
+                class="danger mx-5"
+              >
+                <v-icon>mdi-close</v-icon>
+              </v-btn>
+            </template>
+            <span>{{ $t('Close') }}</span>
+          </v-tooltip>
+
+          <v-tooltip top>
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn class="dark" v-bind="attrs" v-on="on" icon>
+                <v-icon color="white">
+                  mdi-microphone
+                </v-icon>
+              </v-btn>
+            </template>
+            <span> {{ $t('TurnOnMicro') }} </span>
+          </v-tooltip>
+        </div>
+      </div>
+    </div>
+  </transition>
 </template>
 <script>
 import { mapGetters } from 'vuex'
-import { v4 as uuidv4 } from 'uuid'
 export default {
   data() {
     return {}
   },
   methods: {
     onAnswerCalling() {
+      this.$store.commit('message/SET_CALLING_STATUS', 'answering')
       this.$router.push(
         this.localePath({
           name: 'call-call_id',
@@ -60,15 +118,18 @@ export default {
       )
     },
     onRefuseCalling() {
-      window.socket.emit('refuse-call', {
-        call_id: this.calling.call_id,
-        user_id: this.calling.user.id
-      })
       this.$store.commit('message/SET_CALLING_USER', null)
+      this.$store.commit('message/SET_CALLING_STATUS', 'refused')
+      if (this.calling) {
+        window.socket.emit('refuse-call', {
+          call_id: this.calling.call_id,
+          user_id: this.calling.user.id
+        })
+      }
     }
   },
   computed: {
-    ...mapGetters('message', ['calling']),
+    ...mapGetters('message', ['calling', 'callingStatus']),
     ...mapGetters('user', ['currentUser'])
   }
 }

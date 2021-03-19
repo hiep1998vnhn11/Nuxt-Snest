@@ -7,7 +7,8 @@ const initialState = () => ({
   pageMessage: 1,
   thresh: null,
   messageCards: [],
-  calling: null
+  calling: null,
+  callingStatus: null
 })
 const state = () => ({
   rooms: [],
@@ -15,7 +16,8 @@ const state = () => ({
   pageMessage: 1,
   thresh: null,
   messageCards: [],
-  calling: null
+  calling: null,
+  callingStatus: null
 })
 
 const getters = {
@@ -23,7 +25,8 @@ const getters = {
   messages: state => state.messages,
   messageCards: state => state.messageCards,
   thresh: state => state.thresh,
-  calling: state => state.calling
+  calling: state => state.calling,
+  callingStatus: state => state.callingStatus
 }
 const actions = {
   //Get thresh by userId
@@ -197,6 +200,9 @@ const mutations = {
   },
   SET_CALLING_USER: function(state, calling) {
     state.calling = calling
+  },
+  SET_CALLING_STATUS: function(state, status) {
+    state.callingStatus = status
   }
 }
 export default {

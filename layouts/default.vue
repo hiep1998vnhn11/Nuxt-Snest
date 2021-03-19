@@ -7,7 +7,6 @@
             <div class="title">
               {{ $t('MessageNotification') }}
             </div>
-
             <div class="content">
               <v-avatar size="60" class="outlined avatar">
                 <img :src="props.item.text.user.profile_photo_path" />
@@ -29,97 +28,7 @@
         </div>
       </template>
     </notifications>
-
-    <notifications
-      group="call"
-      position="bottom right"
-      width="400"
-      duration="negative"
-    >
-      <template slot="body" slot-scope="props">
-        <div class="call-group-notification">
-          <v-img
-            width="100%"
-            max-height="400px"
-            style="border-radius: 20px;"
-            :src="props.item.text.user.profile_photo_path"
-          />
-
-          <div class="call-group-after">
-            <v-tooltip top>
-              <template v-slot:activator="{ on, attrs }">
-                <v-btn
-                  class="call-action-refuse danger"
-                  icon
-                  small
-                  v-bind="attrs"
-                  v-on="on"
-                  @click="onRefuseCalling(props)"
-                >
-                  <v-icon color="black">
-                    mdi-phone-cancel
-                  </v-icon>
-                </v-btn>
-              </template>
-              <span>{{ $t('RefuseCall') }}</span>
-            </v-tooltip>
-            <div class="call-content">
-              <v-avatar size="60" class="call-avatar">
-                <img :src="props.item.text.user.profile_photo_path" />
-              </v-avatar>
-              <div class="white--text">
-                <strong>{{ props.item.text.user.name }}</strong>
-                {{ $t('isCallingYou') }}
-              </div>
-            </div>
-            <div class="call-actions">
-              <v-tooltip top>
-                <template v-slot:activator="{ on, attrs }">
-                  <v-btn
-                    v-bind="attrs"
-                    v-on="on"
-                    icon
-                    text
-                    class="dark"
-                    color="white"
-                  >
-                    <v-icon>mdi-camcorder</v-icon>
-                  </v-btn>
-                </template>
-                <span>{{ $t('TurnOnCamera') }}</span>
-              </v-tooltip>
-              <v-tooltip top>
-                <template v-slot:activator="{ on, attrs }">
-                  <v-btn
-                    v-bind="attrs"
-                    v-on="on"
-                    icon
-                    x-large
-                    class="success mx-5"
-                    @click="onAnswerCalling(props)"
-                  >
-                    <v-icon>mdi-phone</v-icon>
-                  </v-btn>
-                </template>
-                <span>{{ $t('Answer') }}</span>
-              </v-tooltip>
-
-              <v-tooltip top>
-                <template v-slot:activator="{ on, attrs }">
-                  <v-btn class="dark" v-bind="attrs" v-on="on" icon>
-                    <v-icon color="white">
-                      mdi-microphone
-                    </v-icon>
-                  </v-btn>
-                </template>
-                <span> {{ $t('TurnOnMicro') }} </span>
-              </v-tooltip>
-            </div>
-          </div>
-        </div>
-      </template>
-    </notifications>
-
+    <loading-calling />
     <v-app-bar color="primary" clipped-left clipped-right fixed app height="56">
       <nuxt-link :to="localePath({ name: 'index' })">
         <img src="@/assets/logo.png" />
@@ -151,7 +60,6 @@
     </v-app-bar>
     <v-main ref="main">
       <v-container>
-        <loading-calling />
         <nuxt />
       </v-container>
     </v-main>
@@ -250,6 +158,7 @@ export default {
         user_id: props.item.text.user.id
       })
       props.close()
+      this.$store.commit('SER_USER_CALLING', null)
     }
   },
   mounted() {
@@ -275,13 +184,6 @@ export default {
           }
         }
       )
-
-      window.socket.on('people-calling', calling => {
-        this.$notify({
-          group: 'call',
-          text: calling
-        })
-      })
     }
   }
 }
@@ -291,7 +193,6 @@ export default {
 html {
   overflow-y: hidden;
   height: 100%;
-  font-family: inherit;
   &:hover {
     overflow-y: auto;
   }

@@ -148,7 +148,7 @@ export default {
       const call_id = uuidv4()
       window.socket.emit('create-call', {
         call_id,
-        user_id: this.currentUser.id,
+        user_id: this.thresh.participants.id,
         user: this.currentUser
       })
       this.$router.push(

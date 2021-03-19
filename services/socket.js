@@ -30,7 +30,7 @@ const socketService = {
         store.getters['message/calling'] &&
         store.getters['message/calling'].call_id === call_id
       ) {
-        store.commit('message/SET_CALLING_USER', null)
+        store.commit('message/SET_CALLING_STATUS', 'canceled')
       }
     })
 
@@ -41,6 +41,7 @@ const socketService = {
 
     window.socket.on('people-calling', calling => {
       store.commit('message/SET_CALLING_USER', calling)
+      store.commit('message/SET_CALLING_STATUS', 'calling')
     })
 
     // An user had logged in

@@ -399,5 +399,12 @@ export default {
   Angry: 'Angry',
   Privacy: 'Privacy',
   'sent you an message': 'sent you an message',
-  MessageNotification: 'Message notification'
+  MessageNotification: 'Message notification',
+  Calling: 'Calling',
+  ReCall: 'Recall',
+  Privacy: 'Privacy',
+  isCallingYou: 'is calling you',
+  Close: 'Close',
+  TurnOnMicro: 'Turn on micro',
+  RefuseCall: 'Refuse call'
 }

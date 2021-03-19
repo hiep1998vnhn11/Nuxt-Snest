@@ -14,11 +14,13 @@
         }`
       "
       custom
-      tag="a"
+      v-slot="{ href, navigate }"
     >
-      <span @mouseover="onMouseOver" @mouseleave="onMouseLeave">
-        {{ user.name }}
-      </span>
+      <a :href="href" @click="navigate">
+        <span @mouseover="onMouseOver" @mouseleave="onMouseLeave">
+          {{ user.name }}
+        </span>
+      </a>
     </nuxt-link>
     <v-btn
       v-else
