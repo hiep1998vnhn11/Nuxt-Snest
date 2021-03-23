@@ -1,6 +1,11 @@
 <template>
   <v-app dark class="main-container">
-    <notifications group="message" position="bottom left" width="320">
+    <notifications
+      group="message"
+      :duration="5000"
+      position="bottom left"
+      width="330"
+    >
       <template slot="body" slot-scope="props">
         <div class="message-group-notification">
           <div @click="onClickMessageNotification">
@@ -14,6 +19,7 @@
               <div class="text">
                 <div>
                   <strong>{{ props.item.text.user.name }}</strong>
+                  <br />
                   {{ $t('sent you an message') }} :
                 </div>
                 <div class="message">
@@ -28,7 +34,9 @@
         </div>
       </template>
     </notifications>
+
     <loading-calling />
+
     <v-app-bar color="primary" clipped-left clipped-right fixed app height="56">
       <nuxt-link :to="localePath({ name: 'index' })">
         <img src="@/assets/logo.png" />
@@ -170,7 +178,7 @@ export default {
           if (
             this.$store.getters['message/thresh'] &&
             Number(this.$store.getters['message/thresh'].id) ===
-              Number(this.$message.thresh_id)
+              Number(message.thresh_id)
           ) {
             this.$store.commit('message/RECEIVED_MESSAGE', message)
           } else {
