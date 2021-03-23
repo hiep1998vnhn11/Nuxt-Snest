@@ -212,6 +212,7 @@ export default {
           )
         }
       })
+      this.facebook.loggingIn = false
     },
     async onContinueFacebook() {
       if (!this.facebook.accessToken) return
@@ -304,23 +305,46 @@ export default {
       this.google.loading = false
     },
     startGoogleObject() {
-      const vm = this
-      gapi.load('auth2', function() {
-        vm.google.auth = gapi.auth2.init({
-          client_id: process.env.NUXT_ENV_GOOGLE_CLIENT_ID,
-          // Scopes to request in addition to 'profile' and 'email'
-          scope: 'profile email'
+      if (typeof gapi != 'undefined' && gapi != null) {
+        const vm = this
+        gapi.load('auth2', function() {
+          vm.google.auth = gapi.auth2.init({
+            client_id: process.env.NUXT_ENV_GOOGLE_CLIENT_ID,
+            // Scopes to request in addition to 'profile' and 'email'
+            scope: 'profile email'
+          })
         })
-      })
+      } else {
+        this.$notify({
+          group: 'notification',
+          title: 'Warning',
+          type: 'warning',
+          text: this.$t(
+            'Your browser do not support Google, suggest Google Chrome'
+          )
+        })
+      }
+    },
+    startFacebookInit() {
+      if (typeof FB != 'undefined' && FB != null) {
+        FB.init({
+          appId: process.env.NUXT_ENV_FACEBOOK_APP_ID,
+          autoLogAppEvents: true,
+          xfbml: true,
+          version: process.env.NUXT_ENV_FACEBOOK_APP_VERSION
+        })
+      } else {
+        this.$notify({
+          group: 'notification',
+          title: 'Warning',
+          type: 'warning',
+          text: this.$t('Your browser do not support FB, suggest Google Chrome')
+        })
+      }
     }
   },
   mounted() {
-    FB.init({
-      appId: process.env.NUXT_ENV_FACEBOOK_APP_ID,
-      autoLogAppEvents: true,
-      xfbml: true,
-      version: process.env.NUXT_ENV_FACEBOOK_APP_VERSION
-    })
+    this.startFacebookInit()
     this.startGoogleObject()
   }
 }
