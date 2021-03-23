@@ -146,7 +146,6 @@
           append-icon="mdi-file-image-outline"
           @click:append="upload"
           @keydown.enter="onComment"
-          :loading="loadingCreate"
           @focus="showComment = true"
         >
         </v-text-field>
@@ -230,7 +229,6 @@ export default {
       collapseOnScroll: true,
       error: null,
       loading: false,
-      loadingCreate: false,
       createError: false,
       createSubError: false,
       loadingSubCreate: false,
@@ -327,7 +325,6 @@ export default {
     },
     async onComment() {
       if (this.comment) {
-        this.loadingCreate = true
         const rawComment = {
           id: Math.random(),
           content: this.comment,
@@ -342,6 +339,7 @@ export default {
           sub_comments_count: 0,
           sub_comments: []
         }
+        this.comment = ''
         const indexRawComment = this.comments.length
         this.comments = [...this.comments, rawComment]
         if (this.page) {
@@ -349,20 +347,18 @@ export default {
         } else {
           this.$emit('onComment')
         }
-        this.comments[indexRawComment] = Object.assign(
-          this.comments[indexRawComment],
-          response.data.data
-        )
         try {
-          let url = `/v1/user/post/${this.post.id}/create_comment`
-          let response = await axios.post(url, {
+          const url = `/v1/user/post/${this.post.id}/create_comment`
+          const response = await axios.post(url, {
             content: this.comment
           })
+          this.comments[indexRawComment] = Object.assign(
+            this.comments[indexRawComment],
+            response.data.data
+          )
         } catch (err) {
           this.createError = true
         }
-        this.comment = ''
-        this.loadingCreate = false
       }
     },
     async onSubComment(e) {
