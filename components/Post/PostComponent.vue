@@ -146,7 +146,8 @@
           append-icon="mdi-file-image-outline"
           @click:append="upload"
           @keydown.enter="onComment"
-          @focus="showComment = true"
+          @focus="onFocusComment"
+          @blur="onBlurComment"
         >
         </v-text-field>
         <v-btn
@@ -307,9 +308,15 @@ export default {
       }
     },
     async getComment() {
-      if (!this.showComment) return
-      this.comments = []
-      if (this.showComment) {
+      if (!this.showComment) {
+        window.socket.emit('leave-post', {
+          postId: this.post.id
+        })
+      } else {
+        window.socket.emit('join-post', {
+          postId: this.post.id
+        })
+        this.comments = []
         this.error = null
         this.loading = true
         try {
@@ -356,10 +363,24 @@ export default {
             this.comments[indexRawComment],
             response.data.data
           )
+          window.socket.emit('comment-post', {
+            postId: this.post.id,
+            user: this.currentUser,
+            comment: this.comments[indexRawComment],
+            notification: null
+          })
         } catch (err) {
           this.createError = true
         }
       }
+    },
+
+    onBlurComment() {
+      window.socket.emit('commented-post', { postId: this.post.id })
+    },
+    onFocusComment() {
+      this.showComment = true
+      window.socket.emit('commenting-post', { postId: this.post.id })
     },
     async onSubComment(e) {
       const rawComment = {

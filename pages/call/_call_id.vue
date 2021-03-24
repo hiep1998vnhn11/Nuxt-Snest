@@ -203,7 +203,7 @@ export default {
       this.addVideoStream(myVideo, stream)
       this.peer.on('call', call => {
         call.answer(stream)
-        const hostVideo = vm.$refs['video-host']
+        const hostVideo = this.$refs['video-host']
         call.on('stream', userVideoStream => {
           this.addVideoStream(hostVideo, userVideoStream)
         })
@@ -234,7 +234,6 @@ export default {
     },
     createPeer() {
       // tạo 1 peer với id đúng bằng user.id
-
       if (this.peer && this.peer.disconnected) {
         this.peer.reconnect()
         return
@@ -465,5 +464,10 @@ export default {
       left: 40px;
     }
   }
+}
+
+video {
+  -webkit-transform: scaleX(-1);
+  transform: scaleX(-1);
 }
 </style>
