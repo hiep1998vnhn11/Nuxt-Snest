@@ -138,12 +138,35 @@ const mutations = {
       if (status > 0) state.posts[index].liked_count += 1
     }
   },
+  LIKE_USER_POST: function(state, { status, index, post }) {
+    if (state.userPost[index].like_status) {
+      const likeStatus = state.userPost[index].like_status.status
+      state.userPost[index].like_status.status =
+        likeStatus === status ? 0 : status
+      if (likeStatus === 0 && state.userPost[index].like_status.status !== 0) {
+        state.userPost[index].liked_count += 1
+      } else if (
+        likeStatus !== 0 &&
+        state.userPost[index].like_status.status === 0
+      ) {
+        state.userPost[index].liked_count -= 1
+      }
+    } else {
+      state.userPost[index].like_status = {
+        status
+      }
+      if (status > 0) state.userPost[index].liked_count += 1
+    }
+  },
   UNLIKE_POST: function(state, indexPost) {
     state.posts[indexPost].isLiked = false
     state.posts[indexPost].likes_count -= 1
   },
   COMMENTED_POST: function(state, indexPost) {
     state.posts[indexPost].comments_count += 1
+  },
+  COMMENTED_USER_POST: function(state, indexPost) {
+    state.userPost[indexPost].comments_count += 1
   },
   RESET: function(state) {
     const s = initialState()

@@ -267,6 +267,14 @@ html {
 .hover-up {
   transition: 0.5s ease-in-out;
 }
+
+.hover-up-half:hover {
+  transform: translateY(-5px);
+  transition: 0.5s ease-in-out;
+}
+.hover-up-half {
+  transition: 0.5s ease-in-out;
+}
 .avatar-outlined {
   border: thin solid rgba(0, 0, 0, 0.12) !important;
 }

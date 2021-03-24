@@ -8,7 +8,7 @@
       ></v-skeleton-loader>
       <div v-else>
         <base-user-info v-if="!!user && !!currentUser" :user="user" />
-        <base-user-friend v-if="user" :user="user"></base-user-friend>
+        <base-user-friend v-if="user != null" :user="user"></base-user-friend>
       </div>
     </v-col>
 
@@ -30,7 +30,7 @@
       ></v-skeleton-loader>
       <v-card
         v-else
-        :class="`mt-3 rounded-lg hover-up elevation-${elevationFilter}`"
+        :class="`mt-3 rounded-lg hover-up-half elevation-${elevationFilter}`"
         tile
         @mouseleave="hoverFilter = false"
         @mouseenter="hoverFilter = true"
@@ -40,14 +40,15 @@
           {{ $t('Posts') }}
           <v-spacer />
           <v-btn
-            class="text-capitalize mr-2 pink lighten-5"
+            class="text-capitalize mr-2 primary--text rounded-lg"
+            outlined
             text
             @click="filterDialog = true"
           >
-            <v-icon class="ml-n3 mr-2">mdi-filter-outline</v-icon>
+            <v-icon class="ml-n3 mr-2">mdi-filter</v-icon>
             {{ $t('profile.Filters') }}
           </v-btn>
-          <v-btn class="text-capitalize pink lighten-5" text>
+          <v-btn class="text-capitalize danger--text rounded-lg" outlined text>
             <v-icon class="ml-n3 mr-2">mdi-cog</v-icon>
             {{ $t('profile.ManagePosts') }}
           </v-btn>
@@ -77,9 +78,13 @@
       <div v-if="userPost.length">
         <post-component
           class="mt-3"
-          v-for="post in userPost"
-          :key="post.id"
+          v-for="(post, index) in userPost"
+          :key="`user-post-${post.id}`"
           :post="post"
+          :index="index"
+          @onLike="onLike"
+          @onSubComment="onComment(index, post)"
+          @onComment="onComment(index, post)"
         ></post-component>
       </div>
       <observer @intersect="intersected"></observer>
@@ -151,6 +156,7 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
+import axios from 'axios'
 export default {
   props: ['user', 'loadingUser'],
   data() {
@@ -267,6 +273,17 @@ export default {
     },
     onDone() {
       this.filterDialog = false
+    },
+    async onLike(e) {
+      console.log(e)
+      this.$store.commit('post/LIKE_USER_POST', e)
+      let url = `/v1/user/post/${e.post.id}/handle_like`
+      await axios.post(url, {
+        status: e.status
+      })
+    },
+    onComment(index, post) {
+      this.$store.commit('post/COMMENTED_USER_POST', index)
     }
   },
   computed: {
@@ -289,13 +306,13 @@ export default {
       }
     },
     elevationFilter() {
-      return this.hoverFilter ? 24 : 3
+      return this.hoverFilter ? 12 : 3
     },
     elevationIntro() {
-      return this.hoverIntro ? 24 : 3
+      return this.hoverIntro ? 12 : 3
     },
     elevationFriend() {
-      return this.hoverFriend ? 24 : 3
+      return this.hoverFriend ? 12 : 3
     }
   },
   watch: {
