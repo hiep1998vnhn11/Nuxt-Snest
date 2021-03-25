@@ -1,11 +1,6 @@
 <template>
   <v-app dark class="main-container">
-    <notifications
-      group="message"
-      :duration="5000"
-      position="bottom left"
-      width="330"
-    >
+    <notifications group="message" position="bottom left" width="330">
       <template slot="body" slot-scope="props">
         <div class="message-group-notification">
           <div @click="onClickMessageNotification">
@@ -24,6 +19,35 @@
                 </div>
                 <div class="message">
                   {{ props.item.text.message.content | shorterValue }}
+                </div>
+              </div>
+            </div>
+          </div>
+          <v-btn class="title-btn" icon text x-small @click="props.close">
+            <v-icon>mdi-close</v-icon>
+          </v-btn>
+        </div>
+      </template>
+    </notifications>
+
+    <notifications group="notification" position="bottom left" width="330">
+      <template slot="body" slot-scope="props">
+        <div class="message-group-notification">
+          <div>
+            <div class="title">
+              {{ $t('MessageNotification') }}
+            </div>
+            <div class="content">
+              <v-avatar size="60" class="outlined avatar">
+                <img :src="props.item.text.user.profile_photo_path" />
+              </v-avatar>
+              <div class="text">
+                <div>
+                  <strong>{{ props.item.text.user.name }}</strong>
+                  <br />
+                  <div v-if="props.item.text.status == 'requesting'">
+                    {{ $t('Sent you a friend request') }}
+                  </div>
                 </div>
               </div>
             </div>
@@ -187,11 +211,26 @@ export default {
               text: {
                 message,
                 user
-              }
+              },
+              duration: 10000
             })
           }
         }
       )
+
+      window.socket.on('people-requesting-friend', userRequest => {
+        console.log(userRequest)
+        this.$store.commit('notification/ADD_NOTIFICATION')
+        this.$notify({
+          group: 'notification',
+          text: {
+            type: 'friend',
+            user: userRequest,
+            status: 'requesting'
+          },
+          duration: 5000
+        })
+      })
     }
   }
 }

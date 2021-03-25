@@ -17,7 +17,7 @@
           class="text-capitalize buttom-create-post"
           rounded
           @click="dialog = true"
-          flat
+          text
           block
         >
           {{ content ? content : $t('create_post.writeSt') | shortenContent }}

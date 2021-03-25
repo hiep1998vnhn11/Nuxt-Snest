@@ -6,9 +6,7 @@
       class="index-3"
       @changed-avatar="fetchData(true)"
       @changed-background="fetchData(true)"
-      @changed-status-friend-accepted="changeStatusFriendAccept"
-      @changed-status-friend-denied="changeStatusFriendDenied"
-      @changed-status-friend-added="changeStatusFriendAdded"
+      @changed-status-friend="changeStatusFriend"
     ></profile-header>
     <nuxt-child :user="paramUser" :loadingUser="loading"></nuxt-child>
   </div>
@@ -61,8 +59,9 @@ export default {
       }
       this.loading = false
     },
-    changeStatusFriendAccept() {
-      this.paramUser.friend_status = 1
+    changeStatusFriend(e) {
+      console.log(e)
+      this.paramUser.myRElation = e
     },
     changeStatusFriendDenied() {
       this.paramUser.friend_status = 0
