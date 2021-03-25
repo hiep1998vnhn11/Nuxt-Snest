@@ -146,8 +146,8 @@
           append-icon="mdi-file-image-outline"
           @click:append="upload"
           @keydown.enter="onComment"
-          :loading="loadingCreate"
-          @focus="showComment = true"
+          @focus="onFocusComment"
+          @blur="onBlurComment"
         >
         </v-text-field>
         <v-btn
@@ -230,7 +230,6 @@ export default {
       collapseOnScroll: true,
       error: null,
       loading: false,
-      loadingCreate: false,
       createError: false,
       createSubError: false,
       loadingSubCreate: false,
@@ -281,37 +280,54 @@ export default {
     async onClickLike(e) {
       // e is status of reaction [1...7]
       this.hoverLike = false
-      if (this.page) {
-        if (!this.currentUser) return
-        if (this.post.like_status) {
-          const likeStatus = this.post.like_status.status
-          this.post.like_status.status = likeStatus === e ? 0 : e
-          if (this.post.like_status.status === 0 && likeStatus !== 0) {
-            this.post.liked_count -= 1
-          } else if (this.post.like_status.status !== 0 && likeStatus === 0)
-            this.post.liked_count += 1
-        } else {
-          this.post.like_status = {
-            status: e
+      try {
+        if (this.page) {
+          if (!this.currentUser) return
+          if (this.post.like_status) {
+            const likeStatus = this.post.like_status.status
+            this.post.like_status.status = likeStatus === e ? 0 : e
+            if (this.post.like_status.status === 0 && likeStatus !== 0) {
+              this.post.liked_count -= 1
+            } else if (this.post.like_status.status !== 0 && likeStatus === 0)
+              this.post.liked_count += 1
+          } else {
+            this.post.like_status = {
+              status: e
+            }
+            if (e > 0) {
+              this.post.liked_count += 1
+              window.socket.emit('likePost', {
+                user: this.currentUser,
+                post: this.post
+              })
+            }
           }
-          if (e > 0) this.post.liked_count += 1
+          let url = `/v1/user/post/${this.post.id}/handle_like`
+          await axios.post(url, {
+            status: e
+          })
+        } else {
+          this.$emit('onLike', {
+            post: this.post,
+            status: e,
+            index: this.index,
+            user: this.currentUser
+          })
         }
-        let url = `/v1/user/post/${this.post.id}/handle_like`
-        await axios.post(url, {
-          status: e
-        })
-      } else {
-        this.$emit('onLike', {
-          post: this.post,
-          status: e,
-          index: this.index
-        })
+      } catch (err) {
+        this.$nuxt.error(err)
       }
     },
     async getComment() {
-      if (!this.showComment) return
-      this.comments = []
-      if (this.showComment) {
+      if (!this.showComment) {
+        window.socket.emit('leave-post', {
+          postId: this.post.id
+        })
+      } else {
+        window.socket.emit('join-post', {
+          postId: this.post.id
+        })
+        this.comments = []
         this.error = null
         this.loading = true
         try {
@@ -327,7 +343,6 @@ export default {
     },
     async onComment() {
       if (this.comment) {
-        this.loadingCreate = true
         const rawComment = {
           id: Math.random(),
           content: this.comment,
@@ -349,21 +364,34 @@ export default {
         } else {
           this.$emit('onComment')
         }
-        this.comments[indexRawComment] = Object.assign(
-          this.comments[indexRawComment],
-          response.data.data
-        )
         try {
-          let url = `/v1/user/post/${this.post.id}/create_comment`
-          let response = await axios.post(url, {
+          const url = `/v1/user/post/${this.post.id}/create_comment`
+          const response = await axios.post(url, {
             content: this.comment
+          })
+          this.comments[indexRawComment] = Object.assign(
+            this.comments[indexRawComment],
+            response.data.data
+          )
+          window.socket.emit('comment-post', {
+            postId: this.post.id,
+            user: this.currentUser,
+            comment: this.comments[indexRawComment],
+            notification: null
           })
         } catch (err) {
           this.createError = true
         }
         this.comment = ''
-        this.loadingCreate = false
       }
+    },
+
+    onBlurComment() {
+      window.socket.emit('commented-post', { postId: this.post.id })
+    },
+    onFocusComment() {
+      this.showComment = true
+      window.socket.emit('commenting-post', { postId: this.post.id })
     },
     async onSubComment(e) {
       const rawComment = {

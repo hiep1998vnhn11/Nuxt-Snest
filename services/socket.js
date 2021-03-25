@@ -19,11 +19,11 @@ const socketService = {
     })
 
     // An user had requested a friend request
-    window.socket.on('responseAddFriend', data => {
-      store.commit('notification/ADD_NOTIFICATION', data, {
-        root: true
-      })
-    })
+    // window.socket.on('responseAddFriend', data => {
+    //   store.commit('notification/ADD_NOTIFICATION', data, {
+    //     root: true
+    //   })
+    // })
 
     window.socket.on('people-cancel-call', call_id => {
       if (

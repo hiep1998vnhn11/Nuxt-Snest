@@ -33,8 +33,7 @@ const mutations = {
   SET_NUMBER_UNREAD: function(state, number) {
     state.numberUnread = number
   },
-  ADD_NOTIFICATION: function(state, notification) {
-    state.notifications.unshift(notification)
+  ADD_NOTIFICATION: function(state) {
     state.numberUnread += 1
   },
   RESET: function(state) {

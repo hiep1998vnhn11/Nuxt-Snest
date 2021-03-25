@@ -4,7 +4,7 @@
       v-if="loading"
       type="image,article ,table-row"
     ></v-skeleton-loader>
-    <v-container v-else-if="!!user">
+    <v-container v-else-if="user != null">
       <v-card justify="center" class="mx-auto" max-width="100%" height="400">
         <v-img class="align-end" width="100%" height="400" :src="background">
           <profile-change-background
@@ -131,7 +131,7 @@
         <v-btn
           :loading="loadingAddFriend"
           :disabled="loadingAddFriend"
-          v-else-if="user.friend_status === 0"
+          v-else-if="!user.myRelation || user.myRelation.status == 2"
           outlined
           class="text-capitalize mt-3 ml-2"
           text
@@ -141,20 +141,18 @@
           {{ $t('profile.AddFriend') }}
         </v-btn>
         <v-btn
-          :loading="loadingAddFriend"
-          :disabled="loadingAddFriend"
-          v-else-if="user.friend_status === 1"
+          v-else-if="user.myRelation.status == 1"
           outlined
           class="text-capitalize mt-3 ml-2"
           text
-          :to="localePath({ name: 'Message' })"
+          @click="onMessageUser"
         >
-          <v-icon class="mr-2">mdi-account-cancel</v-icon>
+          <v-icon class="mr-2">mdi-message-arrow-right</v-icon>
           {{ $t('Chat') }}
         </v-btn>
         <v-btn
           disabled
-          v-else-if="user.friend_status === 2"
+          v-else-if="user.myRelation.status == 3"
           outlined
           class="text-capitalize mt-3 ml-2"
           text
@@ -164,7 +162,7 @@
         </v-btn>
         <v-btn
           disabled
-          v-else-if="user.friend_status === 3"
+          v-else-if="user.myRelation.status == 5"
           outlined
           class="text-capitalize mt-3 ml-2"
           text
@@ -175,7 +173,7 @@
         <v-btn
           :loading="loadingAddFriend"
           :disabled="loadingAddFriend"
-          v-else-if="user.friend_status === 4"
+          v-else-if="user.myRelation.status == 0"
           outlined
           class="text-capitalize mt-3 ml-2"
           text
@@ -552,18 +550,15 @@ export default {
       this.error = null
       this.loadingAddFriend = true
       try {
-        const url = '/v1/user/handle_friend'
-        const params = {
-          user_url: this.user.url,
-          relationship: 'friend'
+        const url = `/v1/user/relationship/user/${this.user.id}/friend`
+        const response = await axios.post(url)
+        if (!this.user.myRelation) this.user.myRelation = response.data.data
+        else {
+          this.user.myRelation.status = response.data.data.status
         }
-        const response = await axios.post(url, params)
-        this.addFriendStatus = true
-        this.$emit('changed-status-friend-added')
         window.socket.emit('requestAddFriend', {
           userId: this.user.id,
-          requestUserId: this.currentUser.id,
-          data: response.data.data
+          userRequest: this.currentUser
         })
       } catch (err) {
         this.error = err.toString()
@@ -598,9 +593,9 @@ export default {
     async onAcceptFriend() {
       this.loadingAddFriend = true
       try {
-        let url = `/v1/user/friend/${this.user.friend_id}/accept`
-        await axios.post(url)
-        this.$emit('changed-status-friend-accepted')
+        let url = `/v1/user/relationship/friend/${this.user.myRelation.id}/accept`
+        const response = await axios.post(url)
+        this.user.myRelation.status = response.data.data.status
       } catch (err) {
         this.error = err.toString()
       }
@@ -609,9 +604,9 @@ export default {
     async onCancelFriend() {
       this.loadingAddFriend = true
       try {
-        let url = `/v1/user/friend/${this.user.friend_id}/cancel`
+        let url = `/v1/user/relationship/friend/${this.user.myRelation.id}/cancel`
         await axios.post(url)
-        this.$emit('changed-status-friend-denied')
+        this.user.myRelation.status = '2'
       } catch (err) {
         this.error = err.toString()
       }

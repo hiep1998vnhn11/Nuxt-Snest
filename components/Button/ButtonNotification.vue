@@ -28,9 +28,9 @@
             closeConditional
           }"
           width="22rem"
-          class="mx-auto  overflow-scroll-y"
+          class="appbar-card-height"
         >
-          <v-card-title class="headline  font-weight-black">
+          <v-toolbar flat dense class="font-weight-bold">
             Notifications
             <v-spacer />
             <v-tooltip bottom>
@@ -41,68 +41,30 @@
               </template>
               <span>{{ $t('NotificationSetting') }}</span>
             </v-tooltip>
-          </v-card-title>
-          <v-container>
-            <v-list three-line>
-              <v-list-item-group
-                v-model="selected"
-                active-class="pink--text"
-                multiple
+          </v-toolbar>
+          <div class="overflow-scroll-y px-2 card-container">
+            <router-link
+              custom
+              to="/"
+              v-slot="{ href, navigate }"
+              v-for="notification in notifications"
+              :key="`notification-${notification.id}`"
+            >
+              <div
+                class="notification-list-element pa-2 mb-1"
+                :href="href"
+                @click="navigate"
               >
-                <template v-for="(item, index) in notifications">
-                  <v-list-item
-                    v-if="item.type.includes('FriendNotification')"
-                    :key="item.data.id"
-                    inactive
-                  >
-                    <v-list-item-avatar size="45">
-                      <v-img :src="item.data.user.profile_photo_path"></v-img>
-                    </v-list-item-avatar>
-                    <v-list-item-content>
-                      <span class="font-weight-bold">
-                        {{ item.data.user.name }}
-                      </span>
-                      {{ $t('has just sent you a friend invitation') }}
-                      <v-row
-                        v-if="item.data.status === 'pending'"
-                        class="ma-n3"
-                      >
-                        <v-col cols="6" class="mr-n4 ml-2">
-                          <v-btn
-                            text
-                            outlined
-                            block
-                            class="light-blue accent-2 text-none"
-                            @click="onFriendAccept(index)"
-                          >
-                            {{ $t('FriendAccept') }}
-                          </v-btn>
-                        </v-col>
-                        <v-col cols="6">
-                          <v-btn
-                            text
-                            block
-                            class="text-none"
-                            outlined
-                            @click="onFriendCancel(index)"
-                          >
-                            {{ $t('FriendCancel') }}
-                          </v-btn>
-                        </v-col>
-                      </v-row>
-                      <span v-else-if="item.data.status === 'accepted'">
-                        {{ item.data.user.name }}
-                        {{ $t('and you are friend now!') }}
-                      </span>
-                      <span v-else>
-                        {{ $t('You have been refused this user!') }}
-                      </span>
-                    </v-list-item-content>
-                  </v-list-item>
-                </template>
-              </v-list-item-group>
-            </v-list>
-          </v-container>
+                <v-avatar class="avatar-outlined mr-3" size="60">
+                  <img :src="notification.data.image" />
+                </v-avatar>
+                <div>
+                  <strong>{{ notification.data.username }}</strong>
+                  ashdkjashjksdfhksd fhjksdfhdjksfhjsdfsd
+                </div>
+              </div>
+            </router-link>
+          </div>
         </v-card>
       </v-expand-transition>
     </div>
@@ -177,3 +139,23 @@ export default {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.appbar-card-height {
+  position: relative;
+  max-height: calc(100vh - 74px);
+  .card-container {
+    position: relative;
+    max-height: calc(100vh - 120px);
+
+    .notification-list-element {
+      display: flex;
+      cursor: pointer;
+      border-radius: 5px;
+      &:hover {
+        background: rgba(0, 0, 0, 0.1);
+      }
+    }
+  }
+}
+</style>

@@ -1,6 +1,6 @@
 <template>
   <v-app dark class="main-container">
-    <notifications group="message" position="bottom left" width="320">
+    <notifications group="message" position="bottom left" width="330">
       <template slot="body" slot-scope="props">
         <div class="message-group-notification">
           <div @click="onClickMessageNotification">
@@ -14,6 +14,7 @@
               <div class="text">
                 <div>
                   <strong>{{ props.item.text.user.name }}</strong>
+                  <br />
                   {{ $t('sent you an message') }} :
                 </div>
                 <div class="message">
@@ -28,7 +29,38 @@
         </div>
       </template>
     </notifications>
+
+    <notifications group="notification" position="bottom left" width="330">
+      <template slot="body" slot-scope="props">
+        <div class="message-group-notification">
+          <div>
+            <div class="title">
+              {{ $t('MessageNotification') }}
+            </div>
+            <div class="content">
+              <v-avatar size="60" class="outlined avatar">
+                <img :src="props.item.text.user.profile_photo_path" />
+              </v-avatar>
+              <div class="text">
+                <div>
+                  <strong>{{ props.item.text.user.name }}</strong>
+                  <br />
+                  <div v-if="props.item.text.status == 'requesting'">
+                    {{ $t('Sent you a friend request') }}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <v-btn class="title-btn" icon text x-small @click="props.close">
+            <v-icon>mdi-close</v-icon>
+          </v-btn>
+        </div>
+      </template>
+    </notifications>
+
     <loading-calling />
+
     <v-app-bar color="primary" clipped-left clipped-right fixed app height="56">
       <nuxt-link :to="localePath({ name: 'index' })">
         <img src="@/assets/logo.png" />
@@ -170,7 +202,7 @@ export default {
           if (
             this.$store.getters['message/thresh'] &&
             Number(this.$store.getters['message/thresh'].id) ===
-              Number(this.$message.thresh_id)
+              Number(message.thresh_id)
           ) {
             this.$store.commit('message/RECEIVED_MESSAGE', message)
           } else {
@@ -179,11 +211,53 @@ export default {
               text: {
                 message,
                 user
-              }
+              },
+              duration: 10000
             })
           }
         }
       )
+
+      window.socket.on('people-requesting-friend', userRequest => {
+        console.log(userRequest)
+        this.$store.commit('notification/ADD_NOTIFICATION')
+        this.$notify({
+          group: 'notification',
+          text: {
+            type: 'friend',
+            user: userRequest,
+            status: 'requesting'
+          },
+          duration: 5000
+        })
+      })
+
+      window.socket.on('people-like-post', ({ user, post }) => {
+        this.$store.commit('notification/ADD_NOTIFICATION')
+        this.$notify({
+          group: 'notification',
+          text: {
+            type: 'like',
+            user: user,
+            post: post
+          },
+          duration: 5000
+        })
+      })
+
+      window.socket.on('people-comment-post', ({ user, comment, post }) => {
+        this.$store.commit('notification/ADD_NOTIFICATION')
+        this.$notify({
+          group: 'notification',
+          text: {
+            type: 'comment',
+            user,
+            post,
+            comment
+          },
+          duration: 5000
+        })
+      })
     }
   }
 }
@@ -257,6 +331,14 @@ html {
   transition: 0.5s ease-in-out;
 }
 .hover-up {
+  transition: 0.5s ease-in-out;
+}
+
+.hover-up-half:hover {
+  transform: translateY(-5px);
+  transition: 0.5s ease-in-out;
+}
+.hover-up-half {
   transition: 0.5s ease-in-out;
 }
 .avatar-outlined {

@@ -1,25 +1,26 @@
 <template>
   <v-card
-    :class="`rounded-lg mt-3 hover-up elevation-${hover ? 24 : 3}`"
+    :class="`rounded-lg mt-3 elevation-${hover ? 12 : 3}`"
     @mouseleave="hover = false"
     @mouseenter="hover = true"
   >
-    <v-card-title class="font-weight-bold">
+    <v-toolbar flat dense class="font-weight-bold">
       {{ $t('profile.Friends') }}
       <v-card-subtitle>
         {{ user.friends_count }} {{ $t('profile.Friends') }}
       </v-card-subtitle>
       <v-spacer></v-spacer>
-      <v-btn text class="primary--text text-capitalize">
+      <a class="text-decoration-none text-caption">
         {{ $t('SeeAllFriend') }}
-      </v-btn>
-    </v-card-title>
-    <v-container class="mt-n10">
+      </a>
+    </v-toolbar>
+    <v-container>
       <v-row>
         <v-col
           v-for="friend in user.friends"
-          :key="`friend-${friend.friend_id}-link`"
+          :key="`friend-${friend.user_friend.url}-link`"
           cols="3"
+          class="text-center  hover-up-half"
         >
           <nuxt-link
             :to="

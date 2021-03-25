@@ -260,7 +260,7 @@ export default {
           }
         })
       } catch (err) {
-        this.$nuxt.error(err)
+        this.error = err
       }
     },
     async onSignInGoogle() {
@@ -279,7 +279,7 @@ export default {
         this.google.user = user
         this.google.id_token = googleUser.getAuthResponse().id_token
       } catch (err) {
-        this.$nuxt.error(err)
+        this.error = err
       }
       this.google.loggingIn = false
     },
@@ -288,7 +288,7 @@ export default {
         await this.google.auth.disconnect()
         this.google.user = this.google.id_token = null
       } catch (err) {
-        this.$nuxt.error(err)
+        this.error = err
       }
     },
     async onContinueGoogle() {
@@ -300,7 +300,7 @@ export default {
           socketService.connectSocket(this.$store)
         }
       } catch (err) {
-        this.$nuxt.error(err)
+        this.error = err
       }
       this.google.loading = false
     },

@@ -2,7 +2,7 @@
   <v-card
     @mouseover="hover = true"
     @mouseleave="hover = false"
-    :class="`rounded-lg hover-up elevation-${elevation}`"
+    :class="`rounded-lg hover-up-half elevation-${elevation}`"
     outlined
     v-if="currentUser"
   >
@@ -17,7 +17,7 @@
           class="text-capitalize buttom-create-post"
           rounded
           @click="dialog = true"
-          elevation="0"
+          text
           block
         >
           {{ content ? content : $t('create_post.writeSt') | shortenContent }}
@@ -82,7 +82,7 @@ export default {
   },
   computed: {
     elevation() {
-      return this.hover ? '24' : '3'
+      return this.hover ? '12' : '3'
     },
     ...mapGetters('user', ['currentUser'])
   },
