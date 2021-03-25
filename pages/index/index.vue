@@ -80,25 +80,53 @@
       flat
       right
       app
-      style="z-index: 3;"
+      style="z-index: 3; overflow: hidden;"
     >
       <!-- Default temblade -->
       <div>
         <div class="trending-card">
           <div class="box">
-            <h2>{{ $t('Trending') }}</h2>
+            <h2>
+              {{ $t('Trending') }}
+              <div class="description">
+                {{ $t('TrendingDescription') }}
+              </div>
+            </h2>
+
             <div class="content">
               <transition name="slide-fade">
-                <div>
-                  <p
-                    v-for="value in Object.entries(trending)
-                      .slice()
-                      .reverse()"
-                    :key="value[0]"
-                  >
-                    {{ value[0] }}: {{ value[1] }}
-                  </p>
-                </div>
+                <table>
+                  <tr>
+                    <th>Tops</th>
+                    <th>Tag</th>
+                    <th>Counts</th>
+                  </tr>
+                  <tr v-for="(value, index) in sortedTrending" :key="value[0]">
+                    <th>{{ index + 1 }}</th>
+                    <th>
+                      #
+                      <nuxt-link
+                        custom
+                        :to="
+                          localePath({
+                            name: 'index-search-top',
+                            query: { search_key: value[0] }
+                          })
+                        "
+                        v-slot="{ href, navigate }"
+                      >
+                        <a
+                          :href="href"
+                          @click="navigate"
+                          class="text-decoration-none"
+                        >
+                          {{ value[0] }}
+                        </a>
+                      </nuxt-link>
+                    </th>
+                    <th>{{ value[1] }}</th>
+                  </tr>
+                </table>
               </transition>
             </div>
           </div>
@@ -111,21 +139,24 @@
           <div class="content">
             <transition name="slide-fade">
               <div>
-                <p
-                  v-for="value in Object.entries(trending)
-                    .slice()
-                    .reverse()"
-                  :key="value[0]"
-                >
-                  {{ value[0] }}: {{ value[1] }}
-                </p>
+                <v-btn block text outlined large class="rounded-lg mb-1">
+                  Test
+                </v-btn>
+                <v-btn block text outlined large class="rounded-lg mb-1">
+                  Test
+                </v-btn>
+                <v-btn block text outlined large class="rounded-lg mb-1">
+                  Test
+                </v-btn>
+                <v-btn block text outlined large class="rounded-lg">
+                  Test
+                </v-btn>
               </div>
             </transition>
           </div>
         </div>
       </div>
     </v-navigation-drawer>
-
     <post-create :loading="loading_user"></post-create>
     <div class="mt-3" v-if="posts.length">
       <post-component
@@ -147,6 +178,7 @@
       type="card"
     ></v-skeleton-loader>
   </div>
+
   <auth-login v-else></auth-login>
 </template>
 
@@ -163,7 +195,10 @@ export default {
   computed: {
     ...mapGetters('post', ['posts']),
     ...mapGetters('user', ['currentUser', 'friends', 'isLoggedIn']),
-    ...mapGetters('app', ['trending'])
+    ...mapGetters('app', ['trending']),
+    sortedTrending() {
+      return Object.entries(this.trending).sort(([, a], [, b]) => b - a)
+    }
   },
   data() {
     return {
@@ -288,9 +323,13 @@ export default {
       }
       h2 {
         opacity: 0.8;
+        z-index: 10;
         transform: translateY(calc(-180px + 50%));
         font-size: 1.8rem;
         transition: 0.5s ease-in-out;
+        .description {
+          opacity: 1;
+        }
       }
     }
     h2 {
@@ -299,9 +338,18 @@ export default {
       font-size: 3rem;
       font-weight: 900;
       transition: 0.5s ease-in-out;
+      text-align: center;
+      .description {
+        font-size: 1rem;
+        font-weight: 500;
+        transition: 0.5s ease-in-out;
+        opacity: 0;
+      }
     }
+
     .content {
-      padding: 20px;
+      position: absolute;
+      bottom: 0px;
       text-align: center;
       h3 {
         font-size: 1.8rem;
@@ -345,6 +393,10 @@ export default {
         font-size: 1.8rem;
         transition: 0.5s ease-in-out;
       }
+      .content {
+        transform: translateY(20px);
+        transition: 0.5s ease-in-out;
+      }
     }
     h2 {
       position: absolute;
@@ -354,9 +406,10 @@ export default {
       transition: 0.5s ease-in-out;
     }
     .content {
-      padding: 20px;
       text-align: center;
-
+      transition: 0.5s ease-in-out;
+      width: 100%;
+      padding: 10px;
       h3 {
         font-size: 1.225rem;
         z-index: 1000;

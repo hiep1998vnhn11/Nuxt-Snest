@@ -88,8 +88,8 @@ const actions = {
     return response.data
   },
   async getFriend(context) {
-    const url = '/v1/user/friend/get'
-    const response = await axios.post(url)
+    const url = '/v1/user/relationship/friend/store?status=1'
+    const response = await axios.get(url)
     context.commit('SET_FRIENDS', response.data.data)
   },
   async refreshToken({ commit, state }) {

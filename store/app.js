@@ -56,7 +56,7 @@ const actions = {
     await axios.delete(`/v1/user/search/${value}/delete`)
   },
   async getTrending({ commit }) {
-    const response = await axios.post('/v1/guest/search/trending')
+    const response = await axios.get('/v1/guest/search/trending')
     commit('SET_TRENDING', response.data.data)
   }
 }

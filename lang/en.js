@@ -406,5 +406,7 @@ export default {
   isCallingYou: 'is calling you',
   Close: 'Close',
   TurnOnMicro: 'Turn on micro',
-  RefuseCall: 'Refuse call'
+  RefuseCall: 'Refuse call',
+  TrendingDescription:
+    'Snest trending chart. A general development or change in a situation or in the way that other user are behaving in Snest'
 }

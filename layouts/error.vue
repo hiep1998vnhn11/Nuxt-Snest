@@ -12,7 +12,7 @@
           {{ otherError }}
         </h2>
         <h3>
-          {{ error.response ? error.response : err }}
+          {{ error.response ? error.response : error }}
         </h3>
         <nuxt-link v-slot="{ href, navigate }" custom :to="localePath('/')">
           <a :href="href" @click="navigate">
