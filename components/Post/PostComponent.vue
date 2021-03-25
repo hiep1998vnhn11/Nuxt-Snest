@@ -280,31 +280,42 @@ export default {
     async onClickLike(e) {
       // e is status of reaction [1...7]
       this.hoverLike = false
-      if (this.page) {
-        if (!this.currentUser) return
-        if (this.post.like_status) {
-          const likeStatus = this.post.like_status.status
-          this.post.like_status.status = likeStatus === e ? 0 : e
-          if (this.post.like_status.status === 0 && likeStatus !== 0) {
-            this.post.liked_count -= 1
-          } else if (this.post.like_status.status !== 0 && likeStatus === 0)
-            this.post.liked_count += 1
-        } else {
-          this.post.like_status = {
-            status: e
+      try {
+        if (this.page) {
+          if (!this.currentUser) return
+          if (this.post.like_status) {
+            const likeStatus = this.post.like_status.status
+            this.post.like_status.status = likeStatus === e ? 0 : e
+            if (this.post.like_status.status === 0 && likeStatus !== 0) {
+              this.post.liked_count -= 1
+            } else if (this.post.like_status.status !== 0 && likeStatus === 0)
+              this.post.liked_count += 1
+          } else {
+            this.post.like_status = {
+              status: e
+            }
+            if (e > 0) {
+              this.post.liked_count += 1
+              window.socket.emit('likePost', {
+                user: this.currentUser,
+                post: this.post
+              })
+            }
           }
-          if (e > 0) this.post.liked_count += 1
+          let url = `/v1/user/post/${this.post.id}/handle_like`
+          await axios.post(url, {
+            status: e
+          })
+        } else {
+          this.$emit('onLike', {
+            post: this.post,
+            status: e,
+            index: this.index,
+            user: this.currentUser
+          })
         }
-        let url = `/v1/user/post/${this.post.id}/handle_like`
-        await axios.post(url, {
-          status: e
-        })
-      } else {
-        this.$emit('onLike', {
-          post: this.post,
-          status: e,
-          index: this.index
-        })
+      } catch (err) {
+        this.$nuxt.error(err)
       }
     },
     async getComment() {
@@ -346,7 +357,6 @@ export default {
           sub_comments_count: 0,
           sub_comments: []
         }
-        this.comment = ''
         const indexRawComment = this.comments.length
         this.comments = [...this.comments, rawComment]
         if (this.page) {
@@ -372,6 +382,7 @@ export default {
         } catch (err) {
           this.createError = true
         }
+        this.comment = ''
       }
     },
 

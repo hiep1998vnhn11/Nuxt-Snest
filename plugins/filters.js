@@ -21,8 +21,26 @@ moment.updateLocale('en', {
   }
 })
 
+moment.updateLocale('vi', {
+  relativeTime: {
+    future: 'trong %s',
+    past: '%s trước',
+    s: 'một vài giây',
+    m: '1 phút',
+    mm: '%d phút',
+    h: '1 giờ',
+    hh: '%d giờ',
+    d: '1 ngày',
+    dd: '%d ngày',
+    M: '1 tháng',
+    MM: '%d tháng',
+    y: '1 năm',
+    yy: '%d năm'
+  }
+})
+
 Vue.filter('relativeTime', function(value, context) {
-  if (!value) return 'User not login!'
+  if (!value) return 'null'
   else if (moment(value) < moment().subtract(7, 'days')) {
     return moment.utc(value).calendar()
   } else return moment.utc(value).fromNow(true)

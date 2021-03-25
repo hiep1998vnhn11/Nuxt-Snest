@@ -5,7 +5,6 @@
       type="image,article ,table-row"
     ></v-skeleton-loader>
     <v-container v-else-if="user != null">
-      {{ user }}
       <v-card justify="center" class="mx-auto" max-width="100%" height="400">
         <v-img class="align-end" width="100%" height="400" :src="background">
           <profile-change-background

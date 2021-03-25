@@ -119,7 +119,7 @@ const mutations = {
     state.userPostPage = 1
     state.userPost = []
   },
-  LIKE_POST: function(state, { status, index, post }) {
+  LIKE_POST: function(state, { status, index, post, user }) {
     if (state.posts[index].like_status) {
       const likeStatus = state.posts[index].like_status.status
       state.posts[index].like_status.status = likeStatus === status ? 0 : status
@@ -135,10 +135,16 @@ const mutations = {
       state.posts[index].like_status = {
         status
       }
-      if (status > 0) state.posts[index].liked_count += 1
+      if (status > 0) {
+        state.posts[index].liked_count += 1
+        window.socket.emit('likePost', {
+          user,
+          post: state.posts[index]
+        })
+      }
     }
   },
-  LIKE_USER_POST: function(state, { status, index, post }) {
+  LIKE_USER_POST: function(state, { status, index, post, user }) {
     if (state.userPost[index].like_status) {
       const likeStatus = state.userPost[index].like_status.status
       state.userPost[index].like_status.status =
@@ -155,7 +161,13 @@ const mutations = {
       state.userPost[index].like_status = {
         status
       }
-      if (status > 0) state.userPost[index].liked_count += 1
+      if (status > 0) {
+        state.userPost[index].liked_count += 1
+        window.socket.emit('likePost', {
+          user,
+          post: state.userPost[index]
+        })
+      }
     }
   },
   UNLIKE_POST: function(state, indexPost) {

@@ -231,6 +231,33 @@ export default {
           duration: 5000
         })
       })
+
+      window.socket.on('people-like-post', ({ user, post }) => {
+        this.$store.commit('notification/ADD_NOTIFICATION')
+        this.$notify({
+          group: 'notification',
+          text: {
+            type: 'like',
+            user: user,
+            post: post
+          },
+          duration: 5000
+        })
+      })
+
+      window.socket.on('people-comment-post', ({ user, comment, post }) => {
+        this.$store.commit('notification/ADD_NOTIFICATION')
+        this.$notify({
+          group: 'notification',
+          text: {
+            type: 'comment',
+            user,
+            post,
+            comment
+          },
+          duration: 5000
+        })
+      })
     }
   }
 }
