@@ -1,7 +1,14 @@
 <template>
   <div>
-    <loading-component v-if="loading" />
-    <div v-else-if="messages.length">
+    <v-progress-circular
+      v-if="loading"
+      :size="70"
+      :width="3"
+      color="purple"
+      indeterminate
+      class="loading-message"
+    ></v-progress-circular>
+    <div v-if="messages.length">
       <message-row
         v-for="(message, index) in reverseMessages"
         :key="`message-${message.id}`"
@@ -19,7 +26,7 @@
         />
       </v-fade-transition>
     </div>
-    <div v-else class="text-center">
+    <div v-else-if="!loading" class="text-center">
       <div>
         <v-avatar class="avatar-outlined" size="100">
           <img :src="thresh.participants.profile_photo_path" />
@@ -187,4 +194,12 @@ export default {
   }
 }
 </script>
-<style scoped></style>
+<style lang="scss" scoped>
+.loading-message {
+  position: absolute;
+  height: 100px;
+  z-index: 2;
+  left: 50%;
+  transform: translateX(-50%);
+}
+</style>

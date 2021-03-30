@@ -75,7 +75,7 @@
     </v-app-bar>
 
     <!-- bottom appbar -->
-    <v-footer app height="56" color="grey lighten-3" inset>
+    <v-footer app height="51" color="grey lighten-3" inset>
       <v-tooltip top>
         <template v-slot:activator="{ on, attrs }">
           <v-btn small icon text v-bind="attrs" class="ml-n3" v-on="on">
@@ -100,7 +100,7 @@
         </template>
         <span>{{ $t('ChooseSticker') }}</span>
       </v-tooltip>
-      <v-text-field
+      <v-textarea
         background-color="grey lighten-1"
         dense
         flat
@@ -109,27 +109,41 @@
         hide-details
         rounded
         solo
+        rows="1"
+        row-height="15"
+        auto-grow
         label="Aa"
         @focus="onFocusTyping"
         @blur="onBlurTyping"
         @keydown.enter.exact.prevent
         @keydown.enter.exact="onSendMessage"
-        @keydown.enter.shift.exact="newLine"
         v-model="text"
+        class="textarea--autogrowtop"
       >
         <template v-slot:append>
-          <v-btn icon text class="mr-n6" @click="$emit('onConvert')">
+          <v-btn class="mr-n6 mt-n2" icon text @click="showEmoji = !showEmoji">
             <v-icon color="primary">mdi-emoticon</v-icon>
           </v-btn>
         </template>
-      </v-text-field>
+      </v-textarea>
+      <v-emoji-picker
+        v-if="showEmoji"
+        class="textarea__emoji-picker"
+        @select="selectEmoji"
+        :emojiSize="45"
+        v-click-outside="{
+          handler: onClickOutsideWithConditional,
+          closeConditional
+        }"
+      />
+      <v-spacer />
       <v-tooltip top>
         <template v-slot:activator="{ on, attrs }">
           <v-btn icon text v-bind="attrs" class="ml-1" v-on="on">
             <v-icon color="primary">mdi-send</v-icon>
           </v-btn>
         </template>
-        <span>{{ $t('SendLike') }}</span>
+        <span>{{ $t('Send') }}</span>
       </v-tooltip>
     </v-footer>
 
@@ -224,12 +238,13 @@
       </v-list>
     </v-navigation-drawer>
 
-    <div class="message-container">
+    <div class="message-container" ref="messagePageContainer">
+      <observer v-if="messages.length >= 10" @intersect="intersected" />
       <message-list :loading="loading" />
     </div>
   </div>
   <div v-else>
-    {{ messages }}
+    <loading-component :loading="true" />
   </div>
 </template>
 
@@ -237,6 +252,7 @@
 import { mapActions, mapGetters } from 'vuex'
 import axios from 'axios'
 import { v4 as uuidv4 } from 'uuid'
+import { VEmojiPicker } from 'v-emoji-picker'
 
 export default {
   data() {
@@ -245,8 +261,18 @@ export default {
       error: null,
       text: '',
       load: false,
-      rightDrawer: true
+      rightDrawer: true,
+      search: '',
+      showEmoji: false
     }
+  },
+  head() {
+    return {
+      title: this.loading ? 'Loading |' : 'Messages |'
+    }
+  },
+  components: {
+    VEmojiPicker
   },
   computed: {
     ...mapGetters('user', ['currentUser']),
@@ -260,36 +286,41 @@ export default {
     }
   },
   watch: {
-    '$route.params'() {
+    $route() {
+      this.loading = true
       this.setDefaultMessage()
       this.fetchData()
     }
   },
-  updated() {
-    if (this.load) this.load = false
-    else this.scrollToBottom()
-  },
   mounted() {
     this.setDefaultMessage()
     this.fetchData()
-    // this.scrollToBottom()
   },
   middleware: 'auth',
   methods: {
     ...mapActions('message', ['setDefaultMessage', 'getMessageCard']),
     ...mapActions('thresh', ['getParticipant']),
+
+    selectEmoji(emoji) {
+      this.text += emoji.data
+      // console.log(emoji)
+    },
+    async getParticipant() {
+      const url = `/v1/user/thresh/${this.$route.params.room_id}/participant/get`
+      const response = await axios.post(url)
+      if (response.data.data)
+        this.$store.commit('message/SET_THRESH', {
+          id: this.$route.params.room_id,
+          participants: response.data.data,
+          typing: false
+        })
+    },
     async fetchData() {
       this.loading = true
       try {
-        let url = `/v1/user/thresh/${this.$route.params.room_id}/participant/get`
-        const response = await axios.post(url)
-        if (response.data.data)
-          this.$store.commit('message/SET_THRESH', {
-            id: this.$route.params.room_id,
-            participants: response.data.data,
-            typing: false
-          })
+        await this.getParticipant()
         await this.getMessageCard()
+        this.scrollToBottom()
       } catch (err) {
         this.$nuxt.error(err)
       }
@@ -354,17 +385,18 @@ export default {
           this.$nuxt.error(err)
         }
         this.load = true
+        this.scrollToBottom()
       }
     },
     scrollToBottom() {
-      const container = this.$el.querySelector('#messageContainer')
+      const container = this.$refs['messagePageContainer']
       if (container) container.scrollTop = container.scrollHeight
     },
     intersected() {
       this.fetchMessage()
     },
     newLine() {
-      console.log('new line')
+      this.text += '//n'
     },
     createNewCall() {
       const call_id = v4()
@@ -420,6 +452,12 @@ export default {
       //       }
       //     })
       //   )
+    },
+    onClickOutsideWithConditional() {
+      this.showEmoji = false
+    },
+    closeConditional(e) {
+      return this.showEmoji
     }
   }
 }
@@ -454,5 +492,18 @@ export default {
     -webkit-border-radius: 10px;
     border-radius: 10px;
   }
+}
+
+.textarea--autogrowtop {
+  position: absolute;
+  bottom: 5px;
+  left: 80px;
+  right: 60px;
+}
+
+.textarea__emoji-picker {
+  position: absolute;
+  right: 10px;
+  bottom: 58px;
 }
 </style>

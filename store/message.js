@@ -52,7 +52,7 @@ const actions = {
         {
           params: {
             page: state.pageMessage,
-            limit: 25
+            limit: 10
           }
         }
       )

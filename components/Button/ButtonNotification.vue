@@ -43,27 +43,45 @@
             </v-tooltip>
           </v-toolbar>
           <div class="overflow-scroll-y px-2 card-container">
-            <router-link
-              custom
-              to="/"
-              v-slot="{ href, navigate }"
+            <div
               v-for="notification in notifications"
               :key="`notification-${notification.id}`"
             >
+              <!-- Friend Notification -->
               <div
-                class="notification-list-element pa-2 mb-1"
-                :href="href"
-                @click="navigate"
+                v-if="
+                  notification.type == 'App\\Notifications\\FriendNotification'
+                "
               >
-                <v-avatar class="avatar-outlined mr-3" size="60">
-                  <img :src="notification.data.image" />
-                </v-avatar>
-                <div>
-                  <strong>{{ notification.data.username }}</strong>
-                  ashdkjashjksdfhksd fhjksdfhdjksfhjsdfsd
-                </div>
+                <router-link
+                  custom
+                  :to="
+                    localePath({
+                      name: 'index-user-url',
+                      params: { url: notification.data.url }
+                    })
+                  "
+                  v-slot="{ href, navigate }"
+                >
+                  <div
+                    class="notification-list-element pa-2 mb-1"
+                    :class="
+                      notification.read_at == null ? 'blue lighten-4' : ''
+                    "
+                    :href="href"
+                    @click="navigate"
+                  >
+                    <v-avatar class="avatar-outlined mr-3" size="60">
+                      <img :src="notification.data.image" />
+                    </v-avatar>
+                    <div v-if="notification.data.status == 'requesting'">
+                      <strong>{{ notification.data.username }}</strong>
+                      {{ $t('has sent you a friend invitation') }}
+                    </div>
+                  </div>
+                </router-link>
               </div>
-            </router-link>
+            </div>
           </div>
         </v-card>
       </v-expand-transition>

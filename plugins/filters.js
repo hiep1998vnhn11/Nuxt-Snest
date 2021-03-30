@@ -3,41 +3,41 @@ import moment from 'moment'
 
 window.moment = moment
 
-moment.updateLocale('en', {
-  relativeTime: {
-    future: 'in %s',
-    past: '%s ago',
-    s: 'a few s',
-    m: '1m',
-    mm: '%dm',
-    h: '1h',
-    hh: '%dh',
-    d: '1d',
-    dd: '%dd',
-    M: '1mo',
-    MM: '%dmo',
-    y: '1y',
-    yy: '%dy'
-  }
-})
+// moment.updateLocale('en', {
+//   relativeTime: {
+//     future: 'in %s',
+//     past: '%s ago',
+//     s: 'a few s',
+//     m: '1m',
+//     mm: '%dm',
+//     h: '1h',
+//     hh: '%dh',
+//     d: '1d',
+//     dd: '%dd',
+//     M: '1mo',
+//     MM: '%dmo',
+//     y: '1y',
+//     yy: '%dy'
+//   }
+// })
 
-moment.updateLocale('vi', {
-  relativeTime: {
-    future: 'trong %s',
-    past: '%s trước',
-    s: 'một vài giây',
-    m: '1 phút',
-    mm: '%d phút',
-    h: '1 giờ',
-    hh: '%d giờ',
-    d: '1 ngày',
-    dd: '%d ngày',
-    M: '1 tháng',
-    MM: '%d tháng',
-    y: '1 năm',
-    yy: '%d năm'
-  }
-})
+// moment.updateLocale('vi', {
+//   relativeTime: {
+//     future: 'trong %s',
+//     past: '%s trước',
+//     s: 'một vài giây',
+//     m: '1 phút',
+//     mm: '%d phút',
+//     h: '1 giờ',
+//     hh: '%d giờ',
+//     d: '1 ngày',
+//     dd: '%d ngày',
+//     M: '1 tháng',
+//     MM: '%d tháng',
+//     y: '1 năm',
+//     yy: '%d năm'
+//   }
+// })
 
 Vue.filter('relativeTime', function(value, context) {
   if (!value) return 'null'

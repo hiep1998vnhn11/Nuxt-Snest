@@ -1,9 +1,10 @@
 <template>
   <v-app dark class="main-container">
+    <!-- Message notification -->
     <notifications group="message" position="bottom left" width="330">
       <template slot="body" slot-scope="props">
         <div class="message-group-notification">
-          <div @click="onClickMessageNotification">
+          <div @click="onClickMessageNotification(props.item.text)">
             <div class="title">
               {{ $t('MessageNotification') }}
             </div>
@@ -30,6 +31,7 @@
       </template>
     </notifications>
 
+    <!-- toast notification -->
     <notifications group="notification" position="bottom left" width="330">
       <template slot="body" slot-scope="props">
         <div class="message-group-notification">
@@ -59,6 +61,7 @@
       </template>
     </notifications>
 
+    <!-- Calling notification -->
     <loading-calling />
 
     <v-app-bar color="primary" clipped-left clipped-right fixed app height="56">
@@ -172,7 +175,14 @@ export default {
       }
       this.loadingMessageCard = false
     },
-    onClickMessageNotification() {},
+    onClickMessageNotification(e) {
+      this.$router.push(
+        this.localePath({
+          name: 'messages-room_id',
+          params: { room_id: e.message.thresh_id }
+        })
+      )
+    },
     onAnswerCalling(props) {
       props.close()
       this.$router.push(
