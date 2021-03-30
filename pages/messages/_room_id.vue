@@ -94,13 +94,21 @@
       </v-tooltip>
       <v-tooltip top>
         <template v-slot:activator="{ on, attrs }">
-          <v-btn small icon text v-bind="attrs" class="ml-3 mr-3" v-on="on">
+          <v-btn
+            small
+            icon
+            text
+            v-bind="attrs"
+            class="ml-3 mr-3"
+            v-on="on"
+            @click="showEmoji = !showEmoji"
+          >
             <v-icon color="primary">mdi-sticker-emoji</v-icon>
           </v-btn>
         </template>
         <span>{{ $t('ChooseSticker') }}</span>
       </v-tooltip>
-      <v-textarea
+      <!-- <v-textarea
         background-color="grey lighten-1"
         dense
         flat
@@ -125,6 +133,34 @@
             <v-icon color="primary">mdi-emoticon</v-icon>
           </v-btn>
         </template>
+      </v-textarea> -->
+      <v-textarea
+        style="padding: 0; border-radius: 15px;"
+        class="textarea--autogrowtop"
+        background-color="white"
+        color="rgba(0,0,0,0.2)"
+        dense
+        flat
+        hide-details="auto"
+        full-width
+        outlined
+        label="Aa"
+        auto-grow
+        row-height="20"
+        rows="1"
+        v-model="text"
+        ref="textInput"
+        @blur="onBlurTyping"
+        @focus="onFocusTyping"
+        @keydown.enter.exact.prevent
+        @keydown.enter.exact="onSendMessage"
+        @keydown.esc.exact="onCloseCard"
+      >
+        <template v-slot:append>
+          <v-btn icon width="25" height="25" text class="ml-n2 mr-n2">
+            <v-icon size="25" color="success">mdi-arrow-up-circle</v-icon>
+          </v-btn>
+        </template>
       </v-textarea>
       <v-emoji-picker
         v-if="showEmoji"
@@ -137,14 +173,14 @@
         }"
       />
       <v-spacer />
-      <v-tooltip top>
+      <!-- <v-tooltip top>
         <template v-slot:activator="{ on, attrs }">
           <v-btn icon text v-bind="attrs" class="ml-1" v-on="on">
             <v-icon color="primary">mdi-send</v-icon>
           </v-btn>
         </template>
         <span>{{ $t('Send') }}</span>
-      </v-tooltip>
+      </v-tooltip> -->
     </v-footer>
 
     <v-navigation-drawer width="22rem" app clipped right>
@@ -497,8 +533,8 @@ export default {
 .textarea--autogrowtop {
   position: absolute;
   bottom: 5px;
-  left: 80px;
-  right: 60px;
+  left: 120px;
+  right: 10px;
 }
 
 .textarea__emoji-picker {

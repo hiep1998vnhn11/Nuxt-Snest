@@ -59,7 +59,8 @@
       </v-btn>
     </v-toolbar>
     <v-divider />
-    <div class="message-card-text-component" id="container">
+    <div class="message-card-text-component" ref="message-card-container">
+      <observer v-if="messages.length >= 10" @intersect="intersected" />
       <message-list :loading="loading" />
     </div>
     <div class="message-card-actions-component">
@@ -230,7 +231,7 @@ export default {
       }
     },
     scrollToBottom() {
-      var container = this.$el.querySelector('#container')
+      var container = this.$refs['message-card-container']
       container.scrollTop = container.scrollHeight
     },
     newLine() {
@@ -242,6 +243,9 @@ export default {
     },
     onFocusInput() {
       console.log('test')
+    },
+    intersected() {
+      this.fetchData()
     }
   },
   mounted() {
